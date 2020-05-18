@@ -1,0 +1,35 @@
+<?php 
+use Components\Form\Element\DatabaseSelect;
+$uuid= $form->get('UUID')->getValue();
+$form->setAttribute('action', $this->url('timecard/default', ['action' => 'update', 'uuid' => $uuid]));
+$form->prepare();
+
+echo $this->form()->openTag($form);
+
+$paycode = $form->get('PAY_UUID');
+$paycode_value_options = $paycode->getValueOptions();
+$paycode_value = $paycode->getValue();
+
+echo $this->formInput($form->get('UUID'));
+echo $this->formInput($form->get('SECURITY'));
+echo $this->formInput($form->get('EMP_UUID'));
+?>
+<style type="text/css">
+input[type=submit]
+{
+    display: none;
+}
+</style>
+<tr>
+	<td><?php echo $paycode_value_options[$paycode_value];?></td>
+	<td><?php echo $this->formInput($form->get('SUN'));?></td>
+	<td><?php echo $this->formInput($form->get('MON'));?></td>
+	<td><?php echo $this->formInput($form->get('TUES'));?></td>
+	<td><?php echo $this->formInput($form->get('WED'));?></td>
+	<td><?php echo $this->formInput($form->get('THURS'));?></td>
+	<td><?php echo $this->formInput($form->get('FRI'));?></td>
+	<td><?php echo $this->formInput($form->get('SAT'));?></td>
+	<td><?php echo $this->formInput($form->get('DAYS'));?></td>
+</tr>
+<?php echo $this->formInput($form->get('SUBMIT'));?>
+<?php echo $this->form()->closeTag($form); ?>

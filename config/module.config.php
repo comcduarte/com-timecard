@@ -111,6 +111,13 @@ return [
                 'privilege' => 'index',
                 'pages' => [
                     [
+                        'label' => 'Time Sheet',
+                        'route' => 'timecard/default',
+                        'resource' => 'timecard/default',
+                        'privilege' => 'timesheet',
+                        'action' => 'timesheet',
+                    ],
+                    [
                         'label' => 'Pay Codes',
                         'route' => 'paycode/default',
                         'class' => 'dropdown-submenu',

@@ -4,7 +4,7 @@ namespace Timecard\Form;
 use Components\Form\AbstractBaseForm;
 use Components\Form\Element\DatabaseSelect;
 use Laminas\Db\Adapter\AdapterAwareTrait;
-use Laminas\Form\Element\Date;
+use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Text;
 
 class TimecardForm extends AbstractBaseForm
@@ -17,7 +17,7 @@ class TimecardForm extends AbstractBaseForm
         
         $this->add([
             'name' => 'EMP_UUID',
-            'type' => Text::class,
+            'type' => Hidden::class,
             'attributes' => [
                 'id' => 'EMP_UUID',
                 'class' => 'form-control',
@@ -28,16 +28,17 @@ class TimecardForm extends AbstractBaseForm
         ],['priority' => 100]);
         
         $this->add([
-            'name' => 'WORK_DATE',
-            'type' => Date::class,
+            'name' => 'WORK_WEEK',
+            'type' => Hidden::class,
             'attributes' => [
                 'class' => 'form-control',
-                'id' => 'WORK_DATE',
+                'id' => 'WORK_WEEK',
                 'required' => 'true',
                 'placeholder' => '',
             ],
             'options' => [
-                'label' => 'Work Date',
+                'label' => 'Work Week',
+                'format' => 'Y-m-d H:m:s',
             ],
         ],['priority' => 100]);
         
@@ -60,17 +61,20 @@ class TimecardForm extends AbstractBaseForm
             ],
         ],['priority' => 100]);
         
-        $this->add([
-            'name' => 'HOURS',
-            'type' => Text::class,
-            'attributes' => [
-                'id' => 'HOURS',
-                'class' => 'form-control',
-            ],
-            'options' => [
-                'label' => 'Hours',
-            ],
-        ],['priority' => 100]);
+        $days = ['SUN','MON','TUES','WED','THURS','FRI','SAT'];
+        foreach ($days as $day) { 
+            $this->add([
+                'name' => $day,
+                'type' => Text::class,
+                'attributes' => [
+                    'id' => $day,
+                    'class' => 'form-control',
+                ],
+                'options' => [
+                    'label' => $day,
+                ],
+            ],['priority' => 100]);
+        }
         
         $this->add([
             'name' => 'DAYS',

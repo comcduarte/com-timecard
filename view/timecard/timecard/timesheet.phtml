@@ -1,0 +1,41 @@
+<?php 
+$week_form->setAttribute('action', $this->url('timecard/default', ['action' => 'timesheet']));
+$week_form->prepare();
+
+echo $this->form()->openTag($week_form);
+?>
+<div class="row">
+	<div class="col">
+		<h1>Timesheet</h1>
+	</div>
+	<div class="col">
+		<div class="form-group">
+			<?php echo $this->formRow($this->week_form->get('WEEK')); ?>
+		</div>
+	</div>
+</div>		
+<?php echo $this->form()->closeTag($week_form); ?>
+<div class="row">
+	<div class="col">
+		<table class="table">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">Pay&nbsp;Code</th>
+					<th scope="col">Sunday</th>
+					<th scope="col">Monday</th>
+					<th scope="col">Tuesday</th>
+					<th scope="col">Wednesday</th>
+					<th scope="col">Thursday</th>
+					<th scope="col">Friday</th>
+					<th scope="col">Saturday</th>
+					<th scope="col">Days</th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php foreach ($this->timesheet_forms as $form) : ?>
+				<?php echo $this->partial('timecard/partials/weeklytimesheet.phtml',['form' => $form]); ?>
+			<?php endforeach; ?>
+			</tbody>
+		</table>
+	</div>
+</div>
