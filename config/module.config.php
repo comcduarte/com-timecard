@@ -41,6 +41,17 @@ return [
                             ],
                         ],
                     ],
+                    'timesheet' => [
+                        'type' => Segment::class,
+                        'priority' => -100,
+                        'options' => [
+                            'route' => '/timesheet[/:uuid[/:week]]',
+                            'defaults' => [
+                                'action' => 'timesheet',
+                                'controller' => TimecardController::class,
+                            ],
+                        ],
+                    ],
                     'default' => [
                         'type' => Segment::class,
                         'priority' => -100,
@@ -113,7 +124,7 @@ return [
                     [
                         'label' => 'Time Sheet',
                         'route' => 'timecard/default',
-                        'resource' => 'timecard/default',
+                        'resource' => 'timecard/timesheet',
                         'privilege' => 'timesheet',
                         'action' => 'timesheet',
                     ],

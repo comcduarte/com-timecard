@@ -1,20 +1,28 @@
-<?php 
-$week_form->setAttribute('action', $this->url('timecard/default', ['action' => 'timesheet']));
-$week_form->prepare();
+<style type="text/css">
+    input[id=_SUBMIT_]
+    {
+        display: none;
+    }
+</style>
 
-echo $this->form()->openTag($week_form);
-?>
 <div class="row">
 	<div class="col">
 		<h1>Timesheet</h1>
 	</div>
 	<div class="col">
+		<?php $week_form->setAttribute('action', $this->url('timecard/default', ['action' => 'filter'])); ?>
+		<?php $week_form->prepare(); ?>
+		<?php echo $this->form()->openTag($week_form); ?>
 		<div class="form-group">
-			<?php echo $this->formRow($this->week_form->get('WEEK')); ?>
+			<?php echo $this->formRow($this->week_form->get('EMP_UUID')); ?>
+			<?php echo $this->formRow($this->week_form->get('WORK_WEEK')); ?>
+			<?php echo $this->formRow($this->week_form->get('SECURITY')); ?>
+			<?php echo $this->formRow($this->week_form->get('SUBMIT')); ?>
 		</div>
+		<?php echo $this->form()->closeTag($week_form); ?>
 	</div>
 </div>		
-<?php echo $this->form()->closeTag($week_form); ?>
+
 <div class="row">
 	<div class="col">
 		<table class="table">
@@ -36,6 +44,27 @@ echo $this->form()->openTag($week_form);
 				<?php echo $this->partial('timecard/partials/weeklytimesheet.phtml',['form' => $form]); ?>
 			<?php endforeach; ?>
 			</tbody>
+			<tfoot>
+				<tr>
+					<?php $this->timecard_add_form->setAttribute('action', $this->url('timecard/default', ['action' => 'create']));?>
+					<?php $this->timecard_add_form->prepare(); ?>
+					<?php echo $this->form()->openTag($this->timecard_add_form); ?>
+						<?php echo $this->formRow($this->timecard_add_form->get('UUID')); ?>
+						<?php echo $this->formRow($this->timecard_add_form->get('EMP_UUID')); ?>
+						<?php echo $this->formRow($this->timecard_add_form->get('WORK_WEEK')); ?>
+						<?php echo $this->formRow($this->timecard_add_form->get('SECURITY')); ?>
+					<td colspan="2">
+						Add New Pay Code:
+					</td>
+					<td colspan="6">
+						<?php echo $this->formSelect($this->timecard_add_form->get('PAY_UUID')); ?>
+					</td>
+					<td>
+						<?php echo $this->formRow($this->timecard_add_form->get('SUBMIT')); ?>
+					</td>
+					<?php echo $this->form()->closeTag($this->timecard_add_form); ?>
+				</tr>
+			</tfoot>
 		</table>
 	</div>
 </div>

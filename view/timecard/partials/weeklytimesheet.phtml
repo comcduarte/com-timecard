@@ -14,14 +14,9 @@ echo $this->formInput($form->get('UUID'));
 echo $this->formInput($form->get('SECURITY'));
 echo $this->formInput($form->get('EMP_UUID'));
 ?>
-<style type="text/css">
-input[type=submit]
-{
-    display: none;
-}
-</style>
+
 <tr>
-	<td><?php echo $paycode_value_options[$paycode_value];?></td>
+	<td><span style="white-space:nowrap"><?php echo $paycode_value_options[$paycode_value];?></span></td>
 	<td><?php echo $this->formInput($form->get('SUN'));?></td>
 	<td><?php echo $this->formInput($form->get('MON'));?></td>
 	<td><?php echo $this->formInput($form->get('TUES'));?></td>

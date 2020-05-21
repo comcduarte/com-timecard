@@ -7,6 +7,7 @@ use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Where;
 use Laminas\View\Model\ViewModel;
+use Timecard\Form\TimecardAddForm;
 use Timecard\Form\TimecardForm;
 use Timecard\Form\TimesheetFilterForm;
 use Timecard\Model\PaycodeModel;
@@ -17,19 +18,28 @@ class TimecardController extends AbstractBaseController
 {
     public function timesheetAction()
     {
+        $date = new \DateTime('now',new \DateTimeZone('EDT'));
+        $today = $date->format('Y-m-d');
+        
         $uuid = $this->params()->fromRoute('uuid', 0);
         if (! $uuid) {
             $user = $this->currentUser();
             $uuid = $user->UUID;
         }
         
+        if (! $this->params()->fromRoute('week', 0)) {
+            $work_week = $this->getWorkWeek($today);
+        } else {
+            $work_week = $this->getWorkWeek($this->params()->fromRoute('week', 0));
+        }
+        
         $view = new ViewModel();
         $timecard = new TimecardModel($this->adapter);
         $paycode = new PaycodeModel($this->adapter);
         
-        $date = new \DateTime('now',new \DateTimeZone('EDT'));
-        $today = $date->format('Y-m-d 00:00:00');
+        
         $where = new Where();
+        $where->equalTo('WORK_WEEK', $work_week);
         
         /****************************************
          * RETRIEVE DATA FOR WEEK
@@ -77,12 +87,21 @@ class TimecardController extends AbstractBaseController
             'timesheet_forms' => $forms,
         ]);
         
+        $form = new TimecardAddForm('new-form');
+        $form->setDbAdapter($this->adapter);
+        $form->init();
+        $form->get('EMP_UUID')->setValue($uuid);
+        $form->get('WORK_WEEK')->setValue($work_week);
+        $view->setVariable('timecard_add_form', $form);
+        
                
         
         
         
         $form = new TimesheetFilterForm();
         $form->init();
+        $form->get('EMP_UUID')->setValue($uuid);
+        $form->get('WORK_WEEK')->setValue($work_week);
         $view->setVariables([
             'week_form' => $form,
         ]);
@@ -111,5 +130,29 @@ class TimecardController extends AbstractBaseController
         
         return $view;
     }
-
+    
+    public function filterAction()
+    {
+        $form = new TimesheetFilterForm();
+        $form->init();
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $data = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+                );
+        }
+        $week = $this->getWorkWeek($data['WORK_WEEK']);
+        
+        return $this->redirect()->toRoute('timecard/timesheet', ['uuid' => $data['EMP_UUID'], 'week' => $week]);
+    }
+    
+    public function getWorkWeek(String $date)
+    {
+        $day = date('w', strtotime($date));
+        
+        return date('Y-m-d', strtotime("$date -$day days"));
+//         return date('Y-m-d', strtotime($date));
+    }
 }

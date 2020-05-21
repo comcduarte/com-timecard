@@ -1,19 +1,32 @@
 <?php
 namespace Timecard\Form;
 
-use Components\Form\AbstractBaseForm;
 use Components\Form\Element\DatabaseSelect;
-use Laminas\Db\Adapter\AdapterAwareTrait;
+use Components\Form\Element\Uuid;
+use Laminas\Form\Form;
+use Laminas\Form\Element\Csrf;
 use Laminas\Form\Element\Hidden;
-use Laminas\Form\Element\Text;
+use Laminas\Form\Element\Submit;
+use Laminas\Db\Adapter\AdapterAwareTrait;
 
-class TimecardForm extends AbstractBaseForm
+class TimecardAddForm extends Form
 {
     use AdapterAwareTrait;
     
     public function init()
     {
-        parent::init();
+        $this->add([
+            'name' => 'UUID',
+            'type' => Uuid::class,
+            'attributes' => [
+                'id' => 'UUID',
+                'class' => 'form-control',
+                'required' => 'true',
+            ],
+            'options' => [
+                'label' => 'UUID',
+            ],
+        ],['priority' => 0]);
         
         $this->add([
             'name' => 'EMP_UUID',
@@ -61,34 +74,16 @@ class TimecardForm extends AbstractBaseForm
             ],
         ],['priority' => 100]);
         
-        $days = ['SUN','MON','TUES','WED','THURS','FRI','SAT'];
-        foreach ($days as $day) { 
-            $this->add([
-                'name' => $day,
-                'type' => Text::class,
-                'attributes' => [
-                    'id' => $day,
-                    'class' => 'form-control',
-                ],
-                'options' => [
-                    'label' => $day,
-                ],
-            ],['priority' => 100]);
-        }
+        $this->add(new Csrf('SECURITY'),['priority' => 0]);
         
         $this->add([
-            'name' => 'DAYS',
-            'type' => Text::class,
+            'name' => 'SUBMIT',
+            'type' => Submit::class,
             'attributes' => [
-                'id' => 'DAYS',
-                'class' => 'form-control',
+                'value' => 'Submit',
+                'class' => 'btn btn-primary form-control mt-4',
+                'id' => 'SUBMIT',
             ],
-            'options' => [
-                'label' => 'Days',
-            ],
-        ],['priority' => 100]);
-        
-        $submit = $this->get('SUBMIT');
-        $submit->setAttribute('id', '_SUBMIT_');
+        ],['priority' => 0]);
     }
 }
