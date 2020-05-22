@@ -43,7 +43,7 @@ return [
                     ],
                     'timesheet' => [
                         'type' => Segment::class,
-                        'priority' => -100,
+                        'priority' => 100,
                         'options' => [
                             'route' => '/timesheet[/:uuid[/:week]]',
                             'defaults' => [
@@ -119,11 +119,11 @@ return [
                 'route' => 'timecard/default',
                 'class' => 'dropdown',
                 'resource' => 'timecard/default',
-                'privilege' => 'index',
+                'privilege' => 'menu',
                 'pages' => [
                     [
                         'label' => 'Time Sheet',
-                        'route' => 'timecard/default',
+                        'route' => 'timecard/timesheet',
                         'resource' => 'timecard/timesheet',
                         'privilege' => 'timesheet',
                         'action' => 'timesheet',

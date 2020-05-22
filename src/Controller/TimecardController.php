@@ -39,7 +39,7 @@ class TimecardController extends AbstractBaseController
         
         
         $where = new Where();
-        $where->equalTo('WORK_WEEK', $work_week);
+        $where->equalTo('WORK_WEEK', $work_week)->AND->equalTo('EMP_UUID', $uuid);
         
         /****************************************
          * RETRIEVE DATA FOR WEEK
@@ -129,6 +129,14 @@ class TimecardController extends AbstractBaseController
         
         
         return $view;
+    }
+    
+    public function addPayCodeAction()
+    {
+        $view = new ViewModel();
+        $view = parent::createAction();
+        $url = $this->getRequest()->getHeader('Referer')->getUri();
+        return $this->redirect()->toUrl($url);
     }
     
     public function filterAction()

@@ -61,7 +61,7 @@ class TimecardForm extends AbstractBaseForm
             ],
         ],['priority' => 100]);
         
-        $days = ['SUN','MON','TUES','WED','THURS','FRI','SAT'];
+        $days = ['SUN','MON','TUES','WED','THURS','FRI','SAT', 'DAYS'];
         foreach ($days as $day) { 
             $this->add([
                 'name' => $day,
@@ -69,24 +69,13 @@ class TimecardForm extends AbstractBaseForm
                 'attributes' => [
                     'id' => $day,
                     'class' => 'form-control',
+                    'onchange' => 'this.form.submit()',
                 ],
                 'options' => [
                     'label' => $day,
                 ],
             ],['priority' => 100]);
         }
-        
-        $this->add([
-            'name' => 'DAYS',
-            'type' => Text::class,
-            'attributes' => [
-                'id' => 'DAYS',
-                'class' => 'form-control',
-            ],
-            'options' => [
-                'label' => 'Days',
-            ],
-        ],['priority' => 100]);
         
         $submit = $this->get('SUBMIT');
         $submit->setAttribute('id', '_SUBMIT_');

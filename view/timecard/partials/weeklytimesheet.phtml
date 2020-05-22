@@ -25,6 +25,9 @@ echo $this->formInput($form->get('EMP_UUID'));
 	<td><?php echo $this->formInput($form->get('FRI'));?></td>
 	<td><?php echo $this->formInput($form->get('SAT'));?></td>
 	<td><?php echo $this->formInput($form->get('DAYS'));?></td>
+	<td>
+		<a href="<?php echo $this->url('timecard/default', ['action' => 'delete', 'uuid' => $form->get('UUID')->getValue()]); ?>"><i class="fas fa-trash-alt"></i></a>
+	</td>
 </tr>
 <?php echo $this->formInput($form->get('SUBMIT'));?>
 <?php echo $this->form()->closeTag($form); ?>

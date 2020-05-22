@@ -37,6 +37,7 @@
 					<th scope="col">Friday</th>
 					<th scope="col">Saturday</th>
 					<th scope="col">Days</th>
+					<th scope="col">Total<th>
 				</tr>
 			</thead>
 			<tbody>
@@ -46,7 +47,7 @@
 			</tbody>
 			<tfoot>
 				<tr>
-					<?php $this->timecard_add_form->setAttribute('action', $this->url('timecard/default', ['action' => 'create']));?>
+					<?php $this->timecard_add_form->setAttribute('action', $this->url('timecard/default', ['action' => 'addPayCode']));?>
 					<?php $this->timecard_add_form->prepare(); ?>
 					<?php echo $this->form()->openTag($this->timecard_add_form); ?>
 						<?php echo $this->formRow($this->timecard_add_form->get('UUID')); ?>
