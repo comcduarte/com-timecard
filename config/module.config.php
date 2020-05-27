@@ -14,6 +14,8 @@ use Timecard\Form\TimecardForm;
 use Timecard\Form\Factory\PaycodeFormFactory;
 use Timecard\Form\Factory\TimecardFormFactory;
 use Timecard\Service\Factory\TimecardModelAdapterFactory;
+use Timecard\Controller\DepartmentController;
+use Timecard\Controller\Factory\DepartmentControllerFactory;
 
 return [
     'router' => [
@@ -65,6 +67,31 @@ return [
                     ],
                 ],
             ],
+            'dept' => [
+                'type' => Literal::class,
+                'priority' => 1,
+                'options' => [
+                    'route' => '/dept',
+                    'defaults' => [
+                        'action' => 'index',
+                        'controller' => DepartmentController::class,
+                    ],
+                ],
+                'may_terminate' => true,
+                'child_routes' => [
+                    'default' => [
+                        'type' => Segment::class,
+                        'priority' => -100,
+                        'options' => [
+                            'route' => '/[:action[/:uuid]]',
+                            'defaults' => [
+                                'action' => 'index',
+                                'controller' => DepartmentController::class,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
             'paycode' => [
                 'type' => Literal::class,
                 'priority' => 1,
@@ -104,6 +131,7 @@ return [
             PaycodeController::class => PaycodeControllerFactory::class,
             TimecardConfigController::class => TimecardConfigControllerFactory::class,
             TimecardController::class => TimecardControllerFactory::class,
+            DepartmentController::class => DepartmentControllerFactory::class,
         ],
     ],
     'form_elements' => [
@@ -188,8 +216,25 @@ return [
                     ],
                 ],
             ],
+            'department' => [
+                'label' => 'Preparer',
+                'route' => 'dept/default',
+                'class' => 'dropdown',
+                'resource' => 'dept/default',
+                'privilege' => 'menu',
+                'pages' => [
+                    [
+                        'label' => 'Dashboard',
+                        'route' => 'dept/default',
+                        'resource' => 'dept/default',
+                        'privilege' => 'index',
+                        'action' => 'index',
+                    ],
+                ],
+            ],
         ],
     ],
+    
     'service_manager' => [
         'aliases' => [
             'timecard-model-adapter-config' => 'model-adapter-config',

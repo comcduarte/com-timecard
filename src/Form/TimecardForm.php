@@ -4,6 +4,7 @@ namespace Timecard\Form;
 use Components\Form\AbstractBaseForm;
 use Components\Form\Element\DatabaseSelect;
 use Laminas\Db\Adapter\AdapterAwareTrait;
+use Laminas\Form\Element\Checkbox;
 use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Text;
 
@@ -76,6 +77,20 @@ class TimecardForm extends AbstractBaseForm
                 ],
             ],['priority' => 100]);
         }
+        
+        $this->add([
+            'name' => 'STATUS',
+            'type' => Checkbox::class,
+            'attributes' => [
+                'class' => 'checkbox checkbox-slider--b-flat',
+                'onchange' => 'this.form.submit()',
+            ],
+            'options' => [
+                'label' => 'Submit Timesheet',
+                'checked_value' => 2,
+                'unchecked_value' => 1,
+            ],
+        ]);
         
         $submit = $this->get('SUBMIT');
         $submit->setAttribute('id', '_SUBMIT_');

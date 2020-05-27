@@ -17,6 +17,17 @@ echo $this->formInput($form->get('EMP_UUID'));
 
 <tr>
 	<td><span style="white-space:nowrap"><?php echo $paycode_value_options[$paycode_value];?></span></td>
+	<?php if ($form->get('STATUS')->getValue() == 2 && $this->role == 'APP - CHRONOS USER') : ?>
+	<td><?php echo $form->get('SUN')->getValue(); ?></td>
+	<td><?php echo $form->get('MON')->getValue(); ?></td>
+	<td><?php echo $form->get('TUES')->getValue(); ?></td>
+	<td><?php echo $form->get('WED')->getValue(); ?></td>
+	<td><?php echo $form->get('THURS')->getValue(); ?></td>
+	<td><?php echo $form->get('FRI')->getValue(); ?></td>
+	<td><?php echo $form->get('SAT')->getValue(); ?></td>
+	<td><?php echo $form->get('DAYS')->getValue(); ?></td>
+	<td></td>
+	<?php else : ?>
 	<td><?php echo $this->formInput($form->get('SUN'));?></td>
 	<td><?php echo $this->formInput($form->get('MON'));?></td>
 	<td><?php echo $this->formInput($form->get('TUES'));?></td>
@@ -27,7 +38,10 @@ echo $this->formInput($form->get('EMP_UUID'));
 	<td><?php echo $this->formInput($form->get('DAYS'));?></td>
 	<td>
 		<a href="<?php echo $this->url('timecard/default', ['action' => 'delete', 'uuid' => $form->get('UUID')->getValue()]); ?>"><i class="fas fa-trash-alt"></i></a>
+		<?php echo $this->formCheckbox($form->get('STATUS')); ?>
 	</td>
+	<?php endif; ?>
+	
 </tr>
 <?php echo $this->formInput($form->get('SUBMIT'));?>
 <?php echo $this->form()->closeTag($form); ?>

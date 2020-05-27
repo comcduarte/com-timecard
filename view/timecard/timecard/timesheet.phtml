@@ -1,3 +1,8 @@
+<?php 
+$role = $this->user_entity->groups[0]['ROLENAME'];
+
+?>
+
 <style type="text/css">
     input[id=_SUBMIT_]
     {
@@ -42,7 +47,7 @@
 			</thead>
 			<tbody>
 			<?php foreach ($this->timesheet_forms as $form) : ?>
-				<?php echo $this->partial('timecard/partials/weeklytimesheet.phtml',['form' => $form]); ?>
+				<?php echo $this->partial('timecard/partials/weeklytimesheet.phtml',['form' => $form, 'role' => $role]); ?>
 			<?php endforeach; ?>
 			</tbody>
 			<tfoot>
@@ -67,5 +72,13 @@
 				</tr>
 			</tfoot>
 		</table>
+	</div>
+	<div class="col">
+		<?php 
+// 		echo $this->partial('base/subform', [
+// 		    'title' => 'Functions',
+// 		    'form' => $this->timesheet_submit_form,
+// 		]); 
+		?>
 	</div>
 </div>

@@ -1,6 +1,7 @@
 <?php
 namespace Timecard\Controller;
 
+use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Select;
@@ -16,15 +17,26 @@ use Exception;
 
 class TimecardController extends AbstractBaseController
 {
+    public $user_adapter;
+    public $employee_adapter;
+    
     public function timesheetAction()
     {
         $date = new \DateTime('now',new \DateTimeZone('EDT'));
         $today = $date->format('Y-m-d');
         
+        $user_entity = new UserEntity($this->user_adapter);
+        $user_entity->employee->setDbAdapter($this->employee_adapter);
+        $user_entity->department->setDbAdapter($this->employee_adapter);
+        
+        $user = $this->currentUser();
+        
         $uuid = $this->params()->fromRoute('uuid', 0);
         if (! $uuid) {
-            $user = $this->currentUser();
-            $uuid = $user->UUID;
+            $user_entity->getUser($user->UUID);
+            $uuid = $user_entity->employee->UUID;
+        } else {
+            $user_entity->getEmployee($uuid);
         }
         
         if (! $this->params()->fromRoute('week', 0)) {
@@ -87,6 +99,9 @@ class TimecardController extends AbstractBaseController
             'timesheet_forms' => $forms,
         ]);
         
+        /****************************************
+         * ADD PAYCODE SUBFORM
+         ****************************************/
         $form = new TimecardAddForm('new-form');
         $form->setDbAdapter($this->adapter);
         $form->init();
@@ -94,10 +109,9 @@ class TimecardController extends AbstractBaseController
         $form->get('WORK_WEEK')->setValue($work_week);
         $view->setVariable('timecard_add_form', $form);
         
-               
-        
-        
-        
+        /****************************************
+         * TIMESHEET FILTER SUBFORM
+         ****************************************/
         $form = new TimesheetFilterForm();
         $form->init();
         $form->get('EMP_UUID')->setValue($uuid);
@@ -106,27 +120,32 @@ class TimecardController extends AbstractBaseController
             'week_form' => $form,
         ]);
         
-        
+        /****************************************
+         * TIMESHEET SUBMIT SUBFORM
+         ****************************************/
+//         $form = new TimesheetSubmitForm('timesheet_submit');
+//         $form->init();
+//         $view->setVariable('timesheet_submit_form', $form);
         
         
         
         /****************************************
          * PROCESS FORMS
          ****************************************/
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $data = array_merge_recursive(
-                $request->getPost()->toArray(),
-                $request->getFiles()->toArray()
-                );
-        }
+//         $request = $this->getRequest();
+//         if ($request->isPost()) {
+//             $data = array_merge_recursive(
+//                 $request->getPost()->toArray(),
+//                 $request->getFiles()->toArray()
+//                 );
+//         }
         
         
         
         
         
-        
-        
+        $user_entity->getUser($user->UUID);
+        $view->setVariable('user_entity', $user_entity);
         
         return $view;
     }
