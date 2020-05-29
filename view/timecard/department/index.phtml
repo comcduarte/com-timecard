@@ -1,7 +1,8 @@
+<?php $title = $this->dept->NAME; ?>
 <div class="row">
 	<div class="col">
 		<?php echo $this->partial('base/subtable', [
-		    'title' => $this->dept->NAME,
+		    'title' => $title,
 		    'data' => $this->employees,
 		    'primary_key' => 'UUID',
 		    'route' => 'timecard/timesheet',
@@ -15,4 +16,15 @@
 		    ],
 		]);?>
 	</div>
+	<div class="col">
+		<?php echo $this->partial('timecard/partials/signature.phtml'); ?>
+	</div>
+	
 </div>
+<?php if ($this->role == 'APP - CHRONOS DEPT HEAD') :?>
+<div class="row">
+	<div class="col">
+		<?php echo $this->partial('timecard/partials/signature.phtml'); ?>
+	</div>
+</div>
+<?php endif;?>

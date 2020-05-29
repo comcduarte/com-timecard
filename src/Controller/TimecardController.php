@@ -59,7 +59,7 @@ class TimecardController extends AbstractBaseController
         $sql = new Sql($this->adapter);
         
         $select = new Select();
-        $select->from('timecards');
+        $select->from($timecard->getTableName());
         $select->columns(['UUID','PAY_UUID']);
         $select->where($where);
         
@@ -178,8 +178,6 @@ class TimecardController extends AbstractBaseController
     public function getWorkWeek(String $date)
     {
         $day = date('w', strtotime($date));
-        
         return date('Y-m-d', strtotime("$date -$day days"));
-//         return date('Y-m-d', strtotime($date));
     }
 }

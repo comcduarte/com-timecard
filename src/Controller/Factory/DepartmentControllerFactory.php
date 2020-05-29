@@ -18,6 +18,9 @@ class DepartmentControllerFactory implements FactoryInterface
         $adapter = $container->get('employee-model-adapter');
         $controller->employee_adapter = $adapter;
         
+        $adapter = $container->get('timecard-model-adapter');
+        $controller->timecard_adapter = $adapter;
+        
         return $controller;
     }
 }

@@ -25,6 +25,8 @@ class TimecardConfigController extends AbstractConfigController
         $ddl[] = new DropTable('time');
         $ddl[] = new DropTable('time_pay_codes');
         $ddl[] = new DropTable('timecards');
+        $ddl[] = new DropTable('time_cards');
+        $ddl[] = new DropTable('time_card_signatures');
         
         foreach ($ddl as $obj) {
             $this->adapter->query($sql->buildSqlString($obj), $this->adapter::QUERY_MODE_EXECUTE);
@@ -79,6 +81,43 @@ class TimecardConfigController extends AbstractConfigController
         $ddl->addColumn(new Integer('FRI', TRUE));
         $ddl->addColumn(new Integer('SAT', TRUE));
         $ddl->addColumn(new Integer('DAYS', TRUE)); 
+        
+        $ddl->addConstraint(new PrimaryKey('UUID'));
+        
+        $this->adapter->query($sql->buildSqlString($ddl), $this->adapter::QUERY_MODE_EXECUTE);
+        unset($ddl);
+        
+        /******************************
+         * TIME CARDS
+         ******************************/
+        $ddl = new CreateTable('time_cards');
+        
+        $ddl->addColumn(new Varchar('UUID', 36));
+        $ddl->addColumn(new Integer('STATUS', TRUE));
+        $ddl->addColumn(new Datetime('DATE_CREATED', TRUE));
+        $ddl->addColumn(new Datetime('DATE_MODIFIED', TRUE));
+        
+        $ddl->addColumn(new Datetime('WORK_WEEK', TRUE));
+        $ddl->addColumn(new Varchar('EMP_UUID', 36, TRUE));
+        
+        $ddl->addConstraint(new PrimaryKey('UUID'));
+        
+        $this->adapter->query($sql->buildSqlString($ddl), $this->adapter::QUERY_MODE_EXECUTE);
+        unset($ddl);
+        
+        /******************************
+         * TIME CARD SIGNATURES
+         ******************************/
+        $ddl = new CreateTable('time_card_signatures');
+        
+        $ddl->addColumn(new Varchar('UUID', 36));
+        $ddl->addColumn(new Integer('STATUS', TRUE));
+        $ddl->addColumn(new Datetime('DATE_CREATED', TRUE));
+        $ddl->addColumn(new Datetime('DATE_MODIFIED', TRUE));
+        
+        $ddl->addColumn(new Varchar('USER_UUID', 36, TRUE));
+        $ddl->addColumn(new Varchar('TIMECARD_UUID', 36, TRUE));
+        $ddl->addColumn(new Varchar('STAGE_UUID', 36, TRUE));
         
         $ddl->addConstraint(new PrimaryKey('UUID'));
         

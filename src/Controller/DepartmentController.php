@@ -9,13 +9,17 @@ use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Where;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
+use Timecard\Traits\DateAwareTrait;
+use Timecard\Model\TimecardModel;
 
 class DepartmentController extends AbstractActionController
 {
     use AdapterAwareTrait;
+    use DateAwareTrait;
     
     public $user_adapter;
     public $employee_adapter;
+    public $timecard_adapter;
     
     public function indexAction()
     {
@@ -27,6 +31,7 @@ class DepartmentController extends AbstractActionController
         $user_entity->department->setDbAdapter($this->employee_adapter);
         $user_entity->getUser($user->UUID);
         $view->setVariable('dept', $user_entity->department);
+        $view->setVariable('role', $user_entity->groups[0]['ROLENAME']);
         
         /****************************************
          * RETRIEVE DEPARTMENT EMPLOYEES
@@ -62,8 +67,43 @@ class DepartmentController extends AbstractActionController
 //         }
         
 //         $view->setVariable('employees_header', $header);
+
+        /****************************************
+         * RETRIEVE EMPLOYEE SUBMISSION STATUS
+         ****************************************/
+        $work_week = $this->getStartofWeek($this->today()->asString());
+        $timecard = new TimecardModel($this->timecard_adapter);
+        
+        foreach ($data as $index => $record) {
+            $timecards = [];
+            $sql = new Sql($this->user_adapter);
+            $select = new Select();
+            $select->from($timecard->getTableName());
+            $where = new Where();
+            $where->equalTo('STATUS', 1)->AND->equalTo('WORK_WEEK', $work_week);
+            $where->AND->equalTo('EMP_UUID', $record['UUID']);
+            $select->where($where);
+            
+            $statement = $sql->prepareStatementForSqlObject($select);
+            $results = $statement->execute();
+            $resultSet = new ResultSet($results);
+            $resultSet->initialize($results);
+            $timecards = $resultSet->toArray();
+            
+            if (sizeof($timecards)) {
+                $data[$index]['STATUS'] = 'Pending';
+            } else {
+                $data[$index]['STATUS'] = 'Submitted';
+            }
+        }
+        
+        
         $view->setVariable('employees', $data);
         
+        /****************************************
+         * SET MISCELLANEOUS VARIABLES
+         ****************************************/
+        $view->setVariable('work_week', $work_week);
         return $view;
     }
 }
