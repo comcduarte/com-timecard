@@ -7,17 +7,21 @@ use Timecard\Controller\DepartmentController;
 use Timecard\Controller\PaycodeController;
 use Timecard\Controller\TimecardConfigController;
 use Timecard\Controller\TimecardController;
+use Timecard\Controller\TimecardLineController;
 use Timecard\Controller\TimecardSignatureController;
 use Timecard\Controller\Factory\DepartmentControllerFactory;
 use Timecard\Controller\Factory\PaycodeControllerFactory;
 use Timecard\Controller\Factory\TimecardConfigControllerFactory;
 use Timecard\Controller\Factory\TimecardControllerFactory;
+use Timecard\Controller\Factory\TimecardLineControllerFactory;
 use Timecard\Controller\Factory\TimecardSignatureControllerFactory;
 use Timecard\Form\PaycodeForm;
 use Timecard\Form\TimecardForm;
+use Timecard\Form\TimecardLineForm;
 use Timecard\Form\TimecardSignatureForm;
 use Timecard\Form\Factory\PaycodeFormFactory;
 use Timecard\Form\Factory\TimecardFormFactory;
+use Timecard\Form\Factory\TimecardLineFormFactory;
 use Timecard\Form\Factory\TimecardSignatureFormFactory;
 use Timecard\Service\Factory\TimecardModelAdapterFactory;
 
@@ -55,6 +59,17 @@ return [
                             'defaults' => [
                                 'action' => 'index',
                                 'controller' => TimecardSignatureController::class,
+                            ],
+                        ],
+                    ],
+                    'lines' => [
+                        'type' => Segment::class,
+                        'priority' => 100,
+                        'options' => [
+                            'route' => '/line[/:action[/:uuid]]',
+                            'defaults' => [
+                                'action' => 'index',
+                                'controller' => TimecardLineController::class,
                             ],
                         ],
                     ],
@@ -143,10 +158,11 @@ return [
     ],
     'controllers' => [
         'factories' => [
+            DepartmentController::class => DepartmentControllerFactory::class,
             PaycodeController::class => PaycodeControllerFactory::class,
             TimecardConfigController::class => TimecardConfigControllerFactory::class,
             TimecardController::class => TimecardControllerFactory::class,
-            DepartmentController::class => DepartmentControllerFactory::class,
+            TimecardLineController::class => TimecardLineControllerFactory::class,
             TimecardSignatureController::class => TimecardSignatureControllerFactory::class,
         ],
     ],
@@ -154,6 +170,7 @@ return [
         'factories' => [
             PaycodeForm::class => PaycodeFormFactory::class,
             TimecardForm::class => TimecardFormFactory::class,
+            TimecardLineForm::class => TimecardLineFormFactory::class,
             TimecardSignatureForm::class => TimecardSignatureFormFactory::class,
         ],
     ],
@@ -220,24 +237,24 @@ return [
                         ],
                     ],
                     [
-                        'label' => 'Time Entry',
-                        'route' => 'timecard/default',
+                        'label' => 'Time Card Lines',
+                        'route' => 'timecard/lines',
                         'class' => 'dropdown-submenu',
-                        'resource' => 'timecard/default',
+                        'resource' => 'timecard/lines',
                         'privilege' => 'index',
                         'pages' => [
                             [
-                                'label' => 'Add New Day',
-                                'route' => 'timecard/default',
+                                'label' => 'Add New Line',
+                                'route' => 'timecard/lines',
                                 'action' => 'create',
-                                'resource' => 'timecard/default',
+                                'resource' => 'timecard/lines',
                                 'privilege' => 'create',
                             ],
                             [
-                                'label' => 'List Entries',
-                                'route' => 'timecard/default',
+                                'label' => 'List Lines',
+                                'route' => 'timecard/lines',
                                 'action' => 'index',
-                                'resource' => 'timecard/default',
+                                'resource' => 'timecard/lines',
                                 'privilege' => 'index',
                             ],
                         ],
