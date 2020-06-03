@@ -8,8 +8,9 @@ trait DateAwareTrait
     
     public function getStartofWeek(String $date)
     {
-        $day = date('w', strtotime($date));
-        return date('Y-m-d', strtotime("$date -$day days"));
+        $day = date('N', strtotime($date));
+        $day = 7 - $day;
+        return date('Y-m-d', strtotime("$date +$day days"));
     }
     
     public function today()
