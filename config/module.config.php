@@ -3,19 +3,23 @@ namespace Timecard;
 
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Segment;
+use Timecard\Controller\DepartmentController;
 use Timecard\Controller\PaycodeController;
 use Timecard\Controller\TimecardConfigController;
 use Timecard\Controller\TimecardController;
+use Timecard\Controller\TimecardSignatureController;
+use Timecard\Controller\Factory\DepartmentControllerFactory;
 use Timecard\Controller\Factory\PaycodeControllerFactory;
 use Timecard\Controller\Factory\TimecardConfigControllerFactory;
 use Timecard\Controller\Factory\TimecardControllerFactory;
+use Timecard\Controller\Factory\TimecardSignatureControllerFactory;
 use Timecard\Form\PaycodeForm;
 use Timecard\Form\TimecardForm;
+use Timecard\Form\TimecardSignatureForm;
 use Timecard\Form\Factory\PaycodeFormFactory;
 use Timecard\Form\Factory\TimecardFormFactory;
+use Timecard\Form\Factory\TimecardSignatureFormFactory;
 use Timecard\Service\Factory\TimecardModelAdapterFactory;
-use Timecard\Controller\DepartmentController;
-use Timecard\Controller\Factory\DepartmentControllerFactory;
 
 return [
     'router' => [
@@ -40,6 +44,17 @@ return [
                             'defaults' => [
                                 'action' => 'index',
                                 'controller' => TimecardConfigController::class,
+                            ],
+                        ],
+                    ],
+                    'signatures' => [
+                        'type' => Segment::class,
+                        'priority' => 100,
+                        'options' => [
+                            'route' => '/sign[/:action[/:uuid]]',
+                            'defaults' => [
+                                'action' => 'index',
+                                'controller' => TimecardSignatureController::class,
                             ],
                         ],
                     ],
@@ -132,12 +147,14 @@ return [
             TimecardConfigController::class => TimecardConfigControllerFactory::class,
             TimecardController::class => TimecardControllerFactory::class,
             DepartmentController::class => DepartmentControllerFactory::class,
+            TimecardSignatureController::class => TimecardSignatureControllerFactory::class,
         ],
     ],
     'form_elements' => [
         'factories' => [
             PaycodeForm::class => PaycodeFormFactory::class,
             TimecardForm::class => TimecardFormFactory::class,
+            TimecardSignatureForm::class => TimecardSignatureFormFactory::class,
         ],
     ],
     'navigation' => [
@@ -180,6 +197,29 @@ return [
                         ],
                     ],
                     [
+                        'label' => 'Signatures',
+                        'route' => 'timecard/signatures',
+                        'resource' => 'timecard/signatures',
+                        'privilege' => 'menu',
+                        'class' => 'dropdown-submenu',
+                        'pages' => [
+                            [
+                                'label' => 'Add New Signature',
+                                'route' => 'timecard/signatures',
+                                'action' => 'create',
+                                'resource' => 'timecard/signatures',
+                                'privilege' => 'create',
+                            ],
+                            [
+                                'label' => 'List Signatures',
+                                'route' => 'timecard/signatures',
+                                'action' => 'index',
+                                'resource' => 'timecard/signatures',
+                                'privilege' => 'index',
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Time Entry',
                         'route' => 'timecard/default',
                         'class' => 'dropdown-submenu',
@@ -207,7 +247,7 @@ return [
             'settings' => [
                 'label' => 'Settings',
                 'pages' => [
-                    'timecard' => [
+                    [
                         'label' => 'Timecard Settings',
                         'route' => 'timecard/config',
                         'action' => 'index',
@@ -234,7 +274,6 @@ return [
             ],
         ],
     ],
-    
     'service_manager' => [
         'aliases' => [
             'timecard-model-adapter-config' => 'model-adapter-config',
