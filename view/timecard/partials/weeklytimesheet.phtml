@@ -1,7 +1,7 @@
 <?php 
 use Components\Form\Element\DatabaseSelect;
 $uuid= $form->get('UUID')->getValue();
-$form->setAttribute('action', $this->url('timecard/default', ['action' => 'update', 'uuid' => $uuid]));
+$form->setAttribute('action', $this->url('timecard/lines', ['action' => 'update', 'uuid' => $uuid]));
 $form->prepare();
 
 echo $this->form()->openTag($form);
@@ -12,33 +12,33 @@ $paycode_value = $paycode->getValue();
 
 echo $this->formInput($form->get('UUID'));
 echo $this->formInput($form->get('SECURITY'));
-echo $this->formInput($form->get('EMP_UUID'));
+echo $this->formInput($form->get('TIMECARD_UUID'));
 ?>
 
 <tr>
 	<td><span style="white-space:nowrap"><?php echo $paycode_value_options[$paycode_value];?></span></td>
 	<?php if ($form->get('STATUS')->getValue() == 2 && $this->role == 'APP - CHRONOS USER') : ?>
-	<td><?php echo $form->get('SUN')->getValue(); ?></td>
 	<td><?php echo $form->get('MON')->getValue(); ?></td>
 	<td><?php echo $form->get('TUES')->getValue(); ?></td>
 	<td><?php echo $form->get('WED')->getValue(); ?></td>
 	<td><?php echo $form->get('THURS')->getValue(); ?></td>
 	<td><?php echo $form->get('FRI')->getValue(); ?></td>
 	<td><?php echo $form->get('SAT')->getValue(); ?></td>
+	<td><?php echo $form->get('SUN')->getValue(); ?></td>
 	<td><?php echo $form->get('DAYS')->getValue(); ?></td>
 	<td></td>
 	<?php else : ?>
-	<td><?php echo $this->formInput($form->get('SUN'));?></td>
 	<td><?php echo $this->formInput($form->get('MON'));?></td>
 	<td><?php echo $this->formInput($form->get('TUES'));?></td>
 	<td><?php echo $this->formInput($form->get('WED'));?></td>
 	<td><?php echo $this->formInput($form->get('THURS'));?></td>
 	<td><?php echo $this->formInput($form->get('FRI'));?></td>
 	<td><?php echo $this->formInput($form->get('SAT'));?></td>
+	<td><?php echo $this->formInput($form->get('SUN'));?></td>
 	<td><?php echo $this->formInput($form->get('DAYS'));?></td>
 	<td>
-		<a href="<?php echo $this->url('timecard/default', ['action' => 'delete', 'uuid' => $form->get('UUID')->getValue()]); ?>"><i class="fas fa-trash-alt"></i></a>
-		<?php echo $this->formCheckbox($form->get('STATUS')); ?>
+		<a href="<?php echo $this->url('timecard/lines', ['action' => 'delete', 'uuid' => $form->get('UUID')->getValue()]); ?>"><i class="fas fa-trash-alt"></i></a>
+		<?php // echo $this->formCheckbox($form->get('STATUS')); ?>
 	</td>
 	<?php endif; ?>
 	

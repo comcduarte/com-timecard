@@ -29,14 +29,14 @@ class TimecardAddForm extends Form
         ],['priority' => 0]);
         
         $this->add([
-            'name' => 'EMP_UUID',
+            'name' => 'TIMECARD_UUID',
             'type' => Hidden::class,
             'attributes' => [
-                'id' => 'EMP_UUID',
+                'id' => 'TIMECARD_UUID',
                 'class' => 'form-control',
             ],
             'options' => [
-                'label' => 'Employee UUID',
+                'label' => 'TIMECARD UUID',
             ],
         ],['priority' => 100]);
         

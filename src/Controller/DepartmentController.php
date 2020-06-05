@@ -71,7 +71,7 @@ class DepartmentController extends AbstractActionController
         /****************************************
          * RETRIEVE EMPLOYEE SUBMISSION STATUS
          ****************************************/
-        $work_week = $this->getStartofWeek($this->today()->asString());
+        $work_week = $this->getEndofWeek($this->today()->asString());
         $timecard = new TimecardModel($this->timecard_adapter);
         
         foreach ($data as $index => $record) {

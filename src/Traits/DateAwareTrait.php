@@ -6,8 +6,9 @@ trait DateAwareTrait
     public $date;
     public $today;
     
-    public function getStartofWeek(String $date)
+    public function getEndofWeek(String $date = NULL)
     {
+        if (is_null($date)) { $date = $this->today()->today; }
         $day = date('N', strtotime($date));
         $day = 7 - $day;
         return date('Y-m-d', strtotime("$date +$day days"));

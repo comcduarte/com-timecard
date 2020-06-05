@@ -6,6 +6,7 @@ use Components\Form\Element\DatabaseSelect;
 use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Text;
 use Laminas\Db\Adapter\AdapterAwareTrait;
+use Components\Form\Element\HiddenSubmit;
 
 class TimecardLineForm extends AbstractBaseForm
 {
@@ -32,7 +33,7 @@ class TimecardLineForm extends AbstractBaseForm
         
         $this->add([
             'name' => 'TIMECARD_UUID',
-            'type' => Text::class,
+            'type' => Hidden::class,
             'attributes' => [
                 'id' => 'TIMECARD_UUID',
                 'class' => 'form-control',
@@ -76,5 +77,16 @@ class TimecardLineForm extends AbstractBaseForm
                 ],
             ],['priority' => 100]);
         }
+        
+        $this->remove('SUBMIT');
+        $this->add([
+            'name' => 'SUBMIT',
+            'type' => HiddenSubmit::class,
+            'attributes' => [
+                'value' => 'Submit',
+                'class' => 'btn btn-primary form-control mt-4',
+                'id' => 'SUBMIT',
+            ],
+        ],['priority' => 0]);
     }
 }

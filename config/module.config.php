@@ -84,6 +84,17 @@ return [
                             ],
                         ],
                     ],
+                    'timecards' => [
+                        'type' => Segment::class,
+                        'priority' => 100,
+                        'options' => [
+                            'route' => '/card[/:uuid[/:week]]',
+                            'defaults' => [
+                                'action' => 'index',
+                                'controller' => TimecardController::class,
+                            ],
+                        ],
+                    ],
                     'default' => [
                         'type' => Segment::class,
                         'priority' => -100,
@@ -255,6 +266,29 @@ return [
                                 'route' => 'timecard/lines',
                                 'action' => 'index',
                                 'resource' => 'timecard/lines',
+                                'privilege' => 'index',
+                            ],
+                        ],
+                    ],
+                    [
+                        'label' => 'Time Cards',
+                        'route' => 'timecard/timecards',
+                        'class' => 'dropdown-submenu',
+                        'resource' => 'timecard/timecards',
+                        'privilege' => 'index',
+                        'pages' => [
+                            [
+                                'label' => 'Add New Timecard',
+                                'route' => 'timecard/timecards',
+                                'action' => 'create',
+                                'resource' => 'timecard/timecards',
+                                'privilege' => 'create',
+                            ],
+                            [
+                                'label' => 'List Timecards',
+                                'route' => 'timecard/timecards',
+                                'action' => 'index',
+                                'resource' => 'timecard/timecards',
                                 'privilege' => 'index',
                             ],
                         ],

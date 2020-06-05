@@ -109,7 +109,7 @@ class TimecardConfigController extends AbstractConfigController
         /******************************
          * TIME CARD SIGNATURES
          ******************************/
-        $ddl = new CreateTable('time_card_signatures');
+        $ddl = new CreateTable('time_cards_signatures');
         
         $ddl->addColumn(new Varchar('UUID', 36));
         $ddl->addColumn(new Integer('STATUS', TRUE));

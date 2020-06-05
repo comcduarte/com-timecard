@@ -34,13 +34,13 @@ $role = $this->user_entity->groups[0]['ROLENAME'];
 			<thead class="thead-dark">
 				<tr>
 					<th scope="col">Pay&nbsp;Code</th>
-					<th scope="col">Sunday</th>
 					<th scope="col">Monday</th>
 					<th scope="col">Tuesday</th>
 					<th scope="col">Wednesday</th>
 					<th scope="col">Thursday</th>
 					<th scope="col">Friday</th>
 					<th scope="col">Saturday</th>
+					<th scope="col">Sunday</th>
 					<th scope="col">Days</th>
 					<th scope="col">Total<th>
 				</tr>
@@ -55,9 +55,7 @@ $role = $this->user_entity->groups[0]['ROLENAME'];
 					<?php $this->timecard_add_form->setAttribute('action', $this->url('timecard/default', ['action' => 'addPayCode']));?>
 					<?php $this->timecard_add_form->prepare(); ?>
 					<?php echo $this->form()->openTag($this->timecard_add_form); ?>
-						<?php echo $this->formRow($this->timecard_add_form->get('UUID')); ?>
-						<?php echo $this->formRow($this->timecard_add_form->get('EMP_UUID')); ?>
-						<?php echo $this->formRow($this->timecard_add_form->get('WORK_WEEK')); ?>
+						<?php echo $this->formRow($this->timecard_add_form->get('TIMECARD_UUID')); ?>
 						<?php echo $this->formRow($this->timecard_add_form->get('SECURITY')); ?>
 					<td colspan="2">
 						Add New Pay Code:

@@ -3,28 +3,28 @@ namespace Timecard\Controller;
 
 use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
-use Laminas\Db\ResultSet\ResultSet;
-use Laminas\Db\Sql\Select;
-use Laminas\Db\Sql\Sql;
-use Laminas\Db\Sql\Where;
 use Laminas\View\Model\ViewModel;
 use Timecard\Form\TimecardAddForm;
-use Timecard\Form\TimecardForm;
+use Timecard\Form\TimecardLineForm;
 use Timecard\Form\TimesheetFilterForm;
-use Timecard\Model\PaycodeModel;
-use Timecard\Model\TimecardModel;
-use Exception;
+use Timecard\Model\TimecardLineModel;
+use Timecard\Model\Entity\TimecardEntity;
+use Timecard\Traits\DateAwareTrait;
 
 class TimecardController extends AbstractBaseController
 {
+    use DateAwareTrait;
+    
     public $user_adapter;
     public $employee_adapter;
     
     public function timesheetAction()
     {
-        $date = new \DateTime('now',new \DateTimeZone('EDT'));
-        $today = $date->format('Y-m-d');
+        $view = new ViewModel();
         
+        /****************************************
+         * GET USER/EMPLOYEE
+         ****************************************/
         $user_entity = new UserEntity($this->user_adapter);
         $user_entity->employee->setDbAdapter($this->employee_adapter);
         $user_entity->department->setDbAdapter($this->employee_adapter);
@@ -39,61 +39,83 @@ class TimecardController extends AbstractBaseController
             $user_entity->getEmployee($uuid);
         }
         
+        /****************************************
+         * GET WORK WEEK
+         ****************************************/
         if (! $this->params()->fromRoute('week', 0)) {
-            $work_week = $this->getWorkWeek($today);
+            $work_week = $this->getEndofWeek();
         } else {
-            $work_week = $this->getWorkWeek($this->params()->fromRoute('week', 0));
+            $work_week = $this->getEndofWeek($this->params()->fromRoute('week', 0));
         }
         
-        $view = new ViewModel();
-        $timecard = new TimecardModel($this->adapter);
-        $paycode = new PaycodeModel($this->adapter);
+        
+        /****************************************
+         * GET TIMECARD
+         ****************************************/
+        $timecard = new TimecardEntity();
+        $timecard->setDbAdapter($this->adapter);
+        
+        $timecard->WORK_WEEK = $work_week;
+        $timecard->EMP_UUID = $user_entity->employee->UUID;
+        $timecard->getTimecard();
         
         
-        $where = new Where();
-        $where->equalTo('WORK_WEEK', $work_week)->AND->equalTo('EMP_UUID', $uuid);
+//         $timecard = new TimecardModel($this->adapter);
+//         $paycode = new PaycodeModel($this->adapter);
+        
+        
+//         $where = new Where();
+//         $where->equalTo('WORK_WEEK', $work_week)->AND->equalTo('EMP_UUID', $uuid);
         
         /****************************************
          * RETRIEVE DATA FOR WEEK
          ****************************************/
-        $sql = new Sql($this->adapter);
+//         $sql = new Sql($this->adapter);
         
-        $select = new Select();
-        $select->from($timecard->getTableName());
-        $select->columns(['UUID','PAY_UUID']);
-        $select->where($where);
+//         $select = new Select();
+//         $select->from($timecard->getTableName());
+//         $select->columns(['UUID','PAY_UUID']);
+//         $select->where($where);
         
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $resultSet = new ResultSet();
+//         $statement = $sql->prepareStatementForSqlObject($select);
+//         $resultSet = new ResultSet();
         
-        try {
-            $results = $statement->execute();
-            $resultSet->initialize($results);
-        } catch (Exception $e) {
-            return FALSE;
-        }
+//         try {
+//             $results = $statement->execute();
+//             $resultSet->initialize($results);
+//         } catch (Exception $e) {
+//             return FALSE;
+//         }
         
-        $data = $resultSet->toArray();
-        $view->setVariable('data', $data);
+//         $data = $resultSet->toArray();
+//         $view->setVariable('data', $data);
         
         /****************************************
          * FORM CREATION
          ****************************************/
         $forms = [];
         
-        foreach ($data as $index => $record) {
-            $timecard = new TimecardModel($this->adapter);
-            $timecard->read(['UUID' => $record['UUID']]);
-            $timecard->EMP_UUID = $uuid;
-            
-            $weekly_timesheet_form = new TimecardForm($timecard->UUID);
-            $weekly_timesheet_form->setDbAdapter($this->adapter);
-            $weekly_timesheet_form->init();
-            
-            $weekly_timesheet_form->bind($timecard);
-            
-            $forms[$record['PAY_UUID']] = $weekly_timesheet_form;
+        foreach ($timecard->TIMECARD_LINES as $index => $timecard_line) {
+            $timecard_line_form = new TimecardLineForm();
+            $timecard_line_form->setDbAdapter($this->adapter);
+            $timecard_line_form->init();
+            $timecard_line_form->bind($timecard_line);
+            $forms[$timecard_line->PAY_UUID] = $timecard_line_form;
         }
+        
+//         foreach ($data as $index => $record) {
+//             $timecard = new TimecardModel($this->adapter);
+//             $timecard->read(['UUID' => $record['UUID']]);
+//             $timecard->EMP_UUID = $uuid;
+            
+//             $weekly_timesheet_form = new TimecardForm($timecard->UUID);
+//             $weekly_timesheet_form->setDbAdapter($this->adapter);
+//             $weekly_timesheet_form->init();
+            
+//             $weekly_timesheet_form->bind($timecard);
+            
+//             $forms[$record['PAY_UUID']] = $weekly_timesheet_form;
+//         }
         
         $view->setVariables([
             'timesheet_forms' => $forms,
@@ -102,11 +124,16 @@ class TimecardController extends AbstractBaseController
         /****************************************
          * ADD PAYCODE SUBFORM
          ****************************************/
+//         $form = new TimecardLineForm();
+//         $form->setDbAdapter($this->adapter);
+//         $form->init();
+//         $form->get('TIMECARD_UUID')->setValue($timecard->TIMECARD_UUID);
+//         $view->setVariable('timecard_add_form', $form);
+        
         $form = new TimecardAddForm('new-form');
         $form->setDbAdapter($this->adapter);
         $form->init();
-        $form->get('EMP_UUID')->setValue($uuid);
-        $form->get('WORK_WEEK')->setValue($work_week);
+        $form->get('TIMECARD_UUID')->setValue($timecard->TIMECARD_UUID);
         $view->setVariable('timecard_add_form', $form);
         
         /****************************************
@@ -152,8 +179,36 @@ class TimecardController extends AbstractBaseController
     
     public function addPayCodeAction()
     {
-        $view = new ViewModel();
-        $view = parent::createAction();
+        $form = new TimecardLineForm();
+        $form->setDbAdapter($this->adapter);
+        $form->init();
+        $model = new TimecardLineModel($this->adapter);
+        
+        $request = $this->getRequest();
+        $form->bind($model);
+        
+        if ($request->isPost()) {
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+                );
+            
+            $form->setData($post);
+            
+            if ($form->isValid()) {
+                $model->create();
+                
+                $this->flashmessenger()->addSuccessMessage('Add New Record Successful');
+            } else {
+                foreach ($this->form->getMessages() as $message) {
+                    if (is_array($message)) {
+                        $message = array_pop($message);
+                    }
+                    $this->flashMessenger()->addErrorMessage($message);
+                }
+            }
+        }
+        
         $url = $this->getRequest()->getHeader('Referer')->getUri();
         return $this->redirect()->toUrl($url);
     }
@@ -170,14 +225,8 @@ class TimecardController extends AbstractBaseController
                 $request->getFiles()->toArray()
                 );
         }
-        $week = $this->getWorkWeek($data['WORK_WEEK']);
+        $week = $this->getEndofWeek($data['WORK_WEEK']);
         
         return $this->redirect()->toRoute('timecard/timesheet', ['uuid' => $data['EMP_UUID'], 'week' => $week]);
-    }
-    
-    public function getWorkWeek(String $date)
-    {
-        $day = date('w', strtotime($date));
-        return date('Y-m-d', strtotime("$date -$day days"));
     }
 }
