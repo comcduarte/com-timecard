@@ -1,6 +1,7 @@
 <?php
 namespace Timecard\Controller;
 
+use Annotation\Traits\AnnotationAwareTrait;
 use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
 use Laminas\View\Model\ViewModel;
@@ -14,6 +15,7 @@ use Timecard\Traits\DateAwareTrait;
 class TimecardController extends AbstractBaseController
 {
     use DateAwareTrait;
+    use AnnotationAwareTrait;
     
     public $user_adapter;
     public $employee_adapter;
@@ -167,9 +169,13 @@ class TimecardController extends AbstractBaseController
 //                 );
 //         }
         
-        
-        
-        
+        /****************************************
+         * ANNOTATIONS
+         ****************************************/
+        $this->annotations_tablename = $this->model->getTableName();
+        $this->annotations_prikey = $timecard->TIMECARD_UUID;
+        $this->annotations_user = $user_entity->user->UUID;
+        $view->setVariables($this->getAnnotations());
         
         $user_entity->getUser($user->UUID);
         $view->setVariable('user_entity', $user_entity);
