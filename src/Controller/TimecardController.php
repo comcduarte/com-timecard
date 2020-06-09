@@ -61,37 +61,6 @@ class TimecardController extends AbstractBaseController
         $timecard->EMP_UUID = $user_entity->employee->UUID;
         $timecard->getTimecard();
         
-        
-//         $timecard = new TimecardModel($this->adapter);
-//         $paycode = new PaycodeModel($this->adapter);
-        
-        
-//         $where = new Where();
-//         $where->equalTo('WORK_WEEK', $work_week)->AND->equalTo('EMP_UUID', $uuid);
-        
-        /****************************************
-         * RETRIEVE DATA FOR WEEK
-         ****************************************/
-//         $sql = new Sql($this->adapter);
-        
-//         $select = new Select();
-//         $select->from($timecard->getTableName());
-//         $select->columns(['UUID','PAY_UUID']);
-//         $select->where($where);
-        
-//         $statement = $sql->prepareStatementForSqlObject($select);
-//         $resultSet = new ResultSet();
-        
-//         try {
-//             $results = $statement->execute();
-//             $resultSet->initialize($results);
-//         } catch (Exception $e) {
-//             return FALSE;
-//         }
-        
-//         $data = $resultSet->toArray();
-//         $view->setVariable('data', $data);
-        
         /****************************************
          * FORM CREATION
          ****************************************/
@@ -105,20 +74,6 @@ class TimecardController extends AbstractBaseController
             $forms[$timecard_line->PAY_UUID] = $timecard_line_form;
         }
         
-//         foreach ($data as $index => $record) {
-//             $timecard = new TimecardModel($this->adapter);
-//             $timecard->read(['UUID' => $record['UUID']]);
-//             $timecard->EMP_UUID = $uuid;
-            
-//             $weekly_timesheet_form = new TimecardForm($timecard->UUID);
-//             $weekly_timesheet_form->setDbAdapter($this->adapter);
-//             $weekly_timesheet_form->init();
-            
-//             $weekly_timesheet_form->bind($timecard);
-            
-//             $forms[$record['PAY_UUID']] = $weekly_timesheet_form;
-//         }
-        
         $view->setVariables([
             'timesheet_forms' => $forms,
         ]);
@@ -126,12 +81,6 @@ class TimecardController extends AbstractBaseController
         /****************************************
          * ADD PAYCODE SUBFORM
          ****************************************/
-//         $form = new TimecardLineForm();
-//         $form->setDbAdapter($this->adapter);
-//         $form->init();
-//         $form->get('TIMECARD_UUID')->setValue($timecard->TIMECARD_UUID);
-//         $view->setVariable('timecard_add_form', $form);
-        
         $form = new TimecardAddForm('new-form');
         $form->setDbAdapter($this->adapter);
         $form->init();
@@ -148,26 +97,6 @@ class TimecardController extends AbstractBaseController
         $view->setVariables([
             'week_form' => $form,
         ]);
-        
-        /****************************************
-         * TIMESHEET SUBMIT SUBFORM
-         ****************************************/
-//         $form = new TimesheetSubmitForm('timesheet_submit');
-//         $form->init();
-//         $view->setVariable('timesheet_submit_form', $form);
-        
-        
-        
-        /****************************************
-         * PROCESS FORMS
-         ****************************************/
-//         $request = $this->getRequest();
-//         if ($request->isPost()) {
-//             $data = array_merge_recursive(
-//                 $request->getPost()->toArray(),
-//                 $request->getFiles()->toArray()
-//                 );
-//         }
         
         /****************************************
          * ANNOTATIONS
