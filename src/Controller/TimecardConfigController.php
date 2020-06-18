@@ -27,6 +27,7 @@ class TimecardConfigController extends AbstractConfigController
         $ddl[] = new DropTable('time_cards');
         $ddl[] = new DropTable('time_cards_lines');
         $ddl[] = new DropTable('time_cards_signatures');
+        $ddl[] = new DropTable('time_cards_stages');
         $ddl[] = new DropTable('user_employee');
         
         foreach ($ddl as $obj) {
@@ -119,6 +120,25 @@ class TimecardConfigController extends AbstractConfigController
         $ddl->addColumn(new Varchar('USER_UUID', 36, TRUE));
         $ddl->addColumn(new Varchar('TIMECARD_UUID', 36, TRUE));
         $ddl->addColumn(new Varchar('STAGE_UUID', 36, TRUE));
+        
+        $ddl->addConstraint(new PrimaryKey('UUID'));
+        
+        $this->adapter->query($sql->buildSqlString($ddl), $this->adapter::QUERY_MODE_EXECUTE);
+        unset($ddl);
+        
+        /******************************
+         * TIME CARD STAGES
+         ******************************/
+        $ddl = new CreateTable('time_cards_stages');
+        
+        $ddl->addColumn(new Varchar('UUID', 36));
+        $ddl->addColumn(new Integer('STATUS', TRUE));
+        $ddl->addColumn(new Datetime('DATE_CREATED', TRUE));
+        $ddl->addColumn(new Datetime('DATE_MODIFIED', TRUE));
+        
+        $ddl->addColumn(new Varchar('NAME', 255, TRUE));
+        $ddl->addColumn(new Integer('SEQUENCE', TRUE));
+        $ddl->addColumn(new Varchar('PARENT', 36, TRUE));
         
         $ddl->addConstraint(new PrimaryKey('UUID'));
         

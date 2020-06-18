@@ -9,20 +9,24 @@ use Timecard\Controller\TimecardConfigController;
 use Timecard\Controller\TimecardController;
 use Timecard\Controller\TimecardLineController;
 use Timecard\Controller\TimecardSignatureController;
+use Timecard\Controller\TimecardStageController;
 use Timecard\Controller\Factory\DepartmentControllerFactory;
 use Timecard\Controller\Factory\PaycodeControllerFactory;
 use Timecard\Controller\Factory\TimecardConfigControllerFactory;
 use Timecard\Controller\Factory\TimecardControllerFactory;
 use Timecard\Controller\Factory\TimecardLineControllerFactory;
 use Timecard\Controller\Factory\TimecardSignatureControllerFactory;
+use Timecard\Controller\Factory\TimecardStageControllerFactory;
 use Timecard\Form\PaycodeForm;
 use Timecard\Form\TimecardForm;
 use Timecard\Form\TimecardLineForm;
 use Timecard\Form\TimecardSignatureForm;
+use Timecard\Form\TimecardStageForm;
 use Timecard\Form\Factory\PaycodeFormFactory;
 use Timecard\Form\Factory\TimecardFormFactory;
 use Timecard\Form\Factory\TimecardLineFormFactory;
 use Timecard\Form\Factory\TimecardSignatureFormFactory;
+use Timecard\Form\Factory\TimecardStageFormFactory;
 use Timecard\Service\Factory\TimecardModelAdapterFactory;
 
 return [
@@ -59,6 +63,17 @@ return [
                             'defaults' => [
                                 'action' => 'index',
                                 'controller' => TimecardSignatureController::class,
+                            ],
+                        ],
+                    ],
+                    'stages' => [
+                        'type' => Segment::class,
+                        'priority' => 100,
+                        'options' => [
+                            'route' => '/sign[/:action[/:uuid]]',
+                            'defaults' => [
+                                'action' => 'index',
+                                'controller' => TimecardStageController::class,
                             ],
                         ],
                     ],
@@ -175,6 +190,7 @@ return [
             TimecardController::class => TimecardControllerFactory::class,
             TimecardLineController::class => TimecardLineControllerFactory::class,
             TimecardSignatureController::class => TimecardSignatureControllerFactory::class,
+            TimecardStageController::class => TimecardStageControllerFactory::class,
         ],
     ],
     'form_elements' => [
@@ -183,6 +199,7 @@ return [
             TimecardForm::class => TimecardFormFactory::class,
             TimecardLineForm::class => TimecardLineFormFactory::class,
             TimecardSignatureForm::class => TimecardSignatureFormFactory::class,
+            TimecardStageForm::class => TimecardStageFormFactory::class,
         ],
     ],
     'navigation' => [
@@ -243,6 +260,29 @@ return [
                                 'route' => 'timecard/signatures',
                                 'action' => 'index',
                                 'resource' => 'timecard/signatures',
+                                'privilege' => 'index',
+                            ],
+                        ],
+                    ],
+                    [
+                        'label' => 'Stages',
+                        'route' => 'timecard/stages',
+                        'resource' => 'timecard/stages',
+                        'privilege' => 'menu',
+                        'class' => 'dropdown-submenu',
+                        'pages' => [
+                            [
+                                'label' => 'Add New Stage',
+                                'route' => 'timecard/stages',
+                                'action' => 'create',
+                                'resource' => 'timecard/stages',
+                                'privilege' => 'create',
+                            ],
+                            [
+                                'label' => 'List Stages',
+                                'route' => 'timecard/stages',
+                                'action' => 'index',
+                                'resource' => 'timecard/stages',
                                 'privilege' => 'index',
                             ],
                         ],
