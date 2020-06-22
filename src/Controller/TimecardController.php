@@ -11,6 +11,8 @@ use Timecard\Form\TimesheetFilterForm;
 use Timecard\Model\TimecardLineModel;
 use Timecard\Model\Entity\TimecardEntity;
 use Timecard\Traits\DateAwareTrait;
+use Timecard\Model\TimecardStageModel;
+use User\Model\UserModel;
 
 class TimecardController extends AbstractBaseController
 {
@@ -60,6 +62,7 @@ class TimecardController extends AbstractBaseController
         $timecard->WORK_WEEK = $work_week;
         $timecard->EMP_UUID = $user_entity->employee->UUID;
         $timecard->getTimecard();
+        $view->setVariable('timecard_uuid', $timecard->TIMECARD_UUID);
         
         /****************************************
          * FORM CREATION
@@ -77,6 +80,27 @@ class TimecardController extends AbstractBaseController
         $view->setVariables([
             'timesheet_forms' => $forms,
         ]);
+        
+        /****************************************
+         * TIMECARD SIGNATURES
+         ****************************************/
+        $data = [];
+        foreach ($timecard->TIMECARD_SIGNATURES as $signature) {
+            $stage = new TimecardStageModel($this->adapter);
+            $stage->read(['UUID' => $signature->STAGE_UUID]);
+            
+            $sign_user = new UserModel($this->adapter);
+            $sign_user->read(['UUID' => $signature->USER_UUID]);
+            
+            $record = [
+                'User' => $sign_user->USERNAME,
+                'Stage' => $stage->NAME,
+                'Timestamp' => $signature->DATE_CREATED,
+            ];
+            
+            $data[] = $record;  
+        }
+        $view->setVariable('timecard_signatures' , $data);
         
         /****************************************
          * ADD PAYCODE SUBFORM

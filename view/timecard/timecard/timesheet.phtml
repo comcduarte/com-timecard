@@ -1,15 +1,6 @@
 <?php 
 $role = $this->user_entity->groups[0]['ROLENAME'];
-
 ?>
-
-<style type="text/css">
-    input[id=_SUBMIT_]
-    {
-        display: none;
-    }
-</style>
-
 <div class="row">
 	<div class="col">
 		<h1>Timesheet</h1>
@@ -72,12 +63,16 @@ $role = $this->user_entity->groups[0]['ROLENAME'];
 		</table>
 	</div>
 	<div class="col">
-		<?php echo $this->partial('timecard/partials/signature.phtml'); ?>
 		<?php 
-// 		echo $this->partial('base/subform', [
-// 		    'title' => 'Functions',
-// 		    'form' => $this->timesheet_submit_form,
-// 		]); 
+		echo $this->partial('timecard/partials/sign.phtml', [
+		    'title' => 'Signatures',
+		    'data' => $this->timecard_signatures,
+		    'primary_key' => 'UUID',
+		    'route' => 'timecards/signatures',
+		    'timecard_uuid' => $this->timecard_uuid,
+		    'role' => $role,
+		    'params' => [],
+		]); 
 		?>
 	</div>
 </div>

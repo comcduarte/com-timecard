@@ -1,11 +1,11 @@
 <?php
 namespace Timecard\Form;
 
+use Components\Form\Element\HiddenSubmit;
 use Laminas\Form\Form;
 use Laminas\Form\Element\Csrf;
 use Laminas\Form\Element\Date;
 use Laminas\Form\Element\Hidden;
-use Laminas\Form\Element\Submit;
 
 class TimesheetFilterForm extends Form
 {
@@ -41,7 +41,7 @@ class TimesheetFilterForm extends Form
         
         $this->add([
             'name' => 'SUBMIT',
-            'type' => Submit::class,
+            'type' => HiddenSubmit::class,
             'attributes' => [
                 'value' => 'Submit',
                 'class' => 'btn btn-primary form-control mt-4',

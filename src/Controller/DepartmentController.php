@@ -9,8 +9,9 @@ use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Where;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
-use Timecard\Traits\DateAwareTrait;
+use Timecard\Form\TimesheetFilterForm;
 use Timecard\Model\TimecardModel;
+use Timecard\Traits\DateAwareTrait;
 
 class DepartmentController extends AbstractActionController
 {
@@ -38,7 +39,6 @@ class DepartmentController extends AbstractActionController
          ****************************************/
         $departmet_preparer = $user_entity->employee;
         
-//         $data = $departmet_preparer->fetchAll($where);
         $sql = new Sql($this->employee_adapter);
         
         $where = new Where();
@@ -61,17 +61,19 @@ class DepartmentController extends AbstractActionController
         $resultSet->initialize($results);
         $data = $resultSet->toArray();
         
-//         $header = [];
-//         if (!empty($data)) {
-//             $header = array_keys($data[0]);
-//         }
+        /****************************************
+         * GET WORK WEEK
+         ****************************************/
+        if (! $this->params()->fromRoute('week', 0)) {
+            $work_week = $this->getEndofWeek();
+        } else {
+            $work_week = $this->getEndofWeek($this->params()->fromRoute('week', 0));
+        }
+        $view->setVariable('work_week', $work_week);
         
-//         $view->setVariable('employees_header', $header);
-
         /****************************************
          * RETRIEVE EMPLOYEE SUBMISSION STATUS
          ****************************************/
-        $work_week = $this->getEndofWeek($this->today()->asString());
         $timecard = new TimecardModel($this->timecard_adapter);
         
         foreach ($data as $index => $record) {
@@ -101,9 +103,36 @@ class DepartmentController extends AbstractActionController
         $view->setVariable('employees', $data);
         
         /****************************************
+         * TIMESHEET FILTER SUBFORM
+         ****************************************/
+        $form = new TimesheetFilterForm();
+        $form->init();
+        $form->get('WORK_WEEK')->setValue($work_week);
+        $view->setVariables([
+            'week_form' => $form,
+        ]);
+        
+        /****************************************
          * SET MISCELLANEOUS VARIABLES
          ****************************************/
-        $view->setVariable('work_week', $work_week);
+        
         return $view;
+    }
+    
+    public function filterAction()
+    {
+        $form = new TimesheetFilterForm();
+        $form->init();
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $data = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+                );
+        }
+        $week = $this->getEndofWeek($data['WORK_WEEK']);
+        
+        return $this->redirect()->toRoute('dept/timesheet', ['week' => $week]);
     }
 }

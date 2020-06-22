@@ -5,6 +5,7 @@ use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Db\Sql\Where;
 use Timecard\Model\TimecardLineModel;
 use Timecard\Model\TimecardModel;
+use Timecard\Model\TimecardSignatureModel;
 
 class TimecardEntity
 {
@@ -56,6 +57,23 @@ class TimecardEntity
             $line->read(['UUID' => $record['UUID']]);
             $this->TIMECARD_LINES[] = $line;
         }
+        
+        /****************************************
+         * GET TIMECARD SIGNATURES
+         ****************************************/
+        $timecard_signature = new TimecardSignatureModel($this->adapter);
+        $where = new Where();
+        $where->equalTo('TIMECARD_UUID', $timecard->UUID);
+        $data = $timecard_signature->fetchAll($where);
+        
+        if (is_array($data)) {
+            foreach ($data as $index => $record) {
+                $signature = new TimecardSignatureModel($this->adapter);
+                $signature->read(['UUID' => $record['UUID']]);
+                $this->TIMECARD_SIGNATURES[] = $signature;
+            }
+        }
+        
     }
 
     public function createTimecard()

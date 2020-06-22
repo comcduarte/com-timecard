@@ -3,7 +3,6 @@ namespace Timecard\Form;
 
 use Components\Form\AbstractBaseForm;
 use Components\Form\Element\DatabaseSelect;
-use Laminas\Form\Element\Text;
 use Laminas\Db\Adapter\AdapterAwareTrait;
 
 class TimecardSignatureForm extends AbstractBaseForm
@@ -54,7 +53,7 @@ class TimecardSignatureForm extends AbstractBaseForm
         
         $this->add([
             'name' => 'STAGE_UUID',
-            'type' => Text::class,
+            'type' => DatabaseSelect::class,
             'attributes' => [
                 'class' => 'form-control',
                 'id' => 'STAGE_UUID',
@@ -62,7 +61,14 @@ class TimecardSignatureForm extends AbstractBaseForm
                 'placeholder' => '',
             ],
             'options' => [
-                'label' => 'Stage UUID',
+                'label' => 'Stage',
+                'database_adapter' => $this->adapter,
+                'database_table' => 'time_cards_stages',
+                'database_id_column' => 'UUID',
+                'database_value_columns' => [
+                    'NAME',
+                    'SEQUENCE',
+                ],
             ],
         ],['priority' => 100]);
     }

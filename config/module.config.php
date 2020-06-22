@@ -27,6 +27,7 @@ use Timecard\Form\Factory\TimecardFormFactory;
 use Timecard\Form\Factory\TimecardLineFormFactory;
 use Timecard\Form\Factory\TimecardSignatureFormFactory;
 use Timecard\Form\Factory\TimecardStageFormFactory;
+use Timecard\Navigation\Factory\SignatureNavigationFactory;
 use Timecard\Service\Factory\TimecardModelAdapterFactory;
 
 return [
@@ -66,11 +67,21 @@ return [
                             ],
                         ],
                     ],
+                    'secure_signatures' => [
+                        'type' => Segment::class,
+                        'priority' => 100,
+                        'options' => [
+                            'route' => '/secure_sign[/:action[/:uuid]]',
+                            'defaults' => [
+                                'controller' => TimecardSignatureController::class,
+                            ],
+                        ],
+                    ],
                     'stages' => [
                         'type' => Segment::class,
                         'priority' => 100,
                         'options' => [
-                            'route' => '/sign[/:action[/:uuid]]',
+                            'route' => '/stage[/:action[/:uuid]]',
                             'defaults' => [
                                 'action' => 'index',
                                 'controller' => TimecardStageController::class,
@@ -135,6 +146,17 @@ return [
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
+                    'timesheet' => [
+                        'type' => Segment::class,
+                        'priority' => 100,
+                        'options' => [
+                            'route' => '/dept/timesheet[/:week]',
+                            'defaults' => [
+                                'action' => 'index',
+                                'controller' => DepartmentController::class,
+                            ],
+                        ],
+                    ],
                     'default' => [
                         'type' => Segment::class,
                         'priority' => -100,
@@ -364,6 +386,36 @@ return [
                 ],
             ],
         ],
+        'signatures' => [
+            'signatures' => [
+                'label' => 'Sign Here',
+                'route' => 'timecard/secure_signatures',
+                'class' => 'dropdown',
+                'pages' => [
+                    [
+                        'label' => 'Submit Weekly Timesheet',
+                        'route' => 'timecard/secure_signatures',
+                        'action' => 'submit',
+                        'resource' => 'timecard/secure_signatures',
+                        'privilege' => 'submit',
+                    ],
+                    [
+                        'label' => 'Mark Timesheets Prepared',
+                        'route' => 'timecard/secure_signatures',
+                        'action' => 'prepare',
+                        'resource' => 'timecard/secure_signatures',
+                        'privilege' => 'prepare',
+                    ],
+                    [
+                        'label' => 'Approve Department Timesheets',
+                        'route' => 'timecard/secure_signatures',
+                        'action' => 'approve',
+                        'resource' => 'timecard/secure_signatures',
+                        'privilege' => 'approve',
+                    ],
+                ],
+            ],
+        ],
     ],
     'service_manager' => [
         'aliases' => [
@@ -371,6 +423,7 @@ return [
         ],
         'factories' => [
             'timecard-model-adapter' => TimecardModelAdapterFactory::class,
+            'signatures' => SignatureNavigationFactory::class,
         ],
     ],
     'view_manager' => [

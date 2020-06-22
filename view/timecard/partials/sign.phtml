@@ -4,7 +4,7 @@
 			<b><?=$this->title?></b>
 		</div>
 		<div>
-			<?= $this->navigation('signatures')->menu()->setPartial('navigation'); ?>
+			<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'submit', 'uuid' => $this->timecard_uuid]); ?>" class="btn btn-primary btn-rounder">Sign</a>
 		</div>
 	</div>
 	<div class="card-body">
