@@ -3,6 +3,7 @@ namespace Timecard\Model\Entity;
 
 use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Db\Sql\Where;
+use Timecard\Model\PaycodeModel;
 use Timecard\Model\TimecardLineModel;
 use Timecard\Model\TimecardModel;
 use Timecard\Model\TimecardSignatureModel;
@@ -78,11 +79,29 @@ class TimecardEntity
 
     public function createTimecard()
     {
+        /******************************
+         * GET REGULAR PAYCODE
+         ******************************/
+        $paycode = new PaycodeModel($this->adapter);
+        $paycode->read(['CODE' => '001']);
+        $reg_paycode = $paycode->UUID;
+        unset($paycode);
+        
+        
         $TimecardModel = new TimecardModel($this->adapter);
         $this->TIMECARD_UUID = $TimecardModel->UUID;
         $TimecardModel->EMP_UUID = $this->EMP_UUID;
         $TimecardModel->WORK_WEEK = $this->WORK_WEEK;
         $result = $TimecardModel->create();
+        
+        $timecard_line = new TimecardLineModel($this->adapter);
+        $timecard_line->WORK_WEEK = $this->WORK_WEEK;
+        $timecard_line->TIMECARD_UUID = $TimecardModel->UUID;
+        $timecard_line->PAY_UUID = $reg_paycode;
+        
+        
+        $timecard_line->create();
+        
         return $result;
     }
     

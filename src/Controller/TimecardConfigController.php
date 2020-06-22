@@ -9,9 +9,20 @@ use Laminas\Db\Sql\Ddl\Column\Datetime;
 use Laminas\Db\Sql\Ddl\Column\Integer;
 use Laminas\Db\Sql\Ddl\Column\Varchar;
 use Laminas\Db\Sql\Ddl\Constraint\PrimaryKey;
+use Timecard\Traits\DateAwareTrait;
+use Employee\Model\EmployeeModel;
+use Laminas\Db\Sql\Where;
+use Timecard\Model\TimecardModel;
+use Timecard\Model\TimecardLineModel;
+use Timecard\Model\PaycodeModel;
 
 class TimecardConfigController extends AbstractConfigController
 {
+    use DateAwareTrait;
+    
+    public $timecard_adapter;
+    public $employee_adapter;
+    
     public function __construct()
     {
         $this->setRoute('timecard/config');
@@ -176,5 +187,112 @@ class TimecardConfigController extends AbstractConfigController
         
         $this->adapter->query($sql->buildSqlString($ddl), $this->adapter::QUERY_MODE_EXECUTE);
         unset($ddl);
+    }
+    
+    public function populateWeeklyTimecards()
+    {
+//         $date = new \DateTime('now',new \DateTimeZone('EDT'));
+//         $this->DATE_CREATED = $date->format('Y-m-d H:i:s');
+        
+//         if (is_null($this->UUID)) {
+//             $this->UUID = $this->generate_uuid();
+//         }
+
+        /******************************
+         * GET EMPLOYEE UUID LIST
+         ******************************/
+        $employeeModel = new EmployeeModel($this->employee_adapter);
+        $where = new Where();
+        $where->equalTo('STATUS', $employeeModel::ACTIVE_STATUS);
+        $employees = $employeeModel->fetchAll($where);
+        unset($employeeModel);
+        
+        /******************************
+         * GET WORK WEEK
+         ******************************/
+        $work_week = $this->getEndofWeek();
+        
+        /******************************
+         * GET REGULAR PAYCODE
+         ******************************/
+        $paycode = new PaycodeModel($this->timecard_adapter);
+        $paycode->read(['CODE' => '001']);
+        $reg_paycode = $paycode->UUID;
+        unset($paycode);
+        
+        /******************************
+         * GET EXISTING TIMECARDS
+         ******************************/
+        $timecardModel = new TimecardModel($this->timecard_adapter);
+        $timecardModel->WORK_WEEK = $work_week;
+        
+        $where = new Where();
+        $where->equalTo('WORK_WEEK', $work_week);
+        $timecards = $timecardModel->fetchAll($where);
+        $current_timecards = [];
+        
+        foreach ($timecards as $timecard) {
+            $current_timecards[] = $timecard['EMP_UUID'];
+        }
+        
+        /******************************
+         * CREATE TIMECARDS
+         ******************************/
+        foreach ($employees as $employee) {
+            if (in_array($employee['UUID'], $current_timecards)) {
+                continue;
+            }
+            $timecardModel->UUID = $timecardModel->generate_uuid();
+            $timecardModel->EMP_UUID = $employee['UUID'];
+            $result = $timecardModel->create();
+            
+            if (! $result) {
+                $err_str = "Error: " . $employee['UUID'] . " unable to create timecard.";
+                $this->flashMessenger()->addErrorMessage($err_str);
+                continue;
+            }
+            
+            $timecard_line = new TimecardLineModel($this->timecard_adapter);
+            $timecard_line->WORK_WEEK = $work_week;
+            $timecard_line->TIMECARD_UUID = $timecardModel->UUID;
+            $timecard_line->PAY_UUID = $reg_paycode;
+            
+            switch ($employee['GRADE_SCHEDULE']) {
+                case '40':
+                    $timecard_line->MON = 8;
+                    $timecard_line->TUES = 8;
+                    $timecard_line->WED = 8;
+                    $timecard_line->THURS = 8;
+                    $timecard_line->FRI = 8;
+                    break;
+                case '35':
+                    $timecard_line->MON = 7;
+                    $timecard_line->TUES = 7;
+                    $timecard_line->WED = 7;
+                    $timecard_line->THURS = 7;
+                    $timecard_line->FRI = 7;
+                    break;
+                case '20':
+                    $timecard_line->MON = 4;
+                    $timecard_line->TUES = 4;
+                    $timecard_line->WED = 4;
+                    $timecard_line->THURS = 4;
+                    $timecard_line->FRI = 4;
+                    break;
+                case 'F':
+                case 'FL':
+                    break;
+                case 'TEMP':
+                default:
+                    break;
+            }
+            $timecard_line->create();
+        }
+    }
+    
+    public function cronAction()
+    {
+        $this->populateWeeklyTimecards();
+        return $this->redirect()->toRoute($this->getRoute());
     }
 }
