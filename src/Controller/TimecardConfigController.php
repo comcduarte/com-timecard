@@ -94,6 +94,7 @@ class TimecardConfigController extends AbstractConfigController
         $ddl->addColumn(new Integer('FRI', TRUE));
         $ddl->addColumn(new Integer('SAT', TRUE));
         $ddl->addColumn(new Integer('DAYS', TRUE)); 
+        $ddl->addColumn(new Integer('ORD', TRUE));
         
         $ddl->addConstraint(new PrimaryKey('UUID'));
         
@@ -293,6 +294,5 @@ class TimecardConfigController extends AbstractConfigController
     public function cronAction()
     {
         $this->populateWeeklyTimecards();
-        return $this->redirect()->toRoute($this->getRoute());
     }
 }

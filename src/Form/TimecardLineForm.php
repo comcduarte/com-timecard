@@ -78,6 +78,18 @@ class TimecardLineForm extends AbstractBaseForm
             ],['priority' => 100]);
         }
         
+        $this->add([
+            'name' => 'ORD',
+            'type' => Text::class,
+            'attributes' => [
+                'id' => 'ORD',
+                'class' => 'form-control',
+            ],
+            'options' => [
+                'label' => 'ORDER',
+            ],
+        ],['priority' => 100]);
+        
         $this->remove('SUBMIT');
         $this->add([
             'name' => 'SUBMIT',

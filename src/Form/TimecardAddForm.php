@@ -3,11 +3,12 @@ namespace Timecard\Form;
 
 use Components\Form\Element\DatabaseSelect;
 use Components\Form\Element\Uuid;
+use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Form\Form;
 use Laminas\Form\Element\Csrf;
 use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Submit;
-use Laminas\Db\Adapter\AdapterAwareTrait;
+use Laminas\Form\Element\Text;
 
 class TimecardAddForm extends Form
 {
@@ -71,6 +72,18 @@ class TimecardAddForm extends Form
                     'CODE',
                     'DESC',
                 ],
+            ],
+        ],['priority' => 100]);
+        
+        $this->add([
+            'name' => 'ORD',
+            'type' => Text::class,
+            'attributes' => [
+                'id' => 'ORD',
+                'class' => 'form-control',
+            ],
+            'options' => [
+                'label' => 'ORDER',
             ],
         ],['priority' => 100]);
         

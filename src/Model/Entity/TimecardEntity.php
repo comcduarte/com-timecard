@@ -56,7 +56,8 @@ class TimecardEntity
         foreach ($data as $index => $record) {
             $line = new TimecardLineModel($this->adapter);
             $line->read(['UUID' => $record['UUID']]);
-            $this->TIMECARD_LINES[] = $line;
+            $id = preg_replace('/^[a-z0-9]*/', str_pad($line->ORD, 8, '0', STR_PAD_LEFT), $line->UUID);
+            $this->TIMECARD_LINES[$id] = $line;
         }
         
         /****************************************

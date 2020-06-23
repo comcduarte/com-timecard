@@ -74,12 +74,12 @@ class TimecardController extends AbstractBaseController
             $timecard_line_form->setDbAdapter($this->adapter);
             $timecard_line_form->init();
             $timecard_line_form->bind($timecard_line);
-            $forms[$timecard_line->PAY_UUID] = $timecard_line_form;
+            $forms[$index] = $timecard_line_form;
         }
         
-        $view->setVariables([
-            'timesheet_forms' => $forms,
-        ]);
+        ksort($forms);
+        
+        $view->setVariable('timesheet_forms', $forms);
         
         /****************************************
          * TIMECARD SIGNATURES
