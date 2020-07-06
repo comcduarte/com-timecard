@@ -82,7 +82,7 @@ class DepartmentController extends AbstractActionController
             $select = new Select();
             $select->from($timecard->getTableName());
             $where = new Where();
-            $where->equalTo('STATUS', 1)->AND->equalTo('WORK_WEEK', $work_week);
+            $where->equalTo('WORK_WEEK', $work_week);
             $where->AND->equalTo('EMP_UUID', $record['UUID']);
             $select->where($where);
             
@@ -93,9 +93,19 @@ class DepartmentController extends AbstractActionController
             $timecards = $resultSet->toArray();
             
             if (sizeof($timecards)) {
-                $data[$index]['STATUS'] = 'Pending';
+                switch ($timecards[0]['STATUS']) {
+                    case $timecard::SUBMITTED_STATUS:
+                        $data[$index]['STATUS'] = "Submitted";
+                        break;
+                    case $timecard::PREPARERD_STATUS:
+                        $data[$index]['STATUS'] = "Prepared";
+                        break;
+                    default:
+                        $data[$index]['STATUS'] = "Pending";
+                        break;
+                }
             } else {
-                $data[$index]['STATUS'] = 'Submitted';
+                $data[$index]['STATUS'] = 'Vacant';
             }
         }
         
