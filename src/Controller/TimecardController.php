@@ -127,7 +127,7 @@ class TimecardController extends AbstractBaseController
          ****************************************/
         $this->annotations_tablename = $this->model->getTableName();
         $this->annotations_prikey = $timecard->TIMECARD_UUID;
-        $this->annotations_user = $user_entity->user->UUID;
+        $this->annotations_user = $user->UUID;
         $view->setVariables($this->getAnnotations());
         
         $user_entity->getUser($user->UUID);
