@@ -94,18 +94,21 @@ class DepartmentController extends AbstractActionController
             
             if (sizeof($timecards)) {
                 switch ($timecards[0]['STATUS']) {
+                    case $timecard::APPROVED_STATUS:
+                        $data[$index]['STATUS'] = "<span class='badge badge-primary'>Approved</span>";
+                        break;
                     case $timecard::SUBMITTED_STATUS:
-                        $data[$index]['STATUS'] = "Submitted";
+                        $data[$index]['STATUS'] = "<span class='badge badge-success'>Submitted</span>";
                         break;
                     case $timecard::PREPARERD_STATUS:
-                        $data[$index]['STATUS'] = "Prepared";
+                        $data[$index]['STATUS'] = "<span class='badge badge-info'>Prepared</span>";
                         break;
                     default:
-                        $data[$index]['STATUS'] = "Pending";
+                        $data[$index]['STATUS'] = "<span class='badge badge-warning'>Pending</span>";
                         break;
                 }
             } else {
-                $data[$index]['STATUS'] = 'Vacant';
+                $data[$index]['STATUS'] = "<span class='badge badge-danger'>Vacant</span>";
             }
         }
         
