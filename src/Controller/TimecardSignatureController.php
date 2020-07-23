@@ -5,6 +5,7 @@ use Components\Controller\AbstractBaseController;
 use Timecard\Model\TimecardModel;
 use Timecard\Model\TimecardSignatureModel;
 use Timecard\Model\Entity\TimecardEntity;
+use Timecard\Model\TimecardStageModel;
 
 class TimecardSignatureController extends AbstractBaseController
 {
@@ -12,13 +13,51 @@ class TimecardSignatureController extends AbstractBaseController
     {
         $uuid = $this->params()->fromRoute('uuid', 0);
         $url = $this->getRequest()->getHeader('Referer')->getUri();
-        $timecard_entity = new TimecardEntity();
-        $timecard_entity->setDbAdapter($this->adapter);
         
         if (! $uuid) {
             $this->flashmessenger()->addErrorMessage('No Timecard Identifier Specified');
             return $this->redirect()->toUrl($url);
         } 
+        
+        $this->sign($uuid, TimecardModel::SUBMITTED_STATUS);
+
+        return $this->redirect()->toUrl($url);
+    }
+    
+    public function prepareAction()
+    {
+        $uuid = $this->params()->fromRoute('uuid', 0);
+        $url = $this->getRequest()->getHeader('Referer')->getUri();
+        
+        if (! $uuid) {
+            $this->flashmessenger()->addErrorMessage('No Timecard Identifier Specified');
+            return $this->redirect()->toUrl($url);
+        }
+        
+        $this->sign($uuid, TimecardModel::PREPARERD_STATUS);
+        
+        return $this->redirect()->toUrl($url);
+    }
+    
+    public function approveAction()
+    {
+        $uuid = $this->params()->fromRoute('uuid', 0);
+        $url = $this->getRequest()->getHeader('Referer')->getUri();
+        
+        if (! $uuid) {
+            $this->flashmessenger()->addErrorMessage('No Timecard Identifier Specified');
+            return $this->redirect()->toUrl($url);
+        }
+        
+        $this->sign($uuid, TimecardModel::APPROVED_STATUS);
+        
+        return $this->redirect()->toUrl($url);
+    }
+    
+    public function sign($uuid, $status)
+    {
+        $timecard_entity = new TimecardEntity();
+        $timecard_entity->setDbAdapter($this->adapter);
         
         /****************************************
          * GET USER/EMPLOYEE
@@ -36,22 +75,28 @@ class TimecardSignatureController extends AbstractBaseController
             $timecard_entity->getTimecard();
         } else {
             $this->flashmessenger()->addErrorMessage('Unable to retrieve timecard');
-            return $this->redirect()->toUrl($url);
+            return;
         }
         
         /****************************************
          * SET TIMECARD STATUS
          ****************************************/
-        $timecard->STATUS = $timecard::SUBMITTED_STATUS;
+        $timecard->STATUS = $status;
         $timecard->update();
         
         /****************************************
          * GET TIMECARD LINES
          ****************************************/
         foreach ($timecard_entity->TIMECARD_LINES as $index => $line) {
-            $line->STATUS = $line::SUBMITTED_STATUS;
+            $line->STATUS = $status;
             $line->update();
         }
+        
+        /****************************************
+         * GET TIMECARD STAGE
+         ****************************************/
+        $stage = new TimecardStageModel($this->adapter);
+        $stage->read(['SEQUENCE' => $status]);
         
         /****************************************
          * SET TIMECARD SIGNATURE
@@ -59,21 +104,7 @@ class TimecardSignatureController extends AbstractBaseController
         $signature = new TimecardSignatureModel($this->adapter);
         $signature->TIMECARD_UUID = $timecard_entity->TIMECARD_UUID;
         $signature->USER_UUID = $user->UUID;
-        $signature->STAGE_UUID = '93303e78-a88f-8464-05c0-683e3142836c';
+        $signature->STAGE_UUID = $stage->UUID;
         $signature->create();
-
-        return $this->redirect()->toUrl($url);
-    }
-    
-    public function prepareAction()
-    {
-        $url = $this->getRequest()->getHeader('Referer')->getUri();
-        return $this->redirect()->toUrl($url);
-    }
-    
-    public function approveAction()
-    {
-        $url = $this->getRequest()->getHeader('Referer')->getUri();
-        return $this->redirect()->toUrl($url);
     }
 }
