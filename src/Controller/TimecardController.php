@@ -22,6 +22,8 @@ class TimecardController extends AbstractBaseController
     public $user_adapter;
     public $employee_adapter;
     
+    public $acl_service;
+    
     public function timesheetAction()
     {
         $view = new ViewModel();
@@ -132,6 +134,11 @@ class TimecardController extends AbstractBaseController
         
         $user_entity->getUser($user->UUID);
         $view->setVariable('user_entity', $user_entity);
+        
+        /****************************************
+         * ACL
+         ****************************************/
+        $view->setVariable('acl_service', $this->acl_service);
         
         return $view;
     }

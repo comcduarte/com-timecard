@@ -27,6 +27,8 @@ class TimecardControllerFactory implements FactoryInterface
         $controller->setModel($model);
         $controller->setForm($form);
         
+        $controller->acl_service = $container->get('acl-service');
+        
         return $controller;
     }
 }
