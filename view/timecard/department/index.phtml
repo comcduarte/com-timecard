@@ -31,7 +31,13 @@
     		        'label' => 'Open Timesheet',
     		        'route' => 'timecard/timesheet',
     		        'key' => 'UUID',
-	            ]
+	            ],
+		        [
+		            'action' => 'prepare',
+		            'label' => 'Prepare',
+		            'route' => 'timecard/secure_signatures',
+		            'key' => 'UUID',
+		        ],
 		    ],
 		]);?>
 	</div>
