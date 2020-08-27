@@ -13,6 +13,7 @@ use Timecard\Model\Entity\TimecardEntity;
 use Timecard\Traits\DateAwareTrait;
 use Timecard\Model\TimecardStageModel;
 use User\Model\UserModel;
+use Laminas\Db\Sql\Select;
 
 class TimecardController extends AbstractBaseController
 {
@@ -110,6 +111,16 @@ class TimecardController extends AbstractBaseController
         $form = new TimecardAddForm('new-form');
         $form->setDbAdapter($this->adapter);
         $form->init();
+        
+        /** Create custom SQL object to populate dropdown. **/
+        $select = new Select();
+        $select->from('time_cards_stages');
+        $select->columns(['UUID','NAME']);
+        $select->order(['NAME']);
+        
+        /** Retrieve Database Select Object **/
+        $form->get('PAY_UUID')->setDatabase_object($select)->populateElement();
+        
         $form->get('TIMECARD_UUID')->setValue($timecard->TIMECARD_UUID);
         $view->setVariable('timecard_add_form', $form);
         
