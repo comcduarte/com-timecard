@@ -29,6 +29,8 @@ use Timecard\Form\Factory\TimecardSignatureFormFactory;
 use Timecard\Form\Factory\TimecardStageFormFactory;
 use Timecard\Navigation\Factory\SignatureNavigationFactory;
 use Timecard\Service\Factory\TimecardModelAdapterFactory;
+use Timecard\Form\TimecardAddForm;
+use Timecard\Form\Factory\TimecardAddFormFactory;
 
 return [
     'router' => [
@@ -218,6 +220,7 @@ return [
     'form_elements' => [
         'factories' => [
             PaycodeForm::class => PaycodeFormFactory::class,
+            TimecardAddForm::class => TimecardAddFormFactory::class,
             TimecardForm::class => TimecardFormFactory::class,
             TimecardLineForm::class => TimecardLineFormFactory::class,
             TimecardSignatureForm::class => TimecardSignatureFormFactory::class,

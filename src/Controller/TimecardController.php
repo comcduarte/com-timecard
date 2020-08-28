@@ -5,15 +5,13 @@ use Annotation\Traits\AnnotationAwareTrait;
 use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
 use Laminas\View\Model\ViewModel;
-use Timecard\Form\TimecardAddForm;
 use Timecard\Form\TimecardLineForm;
 use Timecard\Form\TimesheetFilterForm;
 use Timecard\Model\TimecardLineModel;
+use Timecard\Model\TimecardStageModel;
 use Timecard\Model\Entity\TimecardEntity;
 use Timecard\Traits\DateAwareTrait;
-use Timecard\Model\TimecardStageModel;
 use User\Model\UserModel;
-use Laminas\Db\Sql\Select;
 
 class TimecardController extends AbstractBaseController
 {
@@ -22,6 +20,7 @@ class TimecardController extends AbstractBaseController
     
     public $user_adapter;
     public $employee_adapter;
+    public $timecard_add_form;
     
     public $acl_service;
     
@@ -108,18 +107,21 @@ class TimecardController extends AbstractBaseController
         /****************************************
          * ADD PAYCODE SUBFORM
          ****************************************/
-        $form = new TimecardAddForm('new-form');
-        $form->setDbAdapter($this->adapter);
-        $form->init();
+        $form = $this->timecard_add_form;
+//         $form->setDbAdapter($this->adapter);
+//         $form->init();
         
         /** Create custom SQL object to populate dropdown. **/
-        $select = new Select();
-        $select->from('time_cards_stages');
-        $select->columns(['UUID','NAME']);
-        $select->order(['NAME']);
+//         $select = new Select();
+//         $select->from('time_cards_stages');
+//         $select->columns(['UUID','NAME']);
+//         $select->order(['NAME']);
         
         /** Retrieve Database Select Object **/
-        $form->get('PAY_UUID')->setDatabase_object($select)->populateElement();
+        $form->get('PAY_UUID')->roles = $user_entity->user->memberOf();
+        $form->get('PAY_UUID')->setAclService($this->acl_service)->populateElement();
+        
+        /** END Custom SQL **/
         
         $form->get('TIMECARD_UUID')->setValue($timecard->TIMECARD_UUID);
         $view->setVariable('timecard_add_form', $form);

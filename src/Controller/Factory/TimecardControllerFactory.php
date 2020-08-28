@@ -4,6 +4,7 @@ namespace Timecard\Controller\Factory;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Timecard\Controller\TimecardController;
+use Timecard\Form\TimecardAddForm;
 use Timecard\Form\TimecardForm;
 use Timecard\Model\TimecardModel;
 
@@ -19,7 +20,6 @@ class TimecardControllerFactory implements FactoryInterface
         
         $adapter = $container->get('user-model-adapter');
         $controller->user_adapter = $adapter;
-        $controller->setDbAdapter($adapter);
         
         $adapter = $container->get('employee-model-adapter');
         $controller->employee_adapter = $adapter;
@@ -27,6 +27,7 @@ class TimecardControllerFactory implements FactoryInterface
         $controller->setModel($model);
         $controller->setForm($form);
         
+        $controller->timecard_add_form = $container->get('FormElementManager')->get(TimecardAddForm::class);
         $controller->acl_service = $container->get('acl-service');
         
         return $controller;

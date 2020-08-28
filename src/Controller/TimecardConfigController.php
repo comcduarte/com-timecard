@@ -169,6 +169,7 @@ class TimecardConfigController extends AbstractConfigController
         
         $ddl->addColumn(new Varchar('CODE', 100, TRUE));
         $ddl->addColumn(new Varchar('DESC', 255, TRUE));
+        $ddl->addColumn(new Varchar('RESOURCE', 255, TRUE));
         
         $ddl->addConstraint(new PrimaryKey('UUID'));
         

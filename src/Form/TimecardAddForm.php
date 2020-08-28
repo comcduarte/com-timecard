@@ -1,7 +1,7 @@
 <?php
 namespace Timecard\Form;
 
-use Components\Form\Element\DatabaseSelect;
+use Components\Form\Element\AclDatabaseSelect;
 use Components\Form\Element\Uuid;
 use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Form\Form;
@@ -9,10 +9,12 @@ use Laminas\Form\Element\Csrf;
 use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Submit;
 use Laminas\Form\Element\Text;
+use Components\Traits\AclAwareTrait;
 
 class TimecardAddForm extends Form
 {
     use AdapterAwareTrait;
+    use AclAwareTrait;
     
     public function init()
     {
@@ -58,13 +60,15 @@ class TimecardAddForm extends Form
         
         $this->add([
             'name' => 'PAY_UUID',
-            'type' => DatabaseSelect::class,
+            'type' => AclDatabaseSelect::class,
             'attributes' => [
                 'id' => 'PAY_UUID',
                 'class' => 'form-control',
             ],
             'options' => [
                 'label' => 'Pay Code',
+                'acl_service' => $this->getAclService(),
+                'acl_resource_column' => 'RESOURCE',
                 'database_adapter' => $this->adapter,
                 'database_table' => 'time_pay_codes',
                 'database_id_column' => 'UUID',
