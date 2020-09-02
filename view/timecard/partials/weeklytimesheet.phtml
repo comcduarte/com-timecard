@@ -15,35 +15,37 @@ $paycode_value = $paycode->getValue();
 echo $this->formInput($form->get('UUID'));
 echo $this->formInput($form->get('SECURITY'));
 echo $this->formInput($form->get('TIMECARD_UUID'));
+
+$cols = ['MON','TUES','WED','THURS','FRI','SAT','SUN','DAYS'];
+$total_paycode = 0;
 ?>
 
 <tr>
 	<td><span style="white-space:nowrap"><?php echo $paycode_value_options[$paycode_value];?></span></td>
-	<?php if ($form->get('STATUS')->getValue() == TimecardLineModel::SUBMITTED_STATUS && $this->role == 'APP - CHRONOS USER') : ?>
-	<td><?php echo $form->get('MON')->getValue(); ?></td>
-	<td><?php echo $form->get('TUES')->getValue(); ?></td>
-	<td><?php echo $form->get('WED')->getValue(); ?></td>
-	<td><?php echo $form->get('THURS')->getValue(); ?></td>
-	<td><?php echo $form->get('FRI')->getValue(); ?></td>
-	<td><?php echo $form->get('SAT')->getValue(); ?></td>
-	<td><?php echo $form->get('SUN')->getValue(); ?></td>
-	<td><?php echo $form->get('DAYS')->getValue(); ?></td>
-	<td></td>
-	<?php else : ?>
-	<td><?php echo $this->formInput($form->get('MON'));?></td>
-	<td><?php echo $this->formInput($form->get('TUES'));?></td>
-	<td><?php echo $this->formInput($form->get('WED'));?></td>
-	<td><?php echo $this->formInput($form->get('THURS'));?></td>
-	<td><?php echo $this->formInput($form->get('FRI'));?></td>
-	<td><?php echo $this->formInput($form->get('SAT'));?></td>
-	<td><?php echo $this->formInput($form->get('SUN'));?></td>
-	<td><?php echo $this->formInput($form->get('DAYS'));?></td>
+	
+	<?php foreach ($cols as $col) : ?>
+		<?php $total_paycode += $form->get($col)->getValue(); ?>
+	
+		<?php if ($form->get('STATUS')->getValue() == TimecardLineModel::SUBMITTED_STATUS && $this->role == 'APP - CHRONOS USER') : ?>
+			<td><?php echo $form->get($col)->getValue(); ?></td>
+		<?php else : ?>
+			<td><?php echo $this->formInput($form->get($col));?></td>
+		<?php endif; ?>
+	
+	<?php endforeach; ?>
+	<td>
+		<?php 
+		if ($total_paycode > 40) {
+		    echo "<span class='badge badge-warning'>" . $total_paycode . "</span>";
+		} else {
+		    echo "<span class='badge badge-success'>" . $total_paycode . "</span>";
+		}
+        ?>
+	</td>
 	<td>
 		<a href="<?php echo $this->url('timecard/lines', ['action' => 'delete', 'uuid' => $form->get('UUID')->getValue()]); ?>"><i class="fas fa-trash-alt"></i></a>
 		<?php // echo $this->formCheckbox($form->get('STATUS')); ?>
 	</td>
-	<?php endif; ?>
-	
 </tr>
 <?php echo $this->formInput($form->get('SUBMIT'));?>
 <?php echo $this->form()->closeTag($form); ?>

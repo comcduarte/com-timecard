@@ -65,6 +65,7 @@ class TimecardController extends AbstractBaseController
         $timecard->EMP_UUID = $user_entity->employee->UUID;
         $timecard->getTimecard();
         $view->setVariable('timecard_uuid', $timecard->TIMECARD_UUID);
+        $view->setVariable('HOURS', $timecard->HOURS);
         
         /****************************************
          * FORM CREATION

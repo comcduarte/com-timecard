@@ -19,10 +19,16 @@ class TimecardEntity
     public $TIMECARD_LINES = [];
     public $TIMECARD_SIGNATURES = [];
     public $NOTES = [];
+    public $HOURS = [];
+    
+    public $DAYS = ['MON','TUES','WED','THURS','FRI','SAT','SUN'];
     
     public function __construct()
     {
-        
+        foreach ($this->DAYS as $DAY) {
+            $this->HOURS[$DAY] = 0;
+        }
+        $this->HOURS['TOTAL'] = 0;
     }
     
     public function getTimecard()
@@ -58,6 +64,14 @@ class TimecardEntity
             $line->read(['UUID' => $record['UUID']]);
             $id = preg_replace('/^[a-z0-9]*/', str_pad($line->ORD, 8, '0', STR_PAD_LEFT), $line->UUID);
             $this->TIMECARD_LINES[$id] = $line;
+            
+            $this->HOURS[$line->PAY_UUID] = 0;
+            
+            foreach ($this->DAYS as $DAY) {
+                $this->HOURS[$DAY] += intval($line->$DAY);
+                $this->HOURS[$line->PAY_UUID] += intval($line->$DAY);
+                $this->HOURS['TOTAL'] += intval($line->$DAY);
+            }
         }
         
         /****************************************
