@@ -430,6 +430,9 @@ return [
         ],
     ],
     'view_manager' => [
+        'template_map' => [
+            'timecard/config' => __DIR__ . '/../view/timecard/config/index.phtml',
+        ],
         'template_path_stack' => [
             __DIR__ . '/../view',
         ],

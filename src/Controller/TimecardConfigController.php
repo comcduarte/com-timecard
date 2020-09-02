@@ -2,19 +2,21 @@
 namespace Timecard\Controller;
 
 use Components\Controller\AbstractConfigController;
+use Components\Form\UploadFileForm;
+use Employee\Model\EmployeeModel;
 use Laminas\Db\Sql\Sql;
+use Laminas\Db\Sql\Where;
 use Laminas\Db\Sql\Ddl\CreateTable;
 use Laminas\Db\Sql\Ddl\DropTable;
 use Laminas\Db\Sql\Ddl\Column\Datetime;
 use Laminas\Db\Sql\Ddl\Column\Integer;
 use Laminas\Db\Sql\Ddl\Column\Varchar;
 use Laminas\Db\Sql\Ddl\Constraint\PrimaryKey;
-use Timecard\Traits\DateAwareTrait;
-use Employee\Model\EmployeeModel;
-use Laminas\Db\Sql\Where;
-use Timecard\Model\TimecardModel;
-use Timecard\Model\TimecardLineModel;
+use Laminas\View\Model\ViewModel;
 use Timecard\Model\PaycodeModel;
+use Timecard\Model\TimecardLineModel;
+use Timecard\Model\TimecardModel;
+use Timecard\Traits\DateAwareTrait;
 
 class TimecardConfigController extends AbstractConfigController
 {
@@ -28,12 +30,27 @@ class TimecardConfigController extends AbstractConfigController
         $this->setRoute('timecard/config');
     }
     
+    public function indexAction()
+    {
+        $view = new ViewModel();
+        $view = parent::indexAction();
+        
+        $importForm = new UploadFileForm('PAYCODES');
+        $importForm->init();
+        $importForm->addInputFilter();
+        
+        $view->setVariable('importForm', $importForm);
+        
+        $view->setTemplate('timecard/config');
+        
+        return $view;
+    }
+    
     public function clearDatabase()
     {
         $sql = new Sql($this->adapter);
         $ddl = [];
         
-//         $ddl[] = new DropTable('time');
         $ddl[] = new DropTable('time_pay_codes');
         $ddl[] = new DropTable('time_cards');
         $ddl[] = new DropTable('time_cards_lines');
@@ -51,27 +68,6 @@ class TimecardConfigController extends AbstractConfigController
     public function createDatabase()
     {
         $sql = new Sql($this->adapter);
-        
-        /******************************
-         * TIME
-         ******************************/
-//         $ddl = new CreateTable('time');
-        
-//         $ddl->addColumn(new Varchar('UUID', 36));
-//         $ddl->addColumn(new Integer('STATUS', TRUE));
-//         $ddl->addColumn(new Datetime('DATE_CREATED', TRUE));
-//         $ddl->addColumn(new Datetime('DATE_MODIFIED', TRUE));
-        
-//         $ddl->addColumn(new Datetime('WORK_DATE', TRUE));
-//         $ddl->addColumn(new Varchar('EMP_UUID', 36, TRUE));
-//         $ddl->addColumn(new Varchar('PAY_UUID', 36, TRUE));
-//         $ddl->addColumn(new Integer('HOURS', TRUE));
-//         $ddl->addColumn(new Integer('DAYS', TRUE));
-        
-//         $ddl->addConstraint(new PrimaryKey('UUID'));
-        
-//         $this->adapter->query($sql->buildSqlString($ddl), $this->adapter::QUERY_MODE_EXECUTE);
-//         unset($ddl);
         
         /******************************
          * TIMECARD
@@ -167,9 +163,11 @@ class TimecardConfigController extends AbstractConfigController
         $ddl->addColumn(new Datetime('DATE_CREATED', TRUE));
         $ddl->addColumn(new Datetime('DATE_MODIFIED', TRUE));
         
-        $ddl->addColumn(new Varchar('CODE', 100, TRUE));
-        $ddl->addColumn(new Varchar('DESC', 255, TRUE));
-        $ddl->addColumn(new Varchar('RESOURCE', 255, TRUE));
+        $ddl->addColumn(new Varchar('CODE', 10, TRUE));
+        $ddl->addColumn(new Varchar('DESC', 100, TRUE));
+        $ddl->addColumn(new Varchar('CAT', 10, TRUE));
+        
+        $ddl->addColumn(new Varchar('RESOURCE', 25, TRUE));
         
         $ddl->addConstraint(new PrimaryKey('UUID'));
         
@@ -193,13 +191,6 @@ class TimecardConfigController extends AbstractConfigController
     
     public function populateWeeklyTimecards()
     {
-//         $date = new \DateTime('now',new \DateTimeZone('EDT'));
-//         $this->DATE_CREATED = $date->format('Y-m-d H:i:s');
-        
-//         if (is_null($this->UUID)) {
-//             $this->UUID = $this->generate_uuid();
-//         }
-
         /******************************
          * GET EMPLOYEE UUID LIST
          ******************************/
@@ -295,5 +286,79 @@ class TimecardConfigController extends AbstractConfigController
     public function cronAction()
     {
         $this->populateWeeklyTimecards();
+    }
+    
+    public function importpaycodesAction()
+    {
+        /****************************************
+         * Column Descriptions
+         ****************************************/
+        $CODE = 0;
+        $DESC = 1;
+        $CAT = 2;
+        $CAT_TYPE = 3;
+        $PAY_TYPE = 4;
+        $SEPCK = 5;
+        $ACCT = 6;
+        $STATUS = 7;
+        
+        /****************************************
+         * Generate Form
+         ****************************************/
+        $request = $this->getRequest();
+        
+        $form = new UploadFileForm();
+        $form->init();
+        $form->addInputFilter();
+        
+        if ($request->isPost()) {
+            $data = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+                );
+            
+            $form->setData($data);
+            
+            if ($form->isValid()) {
+                $data = $form->getData();
+                if (($handle = fopen($data['FILE']['tmp_name'],"r")) !== FALSE) {
+                    while (($record = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                        /****************************************
+                         * Paycodes
+                         ****************************************/
+                        $pc = new PaycodeModel($this->timecard_adapter);
+                        $result = $pc->read(['CODE' => sprintf('%s', $record[$CODE])]);
+                        if ($result === FALSE) {
+                            $pc->UUID = $pc->generate_uuid();
+                            $pc->CODE = $record[$CODE];
+                            $pc->DESC = $record[$DESC];
+                            $pc->CAT = $record[$CAT];
+                            
+                            switch ($record[$STATUS]) {
+                                case "Active":
+                                    $pc->STATUS = $pc::ACTIVE_STATUS;
+                                    break;
+                                case "Inactive":
+                                    $pc->STATUS = $pc::INACTIVE_STATUS;
+                                    break;
+                                default:
+                                    $pc->STATUS = $pc::INACTIVE_STATUS;
+                                    break;
+                            }
+                            $pc->create();
+                        }
+                        
+                    }
+                    fclose($handle);
+                    unlink($data['FILE']['tmp_name']);
+                }
+                $this->flashMessenger()->addSuccessMessage("Successfully imported paycodes.");
+            } else {
+                $this->flashmessenger()->addErrorMessage("Form is Invalid.");
+            }
+        }
+        
+        $url = $this->getRequest()->getHeader('Referer')->getUri();
+        return $this->redirect()->toUrl($url);
     }
 }
