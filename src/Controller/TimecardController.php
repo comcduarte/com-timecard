@@ -12,17 +12,17 @@ use Timecard\Model\TimecardStageModel;
 use Timecard\Model\Entity\TimecardEntity;
 use Timecard\Traits\DateAwareTrait;
 use User\Model\UserModel;
+use Components\Traits\AclAwareTrait;
 
 class TimecardController extends AbstractBaseController
 {
     use DateAwareTrait;
     use AnnotationAwareTrait;
+    use AclAwareTrait;
     
     public $user_adapter;
     public $employee_adapter;
     public $timecard_add_form;
-    
-    public $acl_service;
     
     public function timesheetAction()
     {

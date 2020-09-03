@@ -1,6 +1,3 @@
-<?php 
-$role = $this->user_entity->groups[0]['ROLENAME'];
-?>
 <div class="row">
 	<div class="col">
 		<h1>Timesheet</h1>
@@ -38,7 +35,7 @@ $role = $this->user_entity->groups[0]['ROLENAME'];
 			</thead>
 			<tbody>
 			<?php foreach ($this->timesheet_forms as $form) : ?>
-				<?php echo $this->partial('timecard/partials/weeklytimesheet.phtml',['form' => $form, 'role' => $role]); ?>
+				<?php echo $this->partial('timecard/partials/weeklytimesheet.phtml',['form' => $form, 'user_entity' => $this->user_entity, 'acl_service' => $this->acl_service]); ?>
 			<?php endforeach; ?>
 			<tr>
 				<td>Daily Totals</td>
@@ -64,10 +61,10 @@ $role = $this->user_entity->groups[0]['ROLENAME'];
 				<td />
 				<td>
 					<?php 
-					if ($this->HOURS['TOTAL'] > 40 ) {
+					if ($this->HOURS['TOTAL'] > 40 || $this->HOURS['TOTAL'] < 40 ) {
 					    echo "<span class='badge badge-warning'>" . $this->HOURS['TOTAL'] . "</span>";
 					} else {
-					    echo "<span class='badge badge-success'>" . $this->HOURS['TOTAL'] . "</span>";
+// 					    echo "<span class='badge badge-success'>" . $this->HOURS['TOTAL'] . "</span>";
 					}
 					?>
 				</td>
@@ -97,14 +94,19 @@ $role = $this->user_entity->groups[0]['ROLENAME'];
 </div>
 <div class="row">
 	<div class="col">
-		<?php 
+		<?php
+		$roles = [];
+		foreach ($this->user_entity->user->memberOf() as $role) {
+		    array_push($roles, $role['ROLENAME']);
+		}
+		
 		echo $this->partial('timecard/partials/sign.phtml', [
 		    'title' => 'Signatures',
 		    'data' => $this->timecard_signatures,
 		    'primary_key' => 'UUID',
 		    'route' => 'timecards/signatures',
 		    'timecard_uuid' => $this->timecard_uuid,
-		    'role' => $role,
+		    'role' => $roles,
 		    'acl_service' => $acl_service,
 		    'params' => [],
 		]); 

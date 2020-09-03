@@ -27,6 +27,7 @@ $total_paycode = 0;
 		<?php $total_paycode += $form->get($col)->getValue(); ?>
 	
 		<?php if ($form->get('STATUS')->getValue() == TimecardLineModel::SUBMITTED_STATUS && $this->role == 'APP - CHRONOS USER') : ?>
+		
 			<td><?php echo $form->get($col)->getValue(); ?></td>
 		<?php else : ?>
 			<td><?php echo $this->formInput($form->get($col));?></td>
