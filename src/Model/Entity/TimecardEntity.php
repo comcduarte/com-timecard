@@ -68,9 +68,9 @@ class TimecardEntity
             $this->HOURS[$line->PAY_UUID] = 0;
             
             foreach ($this->DAYS as $DAY) {
-                $this->HOURS[$DAY] += intval($line->$DAY);
-                $this->HOURS[$line->PAY_UUID] += intval($line->$DAY);
-                $this->HOURS['TOTAL'] += intval($line->$DAY);
+                $this->HOURS[$DAY] += floatval($line->$DAY);
+                $this->HOURS[$line->PAY_UUID] += floatval($line->$DAY);
+                $this->HOURS['TOTAL'] += floatval($line->$DAY);
             }
         }
         

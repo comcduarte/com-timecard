@@ -43,11 +43,11 @@
 				<td>
 					<?php 
 					switch (TRUE) {
-					    case (intval($this->HOURS[$DAY]) === 0):
+					    case (floatval($this->HOURS[$DAY]) == 0):
 					        $total_class = 'badge-success';
 					        break;
-					    case (intval($this->HOURS[$DAY]) > 8):
-					    case (intval($this->HOURS[$DAY]) < 8):
+					    case (floatval($this->HOURS[$DAY]) > 8):
+					    case (floatval($this->HOURS[$DAY]) < 8):
 					        $total_class = 'badge-warning';
 					        break;
 					    default:
