@@ -37,12 +37,12 @@ class DepartmentController extends AbstractActionController
         /****************************************
          * RETRIEVE DEPARTMENT EMPLOYEES
          ****************************************/
-        $departmet_preparer = $user_entity->employee;
+        $department_preparer = $user_entity->employee;
         
         $sql = new Sql($this->employee_adapter);
         
         $where = new Where();
-        $where->equalTo('DEPT', $departmet_preparer->DEPT)->AND->equalTo('employees.STATUS', $departmet_preparer::ACTIVE_STATUS);
+        $where->equalTo('DEPT', $department_preparer->DEPT)->AND->equalTo('employees.STATUS', $department_preparer::ACTIVE_STATUS);
         
         $select = new Select();
         $select->from('employees');
