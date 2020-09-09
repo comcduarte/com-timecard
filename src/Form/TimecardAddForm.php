@@ -98,7 +98,7 @@ class TimecardAddForm extends Form
             'type' => Submit::class,
             'attributes' => [
                 'value' => 'Submit',
-                'class' => 'btn btn-primary form-control mt-4',
+                'class' => 'btn btn-primary form-control',
                 'id' => 'SUBMIT',
             ],
         ],['priority' => 0]);
