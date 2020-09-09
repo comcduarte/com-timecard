@@ -35,6 +35,7 @@
 			</thead>
 			<tbody>
 			<?php foreach ($this->timesheet_forms as $form) : ?>
+				<?php $var = $form->get('STATUS')->getValue(); ?>
 				<?php echo $this->partial('timecard/partials/weeklytimesheet.phtml',['form' => $form, 'user_entity' => $this->user_entity, 'acl_service' => $this->acl_service]); ?>
 			<?php endforeach; ?>
 			<tr>

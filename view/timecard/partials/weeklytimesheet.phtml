@@ -1,4 +1,8 @@
 <?php 
+/**
+ * Passed Variables
+ * form, user_entity, acl_service
+ */
 use Components\Form\Element\DatabaseSelect;
 use Timecard\Model\TimecardLineModel;
 
@@ -23,16 +27,17 @@ $total_paycode = 0;
 <tr>
 	<td><span style="white-space:nowrap"><?php echo $paycode_value_options[$paycode_value];?></span></td>
 	
+	
+	
 	<?php foreach ($cols as $col) : ?>
 		<?php $total_paycode += $form->get($col)->getValue(); ?>
-	
-		<?php if ($form->get('STATUS')->getValue() == TimecardLineModel::SUBMITTED_STATUS && $this->role == 'APP - CHRONOS USER') : ?>
-		
-			<td><?php echo $form->get($col)->getValue(); ?></td>
+			
+    	<?php if ($this->acl_service->isAllowed($this->user_entity->user->memberOf(TRUE), 'TIMECARD_LINE', $this->form->get('STATUS')->getValue())) : ?>
+    		<td><?php echo $this->formInput($form->get($col));?></td>
 		<?php else : ?>
-			<td><?php echo $this->formInput($form->get($col));?></td>
-		<?php endif; ?>
-	
+    		<td><?php echo $form->get($col)->getValue(); ?></td>
+    	<?php endif; ?>
+
 	<?php endforeach; ?>
 	<td>
 		<?php 
@@ -44,8 +49,9 @@ $total_paycode = 0;
         ?>
 	</td>
 	<td>
+		<?php if ($this->acl_service->isAllowed($this->user_entity->user->memberOf(TRUE), 'TIMECARD_LINE', $this->form->get('STATUS')->getValue())) : ?>
 		<a href="<?php echo $this->url('timecard/lines', ['action' => 'delete', 'uuid' => $form->get('UUID')->getValue()]); ?>"><i class="fas fa-trash-alt"></i></a>
-		<?php // echo $this->formCheckbox($form->get('STATUS')); ?>
+		<?php endif; ?>
 	</td>
 </tr>
 <?php echo $this->formInput($form->get('SUBMIT'));?>
