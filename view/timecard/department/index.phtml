@@ -20,7 +20,7 @@
 <?php $title = $this->dept->NAME; ?>
 <div class="row">
 	<div class="col">
-		<?php echo $this->partial('base/subtable', [
+		<?php echo $this->partial('dept/dashboard', [
 		    'title' => $title,
 		    'data' => $this->employees,
 		    'primary_key' => 'UUID',
@@ -33,10 +33,16 @@
     		        'key' => 'UUID',
 	            ],
 		        [
+		            'action' => 'active',
+		            'label' => 'Unsubmit',
+		            'route' => 'timecard/secure_signatures',
+		            'key' => 'Timecard',
+		        ],
+		        [
 		            'action' => 'prepare',
 		            'label' => 'Prepare',
 		            'route' => 'timecard/secure_signatures',
-		            'key' => 'UUID',
+		            'key' => 'Timecard',
 		        ],
 		    ],
 		]);?>

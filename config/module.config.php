@@ -432,6 +432,7 @@ return [
     'view_manager' => [
         'template_map' => [
             'timecard/config' => __DIR__ . '/../view/timecard/config/index.phtml',
+            'dept/dashboard' => __DIR__ . '/../view/timecard/partials/dept-dashboard.phtml',
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',

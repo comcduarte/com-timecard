@@ -107,6 +107,7 @@ class DepartmentController extends AbstractActionController
                         $data[$index]['STATUS'] = "<span class='badge badge-warning'>Pending</span>";
                         break;
                 }
+                $data[$index]['Timecard'] = $timecards[0]['UUID'];
             } else {
                 $data[$index]['STATUS'] = "<span class='badge badge-danger'>Vacant</span>";
             }

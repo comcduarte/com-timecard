@@ -9,6 +9,21 @@ use Timecard\Model\TimecardStageModel;
 
 class TimecardSignatureController extends AbstractBaseController
 {
+    public function activeAction()
+    {
+        $uuid = $this->params()->fromRoute('uuid', 0);
+        $url = $this->getRequest()->getHeader('Referer')->getUri();
+        
+        if (! $uuid) {
+            $this->flashmessenger()->addErrorMessage('No Timecard Identifier Specified');
+            return $this->redirect()->toUrl($url);
+        }
+        
+        $this->sign($uuid, TimecardModel::ACTIVE_STATUS);
+        
+        return $this->redirect()->toUrl($url);
+    }
+    
     public function submitAction()
     {
         $uuid = $this->params()->fromRoute('uuid', 0);
