@@ -23,7 +23,7 @@ class PaycodeController extends AbstractBaseController
         
         $select = new Select();
         $select->from($this->model->getTableName());
-        $select->columns(['CODE','DESC','RESOURCE']);
+        $select->columns(['UUID','CODE','DESC','RESOURCE']);
         $select->where(new Where());
         $select->order('RESOURCE DESC','CODE');
         
