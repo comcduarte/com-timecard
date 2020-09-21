@@ -50,5 +50,31 @@ class PaycodeForm extends AbstractBaseForm
                 'label' => 'Acl Resource',
             ],
         ],['priority' => 100]);
+        
+        $this->add([
+            'name' => 'CAT',
+            'type' => Text::class,
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'RESOURCE',
+                'placeholder' => '',
+            ],
+            'options' => [
+                'label' => 'Category',
+            ],
+        ],['priority' => 100]);
+        
+        $this->add([
+            'name' => 'PAY_TYPE',
+            'type' => Text::class,
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'PAY_TYPE',
+                'placeholder' => '',
+            ],
+            'options' => [
+                'label' => 'Pay Type',
+            ],
+        ],['priority' => 100]);
     }
 }

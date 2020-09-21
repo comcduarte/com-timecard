@@ -8,6 +8,8 @@ class PaycodeModel extends AbstractBaseModel
     public $CODE;
     public $DESC;
     public $RESOURCE;
+    public $CAT;
+    public $PAY_TYPE;
     
     public function __construct($adapter = NULL)
     {

@@ -167,6 +167,7 @@ class TimecardConfigController extends AbstractConfigController
         $ddl->addColumn(new Varchar('CODE', 10, TRUE));
         $ddl->addColumn(new Varchar('DESC', 100, TRUE));
         $ddl->addColumn(new Varchar('CAT', 10, TRUE));
+        $ddl->addColumn(new VarChar('PAY_TYPE', 50, TRUE));
         
         $ddl->addColumn(new Varchar('RESOURCE', 25, TRUE));
         
@@ -334,6 +335,7 @@ class TimecardConfigController extends AbstractConfigController
                             $pc->CODE = $record[$CODE];
                             $pc->DESC = $record[$DESC];
                             $pc->CAT = $record[$CAT];
+                            $pc->PAY_TYPE = $record[$PAY_TYPE];
                             
                             switch ($record[$STATUS]) {
                                 case "Active":
@@ -347,6 +349,23 @@ class TimecardConfigController extends AbstractConfigController
                                     break;
                             }
                             $pc->create();
+                        } else {
+                            $pc->DESC = $record[$DESC];
+                            $pc->CAT = $record[$CAT];
+                            $pc->PAY_TYPE = $record[$PAY_TYPE];
+                            
+                            switch ($record[$STATUS]) {
+                                case "Active":
+                                    $pc->STATUS = $pc::ACTIVE_STATUS;
+                                    break;
+                                case "Inactive":
+                                    $pc->STATUS = $pc::INACTIVE_STATUS;
+                                    break;
+                                default:
+                                    $pc->STATUS = $pc::INACTIVE_STATUS;
+                                    break;
+                            }
+                            $pc->update();
                         }
                         
                     }

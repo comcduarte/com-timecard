@@ -67,6 +67,7 @@ class DepartmentController extends AbstractActionController
          ****************************************/
         if (! $this->params()->fromRoute('week', 0)) {
             $work_week = $this->getEndofWeek('last week');
+            return $this->redirect()->toRoute('dept/timesheet', ['week' => $work_week]);
         } else {
             $work_week = $this->getEndofWeek($this->params()->fromRoute('week', 0));
         }
