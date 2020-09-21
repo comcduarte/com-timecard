@@ -7,6 +7,7 @@ use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Where;
+use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 use Timecard\Form\TimesheetFilterForm;
@@ -65,7 +66,7 @@ class DepartmentController extends AbstractActionController
          * GET WORK WEEK
          ****************************************/
         if (! $this->params()->fromRoute('week', 0)) {
-            $work_week = $this->getEndofWeek();
+            $work_week = $this->getEndofWeek('last week');
         } else {
             $work_week = $this->getEndofWeek($this->params()->fromRoute('week', 0));
         }
@@ -125,6 +126,26 @@ class DepartmentController extends AbstractActionController
         $view->setVariables([
             'week_form' => $form,
         ]);
+        
+        /****************************************
+         * REPORTS SUBTABLE
+         ****************************************/
+        $reports = [];
+        
+        $sql = new Sql($this->adapter);
+        $select = new Select();
+        $select->columns(['UUID', 'NAME'])
+        ->from('reports')
+        ->where([new Like('NAME', 'DEPT - %')]);
+        
+        $statement = $sql->prepareStatementForSqlObject($select);
+        
+        $results = $statement->execute();
+        $resultSet = new ResultSet($results);
+        $resultSet->initialize($results);
+        $reports = $resultSet->toArray();
+        
+        $view->setVariable('reports', $reports);
         
         /****************************************
          * SET MISCELLANEOUS VARIABLES
