@@ -80,7 +80,7 @@ class TimecardEntity
         $timecard_signature = new TimecardSignatureModel($this->adapter);
         $where = new Where();
         $where->equalTo('TIMECARD_UUID', $timecard->UUID);
-        $data = $timecard_signature->fetchAll($where);
+        $data = $timecard_signature->fetchAll($where, ['DATE_CREATED DESC']);
         
         if (is_array($data)) {
             foreach ($data as $index => $record) {
