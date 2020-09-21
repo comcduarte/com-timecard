@@ -1,8 +1,8 @@
 <div class="row">
-	<div class="col">
+	<div class="col-9">
 		<h1>Dashboard</h1>
 	</div>
-	<div class="col">
+	<div class="col-3">
 		<?php $week_form->setAttribute('action', $this->url('dept/default', ['action' => 'filter'])); ?>
 		<?php $week_form->prepare(); ?>
 		<?php echo $this->form()->openTag($week_form); ?>
@@ -46,5 +46,30 @@
 		        ],
 		    ],
 		]);?>
+	</div>
+</div>
+<div class="row">
+	<div class="col" style="max-height: 350px; overflow-y: auto;">
+    	<?php echo $this->partial('report/context', [
+    	    'title' => 'Reports',
+    	    'data' => $this->reports,
+    	    'primary_key' => 'UUID',
+    	    'route' => 'reports/default',
+    	    'params' => [
+    	        [
+    	            'key' => 'UUID',
+    	            'action' => 'view',
+    	            'route' => 'reports/default',
+    	            'label' => 'View',
+    	            'num_vars' => 2,
+    	            'vars' => [
+    	                'FIELD0' => 'time_cards.WORK_WEEK',
+    	                'VALUE0' => $this->work_week,
+    	                'FIELD1' => 'employee_dev.employees.DEPT',
+    	                'VALUE1' => '237198fa-0495-3df4-c527-c81b262e6287',
+    	            ],
+    	        ],
+    	    ],
+    	])?>
 	</div>
 </div>
