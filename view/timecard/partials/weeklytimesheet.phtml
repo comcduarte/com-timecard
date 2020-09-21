@@ -32,7 +32,7 @@ $total_paycode = 0;
 	<?php foreach ($cols as $col) : ?>
 		<?php $total_paycode += $form->get($col)->getValue(); ?>
 			
-    	<?php if ($this->acl_service->isAllowed($this->user_entity->user->memberOf(TRUE), 'TIMECARD_LINE', $this->form->get('STATUS')->getValue())) : ?>
+    	<?php if ($this->acl_service->isAllowed($this->user->memberOf(TRUE), 'TIMECARD_LINE', $this->form->get('STATUS')->getValue())) : ?>
     		<td><?php echo $this->formInput($form->get($col));?></td>
 		<?php else : ?>
     		<td><?php echo $form->get($col)->getValue(); ?></td>
@@ -49,7 +49,7 @@ $total_paycode = 0;
         ?>
 	</td>
 	<td>
-		<?php if ($this->acl_service->isAllowed($this->user_entity->user->memberOf(TRUE), 'TIMECARD_LINE', $this->form->get('STATUS')->getValue())) : ?>
+		<?php if ($this->acl_service->isAllowed($this->user->memberOf(TRUE), 'TIMECARD_LINE', $this->form->get('STATUS')->getValue())) : ?>
 		<a href="<?php echo $this->url('timecard/lines', ['action' => 'delete', 'uuid' => $form->get('UUID')->getValue()]); ?>"><i class="fas fa-trash-alt"></i></a>
 		<?php endif; ?>
 	</td>
