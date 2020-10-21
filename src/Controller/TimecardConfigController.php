@@ -49,7 +49,7 @@ class TimecardConfigController extends AbstractConfigController
     
     public function clearDatabase()
     {
-        $sql = new Sql($this->adapter);
+        $sql = new Sql($this->timecard_adapter);
         $ddl = [];
         
         $ddl[] = new DropTable('time_pay_codes');
@@ -60,7 +60,7 @@ class TimecardConfigController extends AbstractConfigController
         $ddl[] = new DropTable('user_employee');
         
         foreach ($ddl as $obj) {
-            $this->adapter->query($sql->buildSqlString($obj), $this->adapter::QUERY_MODE_EXECUTE);
+            $this->timecard_adapter->query($sql->buildSqlString($obj), $this->timecard_adapter::QUERY_MODE_EXECUTE);
         }
         
         $this->clearSettings('TIMECARD');
@@ -68,7 +68,7 @@ class TimecardConfigController extends AbstractConfigController
 
     public function createDatabase()
     {
-        $sql = new Sql($this->adapter);
+        $sql = new Sql($this->timecard_adapter);
         
         /******************************
          * TIMECARD
@@ -95,7 +95,7 @@ class TimecardConfigController extends AbstractConfigController
         
         $ddl->addConstraint(new PrimaryKey('UUID'));
         
-        $this->adapter->query($sql->buildSqlString($ddl), $this->adapter::QUERY_MODE_EXECUTE);
+        $this->timecard_adapter->query($sql->buildSqlString($ddl), $this->timecard_adapter::QUERY_MODE_EXECUTE);
         unset($ddl);
         
         /******************************
@@ -113,7 +113,7 @@ class TimecardConfigController extends AbstractConfigController
         
         $ddl->addConstraint(new PrimaryKey('UUID'));
         
-        $this->adapter->query($sql->buildSqlString($ddl), $this->adapter::QUERY_MODE_EXECUTE);
+        $this->timecard_adapter->query($sql->buildSqlString($ddl), $this->timecard_adapter::QUERY_MODE_EXECUTE);
         unset($ddl);
         
         /******************************
@@ -132,7 +132,7 @@ class TimecardConfigController extends AbstractConfigController
         
         $ddl->addConstraint(new PrimaryKey('UUID'));
         
-        $this->adapter->query($sql->buildSqlString($ddl), $this->adapter::QUERY_MODE_EXECUTE);
+        $this->timecard_adapter->query($sql->buildSqlString($ddl), $this->timecard_adapter::QUERY_MODE_EXECUTE);
         unset($ddl);
         
         /******************************
@@ -151,7 +151,7 @@ class TimecardConfigController extends AbstractConfigController
         
         $ddl->addConstraint(new PrimaryKey('UUID'));
         
-        $this->adapter->query($sql->buildSqlString($ddl), $this->adapter::QUERY_MODE_EXECUTE);
+        $this->timecard_adapter->query($sql->buildSqlString($ddl), $this->timecard_adapter::QUERY_MODE_EXECUTE);
         unset($ddl);
         
         /******************************
@@ -173,7 +173,7 @@ class TimecardConfigController extends AbstractConfigController
         
         $ddl->addConstraint(new PrimaryKey('UUID'));
         
-        $this->adapter->query($sql->buildSqlString($ddl), $this->adapter::QUERY_MODE_EXECUTE);
+        $this->timecard_adapter->query($sql->buildSqlString($ddl), $this->timecard_adapter::QUERY_MODE_EXECUTE);
         unset($ddl);
         
         /******************************
@@ -187,7 +187,7 @@ class TimecardConfigController extends AbstractConfigController
         
         $ddl->addConstraint(new PrimaryKey('UUID'));
         
-        $this->adapter->query($sql->buildSqlString($ddl), $this->adapter::QUERY_MODE_EXECUTE);
+        $this->timecard_adapter->query($sql->buildSqlString($ddl), $this->timecard_adapter::QUERY_MODE_EXECUTE);
         unset($ddl);
     }
     
