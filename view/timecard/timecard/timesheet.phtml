@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-9">
-		<h1><?php echo sprintf('%s %s - Timesheet', $this->user_entity->user->FNAME, $this->user_entity->user->LNAME)?></h1>
+		<h1><?php echo sprintf('%s %s - Timesheet', $this->user_entity->employee->FNAME, $this->user_entity->employee->LNAME)?></h1>
 	</div>
 	<div class="col-3">
 		<?php $week_form->setAttribute('action', $this->url('timecard/default', ['action' => 'filter'])); ?>
