@@ -119,7 +119,7 @@ class TimecardController extends AbstractBaseController
 //         $select->order(['NAME']);
         
         /** Retrieve Database Select Object **/
-        $form->get('PAY_UUID')->roles = $user_entity->user->memberOf();
+        $form->get('PAY_UUID')->roles = $user->memberOf();
         $form->get('PAY_UUID')->setAclService($this->acl_service)->populateElement();
         
         /** END Custom SQL **/
