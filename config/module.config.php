@@ -31,6 +31,8 @@ use Timecard\Navigation\Factory\SignatureNavigationFactory;
 use Timecard\Service\Factory\TimecardModelAdapterFactory;
 use Timecard\Form\TimecardAddForm;
 use Timecard\Form\Factory\TimecardAddFormFactory;
+use Timecard\Controller\DashboardController;
+use Timecard\Controller\Factory\DashboardControllerFactory;
 
 return [
     'router' => [
@@ -136,6 +138,31 @@ return [
                     ],
                 ],
             ],
+            'dashboard' => [
+                'type' => Literal::class,
+                'priority' => 1,
+                'options' => [
+                    'route' => '/dashboard',
+                    'defaults' => [
+                        'action' => 'index',
+                        'controller' => DashboardController::class,
+                    ],
+                ],
+                'may_terminate' => true,
+                'child_routes' => [
+                    'default' => [
+                        'type' => Segment::class,
+                        'priority' => -100,
+                        'options' => [
+                            'route' => '/[:action[/:week]]',
+                            'defaults' => [
+                                'action' => 'index',
+                                'controller' => DashboardController::class,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
             'dept' => [
                 'type' => Literal::class,
                 'priority' => 1,
@@ -208,6 +235,7 @@ return [
     ],
     'controllers' => [
         'factories' => [
+            DashboardController::class => DashboardControllerFactory::class,
             DepartmentController::class => DepartmentControllerFactory::class,
             PaycodeController::class => PaycodeControllerFactory::class,
             TimecardConfigController::class => TimecardConfigControllerFactory::class,
@@ -248,7 +276,7 @@ return [
                         'route' => 'paycode/default',
                         'class' => 'dropdown-submenu',
                         'resource' => 'paycode/default',
-                        'privilege' => 'index',
+                        'privilege' => 'menu',
                         'pages' => [
                             [
                                 'label' => 'Add New Pay Code',
@@ -317,21 +345,21 @@ return [
                         'route' => 'timecard/lines',
                         'class' => 'dropdown-submenu',
                         'resource' => 'timecard/lines',
-                        'privilege' => 'index',
+                        'privilege' => 'menu',
                         'pages' => [
                             [
                                 'label' => 'Add New Line',
                                 'route' => 'timecard/lines',
                                 'action' => 'create',
                                 'resource' => 'timecard/lines',
-                                'privilege' => 'create',
+                                'privilege' => 'admin',
                             ],
                             [
                                 'label' => 'List Lines',
                                 'route' => 'timecard/lines',
                                 'action' => 'index',
                                 'resource' => 'timecard/lines',
-                                'privilege' => 'index',
+                                'privilege' => 'admin',
                             ],
                         ],
                     ],
@@ -340,7 +368,7 @@ return [
                         'route' => 'timecard/timecards',
                         'class' => 'dropdown-submenu',
                         'resource' => 'timecard/timecards',
-                        'privilege' => 'index',
+                        'privilege' => 'menu',
                         'pages' => [
                             [
                                 'label' => 'Add New Timecard',
@@ -387,6 +415,14 @@ return [
                         'action' => 'index',
                     ],
                 ],
+            ],
+            'payroll' => [
+                'label' => 'Payroll Dashboard',
+                'route' => 'dashboard/default',
+                'action' => 'payroll',
+                'class' => 'dropdown',
+                'resource' => 'dashboard/default',
+                'privilege' => 'menu',
             ],
         ],
         'signatures' => [
