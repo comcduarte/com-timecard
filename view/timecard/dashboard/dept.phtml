@@ -1,0 +1,76 @@
+<div class="row">
+	<div class="col-9">
+		<h1>Department Dashboard</h1>
+	</div>
+	<div class="col-3">
+		<?php $week_form->setAttribute('action', $this->url('dashboard/dept')); ?>
+		<?php $week_form->prepare(); ?>
+		<?php echo $this->form()->openTag($week_form); ?>
+		<div class="form-group">
+			<?php echo $this->formRow($this->week_form->get('EMP_UUID')); ?>
+			<?php echo $this->formRow($this->week_form->get('WORK_WEEK')); ?>
+			<?php echo $this->formRow($this->week_form->get('SECURITY')); ?>
+			<?php echo $this->formRow($this->week_form->get('SUBMIT')); ?>
+		</div>
+		<?php echo $this->form()->closeTag($week_form); ?>
+	</div>
+</div>
+
+
+<?php $title = $this->dept->NAME; ?>
+<div class="row">
+	<div class="col">
+		<?php echo $this->partial('dept/dashboard', [
+		    'title' => $title,
+		    'data' => $this->employees,
+		    'primary_key' => 'UUID',
+		    'route' => 'timecard/timesheet',
+		    'params' => [
+		        [
+    		        'action' => 'timesheet',
+    		        'label' => 'Open Timesheet',
+    		        'route' => 'timecard/timesheet',
+    		        'key' => 'UUID',
+	            ],
+		        [
+		            'action' => 'active',
+		            'label' => 'Unsubmit',
+		            'route' => 'timecard/secure_signatures',
+		            'key' => 'Timecard',
+		        ],
+		        [
+		            'action' => 'prepare',
+		            'label' => 'Prepare',
+		            'route' => 'timecard/secure_signatures',
+		            'key' => 'Timecard',
+		        ],
+		    ],
+		]);?>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col" style="max-height: 350px; overflow-y: auto;">
+    	<?php echo $this->partial('report/context', [
+    	    'title' => 'Reports',
+    	    'data' => $this->reports,
+    	    'primary_key' => 'UUID',
+    	    'route' => 'reports/default',
+    	    'params' => [
+    	        [
+    	            'key' => 'UUID',
+    	            'action' => 'view',
+    	            'route' => 'reports/default',
+    	            'label' => 'View',
+    	            'num_vars' => 2,
+    	            'vars' => [
+    	                'FIELD0' => 'time_cards.WORK_WEEK',
+    	                'VALUE0' => $this->work_week,
+    	                'FIELD1' => 'employee_dev.employees.DEPT',
+    	                'VALUE1' => '237198fa-0495-3df4-c527-c81b262e6287',
+    	            ],
+    	        ],
+    	    ],
+    	])?>
+	</div>
+</div>

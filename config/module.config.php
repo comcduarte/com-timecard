@@ -156,8 +156,21 @@ return [
                         'options' => [
                             'route' => '/[:action[/:week]]',
                             'defaults' => [
-                                'action' => 'index',
                                 'controller' => DashboardController::class,
+                            ],
+                        ],
+                    ],
+                    'dept' => [
+                        'type' => Segment::class,
+                        'priority' => -100,
+                        'options' => [
+                            'route' => '/[:uuid[/:week]]',
+                            'defaults' => [
+                                'action' => 'dept',
+                                'controller' => DashboardController::class,
+                            ],
+                            'constraints' => [
+                                'uuid' => '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}',
                             ],
                         ],
                     ],
@@ -417,12 +430,20 @@ return [
                 ],
             ],
             'payroll' => [
-                'label' => 'Payroll Dashboard',
+                'label' => 'Payroll',
                 'route' => 'dashboard/default',
-                'action' => 'payroll',
                 'class' => 'dropdown',
                 'resource' => 'dashboard/default',
                 'privilege' => 'menu',
+                'pages' => [
+                    [
+                        'label' => 'Dashboard',
+                        'route' => 'dashboard/default',
+                        'resource' => 'dashboard/default',
+                        'privilege' => 'payroll',
+                        'action' => 'payroll',
+                    ],
+                ],
             ],
         ],
         'signatures' => [
