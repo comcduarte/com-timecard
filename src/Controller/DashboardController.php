@@ -89,6 +89,7 @@ class DashboardController extends AbstractBaseController
         $department_model = new DepartmentModel($this->employee_adapter);
         $where = new Where();
 //         $where->equalTo('CODE', '03500');
+        $where->equalTo('STATUS', $department_model::ACTIVE_STATUS);
         $data = $department_model->fetchAll($where, ['CODE']);
         
         /****************************************
