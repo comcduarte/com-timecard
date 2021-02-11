@@ -55,12 +55,14 @@
     	    'title' => 'Reports',
     	    'data' => $this->reports,
     	    'primary_key' => 'UUID',
-    	    'route' => 'reports/default',
+//     	    'route' => 'reports/default',
+    	    'route' => 'custom-report',
     	    'params' => [
     	        [
     	            'key' => 'UUID',
     	            'action' => 'view',
-    	            'route' => 'reports/default',
+//     	            'route' => 'reports/default',
+                    'route' => 'custom-report',
     	            'label' => 'View',
     	            'num_vars' => 2,
     	            'vars' => [
