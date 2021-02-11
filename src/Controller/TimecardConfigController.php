@@ -168,6 +168,7 @@ class TimecardConfigController extends AbstractConfigController
         $ddl->addColumn(new Varchar('DESC', 100, TRUE));
         $ddl->addColumn(new Varchar('CAT', 10, TRUE));
         $ddl->addColumn(new VarChar('PAY_TYPE', 50, TRUE));
+        $ddl->addColumn(new Varchar('PARENT', 36));
         
         $ddl->addColumn(new Varchar('RESOURCE', 25, TRUE));
         

@@ -10,6 +10,7 @@ class PaycodeModel extends AbstractBaseModel
     public $RESOURCE;
     public $CAT;
     public $PAY_TYPE;
+    public $PARENT;
     
     public function __construct($adapter = NULL)
     {
