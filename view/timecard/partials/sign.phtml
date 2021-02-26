@@ -13,6 +13,9 @@
 			<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','approve')) : ?>
 				<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'approve', 'uuid' => $this->timecard_uuid]); ?>" class="btn btn-primary btn-rounder">Approve</a>
 			<?php endif; ?>
+			<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','complete')) : ?>
+				<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'complete', 'uuid' => $this->timecard_uuid]); ?>" class="btn btn-primary btn-rounder">Complete</a>
+			<?php endif; ?>
 		</div>
 	</div>
 	<div class="card-body">

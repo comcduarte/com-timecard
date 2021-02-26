@@ -22,6 +22,7 @@ class TimecardLineModel extends AbstractBaseModel
     const SUBMITTED_STATUS = 10;
     const PREPARERD_STATUS = 11;
     const APPROVED_STATUS = 12;
+    const COMPLETED_STATUS = 13;
     
     public function __construct($adapter = NULL) 
     {

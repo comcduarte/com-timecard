@@ -11,6 +11,7 @@ class TimecardModel extends AbstractBaseModel
     const SUBMITTED_STATUS = 10;
     const PREPARERD_STATUS = 11;
     const APPROVED_STATUS = 12;
+    const COMPLETED_STATUS = 13;
     
     public function __construct($adapter = NULL)
     {
@@ -23,14 +24,18 @@ class TimecardModel extends AbstractBaseModel
         $retval = '';
         
         switch ($status) {
-            case $this::APPROVED_STATUS:
-                $retval = "<span class='badge badge-primary'>Approved</span>";
-                break;
+            
             case $this::SUBMITTED_STATUS:
                 $retval = "<span class='badge badge-success'>Submitted</span>";
                 break;
             case $this::PREPARERD_STATUS:
                 $retval = "<span class='badge badge-info'>Prepared</span>";
+                break;
+            case $this::APPROVED_STATUS:
+                $retval = "<span class='badge badge-primary'>Approved</span>";
+                break;
+            case $this::COMPLETED_STATUS:
+                $retval = "<span class='badge badge-secondary'>Completed</span>";
                 break;
             default:
                 $retval = "<span class='badge badge-warning'>Pending</span>";

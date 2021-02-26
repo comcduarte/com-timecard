@@ -105,6 +105,9 @@ class DepartmentController extends AbstractActionController
                     case $timecard::PREPARERD_STATUS:
                         $data[$index]['STATUS'] = "<span class='badge badge-info'>Prepared</span>";
                         break;
+                    case $timecard::COMPLETED_STATUS:
+                        $data[$index]['STATUS'] = "<span class='badge badge-secondary'>Completed</span>";
+                        break;
                     default:
                         $data[$index]['STATUS'] = "<span class='badge badge-warning'>Pending</span>";
                         break;

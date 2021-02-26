@@ -57,7 +57,7 @@ class DashboardController extends AbstractBaseController
          ****************************************/
         if (! $this->params()->fromRoute('week', 0)) {
             $work_week = $this->getEndofWeek('last week');
-//             return $this->redirect()->toRoute('dashboard/default', ['action' => 'payroll', 'week' => $work_week], [], TRUE);
+            return $this->redirect()->toRoute('dashboard/default', ['action' => 'payroll', 'week' => $work_week], [], TRUE);
         } else {
             $work_week = $this->getEndofWeek($this->params()->fromRoute('week', 0));
         }
@@ -253,6 +253,9 @@ class DashboardController extends AbstractBaseController
                         break;
                     case $timecard::PREPARERD_STATUS:
                         $data[$index]['STATUS'] = "<span class='badge badge-info'>Prepared</span>";
+                        break;
+                    case $timecard::COMPLETED_STATUS:
+                        $data[$index]['STATUS'] = "<span class='badge badge-secondary'>Completed</span>";
                         break;
                     default:
                         $data[$index]['STATUS'] = "<span class='badge badge-warning'>Pending</span>";
