@@ -240,20 +240,13 @@ class TimecardConfigController extends AbstractConfigController
             }
             $timecardModel->UUID = $timecardModel->generate_uuid();
             $timecardModel->EMP_UUID = $employee['UUID'];
-            $result = $timecardModel->create();
-            
-            if (! $result) {
-                $err_str = "Error: " . $employee['UUID'] . " unable to create timecard.";
-                $this->flashMessenger()->addErrorMessage($err_str);
-                continue;
-            }
             
             $timecard_line = new TimecardLineModel($this->timecard_adapter);
             $timecard_line->WORK_WEEK = $work_week;
             $timecard_line->TIMECARD_UUID = $timecardModel->UUID;
             $timecard_line->PAY_UUID = $reg_paycode;
             
-            switch ($employee['GRADE_SCHEDULE']) {
+            switch ($employee['SHIFT_CODE']) {
                 case '40':
                     $timecard_line->MON = 8;
                     $timecard_line->TUES = 8;
@@ -275,13 +268,27 @@ class TimecardConfigController extends AbstractConfigController
                     $timecard_line->THURS = 4;
                     $timecard_line->FRI = 4;
                     break;
-                case 'F':
-                case 'FL':
+                case '42':
+                    $timecard_line->SUN = 42;
                     break;
-                case 'TEMP':
+                case '40S':
+                    $timecard_line->SUN = 40;
+                    break;
+                case '35S':
+                    $timecard_line->SUN = 35;
+                    break;
+                case '20S':
+                    $timecard_line->SUN = 20;
+                    break;
+                case '19.5':
+                    $timecard_line->SUN = 19.5;
+                    break;
                 default:
+                    continue 2;
                     break;
             }
+            
+            $timecardModel->create();
             $timecard_line->create();
         }
     }
