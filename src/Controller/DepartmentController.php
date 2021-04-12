@@ -114,7 +114,12 @@ class DepartmentController extends AbstractActionController
                 }
                 $data[$index]['Timecard'] = $timecards[0]['UUID'];
             } else {
-                $data[$index]['STATUS'] = "<span class='badge badge-danger'>Vacant</span>";
+                /**
+                 * If the employee has not logged in, is not full time and time card is populated by cron,
+                 * or the preparer has not manually added a time card, disregard even active employees.  In
+                 * this manner we can filter out temps.
+                 */
+                unset ($data[$index]);
             }
         }
         
