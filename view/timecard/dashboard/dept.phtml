@@ -1,9 +1,23 @@
 <div class="row">
-	<div class="col-9">
+	<div class="col-6">
 		<h1>Department Dashboard</h1>
 	</div>
+	
+	<!-- Add Employee Form -->
 	<div class="col-3">
-		<?php $week_form->setAttribute('action', $this->url('dashboard/dept')); ?>
+		<?php $this->find_employee_form->setAttribute('action', $this->url('dashboard/dept', ['action' => 'add-employee'])); ?>
+		<?php $this->find_employee_form->prepare(); ?>
+		<?php echo $this->form()->openTag($this->find_employee_form); ?>
+		<div class="form-group">
+			<?php echo $this->formRow($this->find_employee_form->get('EMP')); ?>
+			<?php echo $this->formRow($this->find_employee_form->get('SECURITY')); ?>
+			<?php echo $this->formRow($this->find_employee_form->get('SUBMIT')); ?>
+		</div>
+		<?php echo $this->form()->closeTag($this->find_employee_form); ?>
+	</div>
+	
+	<div class="col-3">
+		<?php $week_form->setAttribute('action', $this->url('dashboard/dept', [], NULL, TRUE)); ?>
 		<?php $week_form->prepare(); ?>
 		<?php echo $this->form()->openTag($week_form); ?>
 		<div class="form-group">

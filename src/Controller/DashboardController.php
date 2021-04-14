@@ -1,7 +1,10 @@
 <?php
 namespace Timecard\Controller;
 
+use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
+use Components\Form\Element\DatabaseSelect;
+use Employee\Form\FindEmployeeForm;
 use Employee\Model\DepartmentModel;
 use Employee\Model\EmployeeModel;
 use Laminas\Db\Adapter\AdapterAwareTrait;
@@ -167,11 +170,19 @@ class DashboardController extends AbstractBaseController
     {
         $view = new ViewModel();
         
-        
-        
+        /****************************************
+         * GET CURRENT USER
+         * @var UserEntity $user_entity
+         ****************************************/
+        $user = $this->currentUser();
+        $user_entity = new UserEntity($this->user_adapter);
+        $user_entity->employee->setDbAdapter($this->employee_adapter);
+        $user_entity->department->setDbAdapter($this->employee_adapter);
+        $user_entity->getUser($user->UUID);
         
         /****************************************
          * GET WORK WEEK
+         * @var String @work_week
          ****************************************/
         if (! $this->params()->fromRoute('week', 0)) {
             $work_week = $this->getEndofWeek('last week');
@@ -182,24 +193,74 @@ class DashboardController extends AbstractBaseController
         $view->setVariable('work_week', $work_week);
         
         /****************************************
+         * GET DEPARTMENT UUID
+         * @var String $dept
+         ****************************************/
+        $dept = '';
+        if (! $this->params()->fromRoute('uuid', 0)) {
+            $dept = $user_entity->employee->DEPT;
+        } else {
+            $dept = $this->params()->fromRoute('uuid', 0);
+        }
+        
+        /****************************************
          * TIMESHEET FILTER SUBFORM
          ****************************************/
         $form = new TimesheetFilterForm();
         $form->init();
+        
+        /**
+         * If form was submitted, load the new work week.
+         */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $data = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+                );
+            $work_week = $this->getEndofWeek($data['WORK_WEEK']);
+            return $this->redirect()->toRoute('dashboard/dept', ['week' => $work_week, 'uuid' => $dept]);
+        }
+                
         $form->get('WORK_WEEK')->setValue($work_week);
         $view->setVariables([
             'week_form' => $form,
         ]);
         
         /****************************************
+         * FIND EMPLOYEE FORM
+         ****************************************/
+        $employee = new EmployeeModel($this->employee_adapter);
+        
+        $find_employee_form = new FindEmployeeForm();
+        $find_employee_form->initialize();
+        $find_employee_form->remove('LNAME');
+        $find_employee_form->get('SUBMIT')->setValue('Add');
+        $find_employee_form->add([
+            'name' => 'EMP',
+            'type' => DatabaseSelect::class,
+            'attributes' => [
+                'id' => 'EMP',
+                'class' => 'form-control',
+            ],
+            'options' => [
+                'label' => 'Add Employee',
+                'database_table' => $employee->getTableName(),
+                'database_id_column' => $employee->getPrimaryKey(),
+                'database_value_columns' => [
+                    'LNAME',
+                    'FNAME',
+                    'EMP_NUM',
+                ],
+                'database_adapter' => $this->employee_adapter,
+            ],
+        ]);
+        $view->setVariable('find_employee_form', $find_employee_form);
+        
+        /****************************************
          * RETRIEVE DEPARTMENT EMPLOYEES
          ****************************************/
-        $dept = '';
-        if (! $this->params()->fromRoute('uuid', 0)) {
-            
-        } else {
-            $dept = $this->params()->fromRoute('uuid', 0);
-        }
+        
         $sql = new Sql($this->employee_adapter);
         
         $where = new Where();
@@ -263,7 +324,12 @@ class DashboardController extends AbstractBaseController
                 }
                 $data[$index]['Timecard'] = $timecards[0]['UUID'];
             } else {
-                $data[$index]['STATUS'] = "<span class='badge badge-danger'>Vacant</span>";
+                /**
+                 * If the employee has not logged in, is not full time and time card is populated by cron,
+                 * or the preparer has not manually added a time card, disregard even active employees.  In
+                 * this manner we can filter out temps.
+                 */
+                unset ($data[$index]);
             }
         }
         $view->setVariable('employees', $data);

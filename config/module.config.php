@@ -176,42 +176,6 @@ return [
                     ],
                 ],
             ],
-            'dept' => [
-                'type' => Literal::class,
-                'priority' => 1,
-                'options' => [
-                    'route' => '/dept',
-                    'defaults' => [
-                        'action' => 'index',
-                        'controller' => DepartmentController::class,
-                    ],
-                ],
-                'may_terminate' => true,
-                'child_routes' => [
-                    'timesheet' => [
-                        'type' => Segment::class,
-                        'priority' => 100,
-                        'options' => [
-                            'route' => '/dept/timesheet[/:week]',
-                            'defaults' => [
-                                'action' => 'index',
-                                'controller' => DepartmentController::class,
-                            ],
-                        ],
-                    ],
-                    'default' => [
-                        'type' => Segment::class,
-                        'priority' => -100,
-                        'options' => [
-                            'route' => '/[:action[/:uuid]]',
-                            'defaults' => [
-                                'action' => 'index',
-                                'controller' => DepartmentController::class,
-                            ],
-                        ],
-                    ],
-                ],
-            ],
             'paycode' => [
                 'type' => Literal::class,
                 'priority' => 1,
@@ -249,7 +213,6 @@ return [
     'controllers' => [
         'factories' => [
             DashboardController::class => DashboardControllerFactory::class,
-            DepartmentController::class => DepartmentControllerFactory::class,
             PaycodeController::class => PaycodeControllerFactory::class,
             TimecardConfigController::class => TimecardConfigControllerFactory::class,
             TimecardController::class => TimecardControllerFactory::class,
@@ -413,31 +376,22 @@ return [
                     ],
                 ],
             ],
-            'department' => [
-                'label' => 'Preparer',
-                'route' => 'dept/default',
-                'class' => 'dropdown',
-                'resource' => 'dept/default',
-                'privilege' => 'menu',
-                'pages' => [
-                    [
-                        'label' => 'Dashboard',
-                        'route' => 'dept/default',
-                        'resource' => 'dept/default',
-                        'privilege' => 'index',
-                        'action' => 'index',
-                    ],
-                ],
-            ],
-            'payroll' => [
-                'label' => 'Payroll',
+            'dashboards' => [
+                'label' => 'Dashboard',
                 'route' => 'dashboard/default',
                 'class' => 'dropdown',
-                'resource' => 'dashboard/default',
+                'resource' => 'dashboard/dept',
                 'privilege' => 'menu',
                 'pages' => [
-                    [
-                        'label' => 'Dashboard',
+                    'department' => [
+                        'label' => 'Department Dashboard',
+                        'route' => 'dashboard/dept',
+                        'resource' => 'dashboard/dept',
+                        'privilege' => 'dept',
+                        'action' => 'dept',
+                    ],
+                    'payroll' => [
+                        'label' => 'Payroll Dashboard',
                         'route' => 'dashboard/default',
                         'resource' => 'dashboard/default',
                         'privilege' => 'payroll',
@@ -489,6 +443,7 @@ return [
     'view_manager' => [
         'template_map' => [
             'timecard/config' => __DIR__ . '/../view/timecard/config/index.phtml',
+            'timecard/cron' => __DIR__ . '/../view/timecard/config/cron.phtml',
             'dept/dashboard' => __DIR__ . '/../view/timecard/partials/dept-dashboard.phtml',
         ],
         'template_path_stack' => [

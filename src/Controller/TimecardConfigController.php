@@ -15,9 +15,9 @@ use Laminas\Db\Sql\Ddl\Column\Varchar;
 use Laminas\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Laminas\View\Model\ViewModel;
 use Timecard\Model\PaycodeModel;
-use Timecard\Model\TimecardLineModel;
 use Timecard\Model\TimecardModel;
 use Timecard\Traits\DateAwareTrait;
+use Exception;
 
 class TimecardConfigController extends AbstractConfigController
 {
@@ -210,11 +210,11 @@ class TimecardConfigController extends AbstractConfigController
         
         /******************************
          * GET REGULAR PAYCODE
-         ******************************/
+         ******************************
         $paycode = new PaycodeModel($this->timecard_adapter);
         $paycode->read(['CODE' => '001']);
         $reg_paycode = $paycode->UUID;
-        unset($paycode);
+        unset($paycode); */
         
         /******************************
          * GET EXISTING TIMECARDS
@@ -238,6 +238,15 @@ class TimecardConfigController extends AbstractConfigController
             if (in_array($employee['UUID'], $current_timecards)) {
                 continue;
             }
+            $timecardModel->EMP_UUID = $employee['UUID'];
+            
+            try {
+                $timecardModel->createDefaultTimeCard($employee['SHIFT_CODE']);
+            } catch (Exception $e) {
+                
+            }
+            
+            /**
             $timecardModel->UUID = $timecardModel->generate_uuid();
             $timecardModel->EMP_UUID = $employee['UUID'];
             
@@ -290,12 +299,18 @@ class TimecardConfigController extends AbstractConfigController
             
             $timecardModel->create();
             $timecard_line->create();
+            */
         }
     }
     
     public function cronAction()
     {
+        $view = new ViewModel();
+        $view->setTemplate('timecard/cron');
+        
         $this->populateWeeklyTimecards();
+        
+        return $view;
     }
     
     public function importpaycodesAction()
