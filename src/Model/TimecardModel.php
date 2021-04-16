@@ -98,8 +98,14 @@ class TimecardModel extends AbstractBaseModel
             case '35S':
                 $timecard_line->SUN = 35;
                 break;
+            case '26':
+                $timecard_line->SUN = 26;
+                break;
             case '20S':
                 $timecard_line->SUN = 20;
+                break;
+            case '20.5':
+                $timecard_line->SUN = 20.5;
                 break;
             case '19.5':
                 $timecard_line->SUN = 19.5;
