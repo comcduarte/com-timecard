@@ -37,7 +37,20 @@ class TimecardController extends AbstractBaseController
         
         $user = $this->currentUser();
         
-        $uuid = $this->params()->fromRoute('uuid', 0);
+        /****************************************
+         * GET UUID
+         ****************************************/
+        $request = $this->getRequest();
+        $post_uuid = NULL;
+        if ($request->isPost()) {
+            $data = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+                );
+            $post_uuid = $data['UUID'];
+        }
+        
+        $uuid = $this->params()->fromRoute('uuid', $post_uuid);
         if (! $uuid) {
             $user_entity->getUser($user->UUID);
             $uuid = $user_entity->employee->UUID;
