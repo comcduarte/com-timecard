@@ -21,6 +21,8 @@ class DashboardControllerFactory implements FactoryInterface
         $adapter = $container->get('timecard-model-adapter');
         $controller->timecard_adapter = $adapter;
         
+        $controller->setAclService($container->get('acl-service'));
+        
         return $controller;
     }
 }

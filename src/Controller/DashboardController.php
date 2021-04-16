@@ -3,7 +3,8 @@ namespace Timecard\Controller;
 
 use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
-use Components\Form\Element\DatabaseSelect;
+use Components\Form\Element\AclDatabaseSelect;
+use Components\Traits\AclAwareTrait;
 use Employee\Form\FindEmployeeForm;
 use Employee\Model\DepartmentModel;
 use Employee\Model\EmployeeModel;
@@ -22,6 +23,7 @@ class DashboardController extends AbstractBaseController
 {
     use AdapterAwareTrait;
     use DateAwareTrait;
+    use AclAwareTrait;
     
     public $user_adapter;
     public $employee_adapter;
@@ -237,14 +239,14 @@ class DashboardController extends AbstractBaseController
         $find_employee_form->remove('LNAME');
         $find_employee_form->get('SUBMIT')->setValue('Add');
         $find_employee_form->add([
-            'name' => 'EMP',
-            'type' => DatabaseSelect::class,
+            'name' => 'UUID',
+            'type' => AclDatabaseSelect::class,
             'attributes' => [
-                'id' => 'EMP',
+                'id' => 'UUID',
                 'class' => 'form-control',
             ],
             'options' => [
-                'label' => 'Add Employee',
+                'label' => 'Open Timesheet',
                 'database_table' => $employee->getTableName(),
                 'database_id_column' => $employee->getPrimaryKey(),
                 'database_value_columns' => [
@@ -253,8 +255,12 @@ class DashboardController extends AbstractBaseController
                     'EMP_NUM',
                 ],
                 'database_adapter' => $this->employee_adapter,
+                'acl_service' => $this->getAclService(),
+                'acl_resource_column' => 'TIME_GROUP',
             ],
         ]);
+        $find_employee_form->get('UUID')->roles = $user_entity->user->memberOf();
+        $find_employee_form->get('UUID')->populateElement();
         $view->setVariable('find_employee_form', $find_employee_form);
         
         /****************************************
