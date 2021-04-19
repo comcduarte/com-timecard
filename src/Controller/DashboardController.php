@@ -175,6 +175,8 @@ class DashboardController extends AbstractBaseController
     {
         $view = new ViewModel();
         
+        $redirect = FALSE;
+        
         /****************************************
          * GET CURRENT USER
          * @var UserEntity $user_entity
@@ -191,7 +193,7 @@ class DashboardController extends AbstractBaseController
          ****************************************/
         if (! $this->params()->fromRoute('week', 0)) {
             $work_week = $this->getEndofWeek('last week');
-//             return $this->redirect()->toRoute('dept/timesheet', ['week' => $work_week]);
+            $redirect = TRUE;
         } else {
             $work_week = $this->getEndofWeek($this->params()->fromRoute('week', 0));
         }
@@ -204,9 +206,15 @@ class DashboardController extends AbstractBaseController
         $dept = '';
         if (! $this->params()->fromRoute('uuid', 0)) {
             $dept = $user_entity->employee->DEPT;
+            $redirect = TRUE;
         } else {
             $dept = $this->params()->fromRoute('uuid', 0);
         }
+        
+        if ($redirect) {
+            return $this->redirect()->toRoute('dashboard/dept', ['uuid' => $dept, 'week' => $work_week]);
+        }
+        
         
         /****************************************
          * TIMESHEET FILTER SUBFORM
