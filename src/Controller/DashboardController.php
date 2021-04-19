@@ -4,8 +4,8 @@ namespace Timecard\Controller;
 use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
 use Components\Form\Element\AclDatabaseSelect;
+use Components\Form\Element\HiddenSubmit;
 use Components\Traits\AclAwareTrait;
-use Employee\Form\FindEmployeeForm;
 use Employee\Model\DepartmentModel;
 use Employee\Model\EmployeeModel;
 use Laminas\Db\Adapter\AdapterAwareTrait;
@@ -14,10 +14,13 @@ use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Where;
 use Laminas\Db\Sql\Predicate\Like;
+use Laminas\Form\Form;
+use Laminas\Form\Element\Csrf;
 use Laminas\View\Model\ViewModel;
 use Timecard\Form\TimesheetFilterForm;
 use Timecard\Model\TimecardModel;
 use Timecard\Traits\DateAwareTrait;
+use Laminas\Form\Element\Button;
 
 class DashboardController extends AbstractBaseController
 {
@@ -234,10 +237,21 @@ class DashboardController extends AbstractBaseController
          ****************************************/
         $employee = new EmployeeModel($this->employee_adapter);
         
-        $find_employee_form = new FindEmployeeForm();
-        $find_employee_form->initialize();
-        $find_employee_form->remove('LNAME');
-        $find_employee_form->get('SUBMIT')->setValue('Add');
+        $find_employee_form = new Form();
+        $find_employee_form->add(new HiddenSubmit('SUBMIT'));
+        $find_employee_form->add(new Csrf('SECURITY'));
+        $find_employee_form->add([
+            'name' => 'BUTTON',
+            'type' => Button::class,
+            'attributes' => [
+                'id' => 'BUTTON',
+                'class' => 'btn btn-outline-primary',
+                'onclick' => 'form.submit()',
+            ],
+            'options' => [
+                'label' => 'Add',
+            ],
+        ]);
         $find_employee_form->add([
             'name' => 'UUID',
             'type' => AclDatabaseSelect::class,
