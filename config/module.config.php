@@ -178,6 +178,20 @@ return [
                             ],
                         ],
                     ],
+                    'department' => [
+                        'type' => Segment::class,
+                        'priority' => -100,
+                        'options' => [
+                            'route' => '/department/[:uuid[/:week]]',
+                            'defaults' => [
+                                'action' => 'department',
+                                'controller' => DashboardController::class,
+                            ],
+                            'constraints' => [
+                                'uuid' => '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}',
+                            ],
+                        ],
+                    ],
                 ],
             ],
             'paycode' => [
@@ -389,10 +403,10 @@ return [
                 'pages' => [
                     'department' => [
                         'label' => 'Department Dashboard',
-                        'route' => 'dashboard/dept',
-                        'resource' => 'dashboard/dept',
-                        'privilege' => 'dept',
-                        'action' => 'dept',
+                        'route' => 'dashboard/department',
+                        'resource' => 'dashboard/department',
+                        'privilege' => 'department',
+                        'action' => 'department',
                     ],
                     'payroll' => [
                         'label' => 'Payroll Dashboard',

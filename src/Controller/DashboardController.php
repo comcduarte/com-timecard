@@ -391,4 +391,152 @@ class DashboardController extends AbstractBaseController
         
         return $view;
     }
+
+    public function departmentAction()
+    {
+        $view = new ViewModel();
+        $redirect = FALSE;
+        $data = [];
+        $timecard = new TimecardModel($this->timecard_adapter);
+        
+        
+        /****************************************
+         * GET CURRENT USER
+         * @var UserEntity $user_entity
+         ****************************************/
+        $user = $this->currentUser();
+        $user_entity = new UserEntity($this->user_adapter);
+        $user_entity->employee->setDbAdapter($this->employee_adapter);
+        $user_entity->department->setDbAdapter($this->employee_adapter);
+        $user_entity->getUser($user->UUID);
+        
+        /****************************************
+         * GET WORK WEEK
+         * @var String @work_week
+         ****************************************/
+        if (! $this->params()->fromRoute('week', 0)) {
+            $work_week = $this->getEndofWeek('last week');
+            $redirect = TRUE;
+        } else {
+            $work_week = $this->getEndofWeek($this->params()->fromRoute('week', 0));
+        }
+        $view->setVariable('work_week', $work_week);
+        
+        /****************************************
+         * GET DEPARTMENT UUID
+         * @var String $dept
+         * @var Boolean $redirect
+         ****************************************/
+        $dept = '';
+        if ($this->params()->fromRoute('uuid', 0)) {
+            $dept = $this->params()->fromRoute('uuid', 0);
+        }
+        
+        /****************************************
+         * TIMESHEET FILTER SUBFORM
+         ****************************************/
+        $form = new TimesheetFilterForm();
+        $form->init();
+        
+        /**
+         * If form was submitted, load the new work week.
+         */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $data = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+                );
+            $work_week = $this->getEndofWeek($data['WORK_WEEK']);
+            return $this->redirect()->toRoute('dashboard/department', ['week' => $work_week, 'uuid' => $dept]);
+        }
+        
+        $form->get('WORK_WEEK')->setValue($work_week);
+        $view->setVariables([
+            'week_form' => $form,
+        ]);
+        
+        /****************************************
+         * RETRIEVE DEPARTMENTS
+         ****************************************/
+        $department_model = new DepartmentModel($this->employee_adapter);
+        $where = new Where();
+        //         $where->equalTo('CODE', '03500');
+        $where->equalTo('STATUS', $department_model::ACTIVE_STATUS);
+        $data = $department_model->fetchAll($where, ['CODE']);
+        
+        /****************************************
+         * RETRIEVE TIMECARDS PER DEPARTMENT
+         ****************************************/
+        $sql = new Sql($this->employee_adapter);
+        foreach ($data as $index => $department) {
+            if (!$this->isAllowed($user_entity->user->memberOf(), $department['CODE'], 'dashboard/department')) {
+                unset ($data[$index]);
+                continue;
+            }
+            
+            unset ($data[$index]['DATE_CREATED']);
+            unset ($data[$index]['DATE_MODIFIED']);
+            
+            $where = new Where();
+            $where->equalTo('DEPT', $department['UUID'])->AND->equalTo('employees.STATUS', EmployeeModel::ACTIVE_STATUS);
+            
+            $select = new Select();
+            $select->from('employees');
+            $select->where($where);
+            $select->columns([
+                'UUID' => 'UUID',
+                'First Name' => 'FNAME',
+                'Last Name' => 'LNAME',
+                'Email' => 'EMAIL',
+            ]);
+            $select->order('LNAME ASC');
+            
+            $statement = $sql->prepareStatementForSqlObject($select);
+            $results = $statement->execute();
+            $resultSet = new ResultSet($results);
+            $resultSet->initialize($results);
+            $employees = $resultSet->toArray();
+            
+            $data[$index]['STATUS'] = 100;
+            foreach ($employees as $employee) {
+                if ($timecard->read(['EMP_UUID' => $employee['UUID'], 'WORK_WEEK' => $work_week])) {
+                    if ($timecard->STATUS < $data[$index]['STATUS']) {
+                        $data[$index]['STATUS'] = $timecard->STATUS;
+                    }
+                }
+            }
+            $data[$index]['STATUS'] = $timecard->formatStatus($data[$index]['STATUS']);
+        }
+        
+        unset($department_model);
+        
+        if (sizeof($data) == 1) {
+            return $this->redirect()->toRoute('dashboard/dept', ['week' => $work_week,]);;
+        }
+        
+        $view->setVariable('data', $data);
+        
+        /****************************************
+         * REPORTS SUBTABLE
+         ****************************************/
+        $reports = [];
+        
+        $sql = new Sql($this->adapter);
+        $select = new Select();
+        $select->columns(['UUID', 'NAME'])
+        ->from('reports')
+        ->where([new Like('NAME', 'PY - %')]);
+        
+        $statement = $sql->prepareStatementForSqlObject($select);
+        
+        $results = $statement->execute();
+        $resultSet = new ResultSet($results);
+        $resultSet->initialize($results);
+        $reports = $resultSet->toArray();
+        
+        $view->setVariable('reports', $reports);
+        
+        return $view;
+    }
 }
