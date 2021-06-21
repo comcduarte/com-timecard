@@ -118,4 +118,19 @@ class TimecardModel extends AbstractBaseModel
         $timecard_line->create();
         return TRUE;
     }
+
+    public static function retrieveStatus($status)
+    {
+        $statuses = [
+            NULL => 'Inactive',
+            self::INACTIVE_STATUS => 'Inactive',
+            self::ACTIVE_STATUS => 'Active',
+            self::SUBMITTED_STATUS => 'Submitted',
+            self::PREPARERD_STATUS => 'Prepared',
+            self::APPROVED_STATUS => 'Approved',
+            self::COMPLETED_STATUS => 'Completed',
+        ];
+        
+        return $statuses[$status];
+    }
 }
