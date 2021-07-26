@@ -16,6 +16,9 @@ class TimecardSignatureControllerFactory implements FactoryInterface
         $model = new TimecardSignatureModel($adapter);
         $form = $container->get('FormElementManager')->get(TimecardSignatureForm::class);
         
+        $controller->logger = $container->get('syslogger');
+        $controller->employee_adapter = $container->get('employee-model-adapter');
+        
         $controller->setModel($model);
         $controller->setForm($form);
         $controller->setDbAdapter($adapter);

@@ -3,14 +3,14 @@ namespace Timecard;
 
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Segment;
-use Timecard\Controller\DepartmentController;
+use Timecard\Controller\DashboardController;
 use Timecard\Controller\PaycodeController;
 use Timecard\Controller\TimecardConfigController;
 use Timecard\Controller\TimecardController;
 use Timecard\Controller\TimecardLineController;
 use Timecard\Controller\TimecardSignatureController;
 use Timecard\Controller\TimecardStageController;
-use Timecard\Controller\Factory\DepartmentControllerFactory;
+use Timecard\Controller\Factory\DashboardControllerFactory;
 use Timecard\Controller\Factory\PaycodeControllerFactory;
 use Timecard\Controller\Factory\TimecardConfigControllerFactory;
 use Timecard\Controller\Factory\TimecardControllerFactory;
@@ -18,21 +18,22 @@ use Timecard\Controller\Factory\TimecardLineControllerFactory;
 use Timecard\Controller\Factory\TimecardSignatureControllerFactory;
 use Timecard\Controller\Factory\TimecardStageControllerFactory;
 use Timecard\Form\PaycodeForm;
+use Timecard\Form\TimecardAddForm;
 use Timecard\Form\TimecardForm;
 use Timecard\Form\TimecardLineForm;
 use Timecard\Form\TimecardSignatureForm;
 use Timecard\Form\TimecardStageForm;
 use Timecard\Form\Factory\PaycodeFormFactory;
+use Timecard\Form\Factory\TimecardAddFormFactory;
 use Timecard\Form\Factory\TimecardFormFactory;
 use Timecard\Form\Factory\TimecardLineFormFactory;
 use Timecard\Form\Factory\TimecardSignatureFormFactory;
 use Timecard\Form\Factory\TimecardStageFormFactory;
+use Timecard\Listener\NotificationListener;
+use Timecard\Listener\Factory\NotificationListenerFactory;
+use Timecard\Model\TimecardModel;
 use Timecard\Navigation\Factory\SignatureNavigationFactory;
 use Timecard\Service\Factory\TimecardModelAdapterFactory;
-use Timecard\Form\TimecardAddForm;
-use Timecard\Form\Factory\TimecardAddFormFactory;
-use Timecard\Controller\DashboardController;
-use Timecard\Controller\Factory\DashboardControllerFactory;
 
 return [
     'router' => [
@@ -237,6 +238,16 @@ return [
             TimecardLineController::class => TimecardLineControllerFactory::class,
             TimecardSignatureController::class => TimecardSignatureControllerFactory::class,
             TimecardStageController::class => TimecardStageControllerFactory::class,
+        ],
+    ],
+    'event_manager' => [
+        'lazy_listeners' => [
+            [
+                'listener' => NotificationListener::class,
+                'method' => 'notify',
+                'event' => TimecardModel::EVENT_SUBMITTED,
+                'priority' => -100,
+            ]
         ],
     ],
     'form_elements' => [
@@ -456,6 +467,7 @@ return [
         'factories' => [
             'timecard-model-adapter' => TimecardModelAdapterFactory::class,
             'signatures' => SignatureNavigationFactory::class,
+            NotificationListener::class => NotificationListenerFactory::class,
         ],
     ],
     'view_manager' => [

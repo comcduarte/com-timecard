@@ -13,6 +13,11 @@ class TimecardModel extends AbstractBaseModel
     const APPROVED_STATUS = 12;
     const COMPLETED_STATUS = 13;
     
+    const EVENT_SUBMITTED = 'submitted';
+    const EVENT_PREPARED = 'prepared';
+    const EVENT_APPROVED = 'approved';
+    const EVENT_COMPLETED = 'completed';
+    
     public function __construct($adapter = NULL)
     {
         parent::__construct($adapter);

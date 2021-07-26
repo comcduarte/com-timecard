@@ -1,0 +1,48 @@
+<?php
+use Timecard\Model\Entity\TimecardEntity;
+use Timecard\Model\PaycodeModel;
+
+/**
+ * @var TimecardEntity $timecard_entity
+ */
+$timecard_entity = $this->timecard_entity;
+?>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css">
+	</head>
+	<body>
+        <h3>.-== Your timecard has been submitted. ==-.</h3>
+        
+        Week Ending: <?=$timecard_entity->WORK_WEEK ?><br>
+        
+        <h3>Paycodes</h3>
+        <table class="table">
+        	<thead class="thead-dark">
+        		<tr>
+        			<td>PAYCODE</td><td>SUN</td><td>MON</td><td>TUES</td><td>WED</td><td>THURS</td><td>FRI</td><td>SAT</td><td>DAYS</td>
+        		</tr>
+        	</thead>
+        	<tbody>
+        		<?php foreach ($timecard_entity->TIMECARD_LINES as $line) : ?>
+        			<tr><td><?=$line->getPaycodeModel()->CODE; ?> - <?=$line->getPaycodeModel()->DESC; ?></td><td><?=$line->SUN ?></td><td><?=$line->MON ?></td><td><?=$line->TUES ?></td><td><?=$line->WED ?></td><td><?=$line->THURS ?></td><td><?=$line->FRI ?></td><td><?=$line->SAT ?></td><td><?=$line->DAYS ?></td></tr> 
+        		<?php endforeach; ?>
+        	</tbody>
+        </table>
+        
+        <h3>Notes</h3>
+        <table class="table">
+        	<thead class="thead-dark">
+        		<tr>
+        			<td>User</td><td>Note</td><td>Date</td>
+        		</tr>
+        	</thead>
+        	<tbody>
+        		<?php foreach ($timecard_entity->NOTES as $note) : ?>
+        			<tr><td><?=$note['USER']; ?></td><td><?=$note['ANNOTATION']; ?></td><td><?=$note['DATE_CREATED']; ?></td></tr> 
+        		<?php endforeach; ?>
+        	</tbody>
+        </table>
+    </body>
+</html>
