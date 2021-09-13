@@ -4,6 +4,7 @@ namespace Timecard\Controller;
 use Annotation\Traits\AnnotationAwareTrait;
 use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
+use Components\Traits\AclAwareTrait;
 use Laminas\View\Model\ViewModel;
 use Timecard\Form\TimecardLineForm;
 use Timecard\Form\TimesheetFilterForm;
@@ -12,7 +13,7 @@ use Timecard\Model\TimecardStageModel;
 use Timecard\Model\Entity\TimecardEntity;
 use Timecard\Traits\DateAwareTrait;
 use User\Model\UserModel;
-use Components\Traits\AclAwareTrait;
+use DateTime;
 
 class TimecardController extends AbstractBaseController
 {
@@ -108,10 +109,13 @@ class TimecardController extends AbstractBaseController
             $sign_user = new UserModel($this->adapter);
             $sign_user->read(['UUID' => $signature->USER_UUID]);
             
+            $created = new DateTime($signature->DATE_CREATED, new \DateTimeZone('UTC'));
+            $created->setTimezone(new \DateTimeZone('America/New_York'));
+            
             $record = [
                 'User' => $sign_user->USERNAME,
                 'Stage' => $stage->NAME,
-                'Timestamp' => $signature->DATE_CREATED,
+                'Timestamp' => $created->format('Y-m-d H:i:s'),
             ];
             
             $data[] = $record;  
