@@ -16,7 +16,7 @@ trait DateAwareTrait
     
     public function today()
     {
-        $this->date = new \DateTime('now',new \DateTimeZone('EDT'));
+        $this->date = new \DateTime('now',new \DateTimeZone('UTC'));
         $this->today = $this->date->format('Y-m-d');
         return $this;
     }
