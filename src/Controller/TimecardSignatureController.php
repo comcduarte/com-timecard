@@ -1,20 +1,30 @@
 <?php
 namespace Timecard\Controller;
 
+use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
 use Timecard\Model\TimecardModel;
 use Timecard\Model\TimecardSignatureModel;
-use Timecard\Model\Entity\TimecardEntity;
 use Timecard\Model\TimecardStageModel;
+use Timecard\Model\Entity\TimecardEntity;
+use User\Model\UserModel;
 
 class TimecardSignatureController extends AbstractBaseController
 {
+    /**
+     * 
+     * @var \Laminas\Log\Logger $logger
+     */
+    public $logger;
+    public $employee_adapter;
+    
     public function activeAction()
     {
         $uuid = $this->params()->fromRoute('uuid', 0);
         $url = $this->getRequest()->getHeader('Referer')->getUri();
         
         if (! $uuid) {
+            $this->logger->info(sprintf('No Timecard Identifier Specified'));
             $this->flashmessenger()->addErrorMessage('No Timecard Identifier Specified');
             return $this->redirect()->toUrl($url);
         }
@@ -30,12 +40,13 @@ class TimecardSignatureController extends AbstractBaseController
         $url = $this->getRequest()->getHeader('Referer')->getUri();
         
         if (! $uuid) {
+            $this->logger->info(sprintf('No Timecard Identifier Specified'));
             $this->flashmessenger()->addErrorMessage('No Timecard Identifier Specified');
             return $this->redirect()->toUrl($url);
         } 
         
         $this->sign($uuid, TimecardModel::SUBMITTED_STATUS);
-
+        
         return $this->redirect()->toUrl($url);
     }
     
@@ -45,6 +56,7 @@ class TimecardSignatureController extends AbstractBaseController
         $url = $this->getRequest()->getHeader('Referer')->getUri();
         
         if (! $uuid) {
+            $this->logger->info(sprintf('No Timecard Identifier Specified'));
             $this->flashmessenger()->addErrorMessage('No Timecard Identifier Specified');
             return $this->redirect()->toUrl($url);
         }
@@ -60,6 +72,7 @@ class TimecardSignatureController extends AbstractBaseController
         $url = $this->getRequest()->getHeader('Referer')->getUri();
         
         if (! $uuid) {
+            $this->logger->info(sprintf('No Timecard Identifier Specified'));
             $this->flashmessenger()->addErrorMessage('No Timecard Identifier Specified');
             return $this->redirect()->toUrl($url);
         }
@@ -75,6 +88,7 @@ class TimecardSignatureController extends AbstractBaseController
         $url = $this->getRequest()->getHeader('Referer')->getUri();
         
         if (! $uuid) {
+            $this->logger->info(sprintf('No Timecard Identifier Specified'));
             $this->flashmessenger()->addErrorMessage('No Timecard Identifier Specified');
             return $this->redirect()->toUrl($url);
         }
@@ -90,7 +104,9 @@ class TimecardSignatureController extends AbstractBaseController
         $timecard_entity->setDbAdapter($this->adapter);
         
         /****************************************
-         * GET USER/EMPLOYEE
+         * GET CURRENT USER/EMPLOYEE
+         * 
+         * @var UserModel $user
          ****************************************/
         $user = $this->currentUser();
         
@@ -104,13 +120,21 @@ class TimecardSignatureController extends AbstractBaseController
             $timecard_entity->WORK_WEEK = $timecard->WORK_WEEK;
             $timecard_entity->getTimecard();
         } else {
+            $this->logger->info(sprintf('[%s] Unable to retrieve timecard [%s]', $user->USERNAME, $uuid));
             $this->flashmessenger()->addErrorMessage('Unable to retrieve timecard');
             return;
         }
         
         /****************************************
+         * GET USER
+         ****************************************/
+        $user_entity = new UserEntity($this->employee_adapter);
+        $user_entity->getEmployee($timecard_entity->EMP_UUID);
+        
+        /****************************************
          * SET TIMECARD STATUS
          ****************************************/
+        $timecard_entity->STATUS = $status;
         $timecard->STATUS = $status;
         $timecard->update();
         
@@ -136,5 +160,15 @@ class TimecardSignatureController extends AbstractBaseController
         $signature->USER_UUID = $user->UUID;
         $signature->STAGE_UUID = $stage->UUID;
         $signature->create();
+        
+        /****************************************
+         * Logging
+         ****************************************/
+        $this->logger->info(sprintf('%s signed %s with status %s', $user->USERNAME, $uuid, TimecardModel::retrieveStatus($status)));
+        
+        /****************************************
+         * Notifications
+         ****************************************/
+        $this->getEventManager()->trigger(TimecardModel::EVENT_SUBMITTED, $this, ['timecard_entity' => $timecard_entity]);
     }
 }

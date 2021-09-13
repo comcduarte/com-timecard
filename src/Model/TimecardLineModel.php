@@ -45,4 +45,16 @@ class TimecardLineModel extends AbstractBaseModel
         $retval = parent::create();
         return $retval;
     }
+    
+    public function getPaycodeModel()
+    {
+        $paycode_model = new PaycodeModel($this->adapter);
+        $retval = $paycode_model->read(['UUID' => $this->PAY_UUID]);
+        
+        if ($retval) {
+            return $paycode_model;
+        } else {
+            return false;
+        }
+    }
 }

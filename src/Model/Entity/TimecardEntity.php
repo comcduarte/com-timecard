@@ -1,6 +1,7 @@
 <?php
 namespace Timecard\Model\Entity;
 
+use Annotation\Traits\AnnotationAwareTrait;
 use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Db\Sql\Where;
 use Timecard\Model\PaycodeModel;
@@ -11,6 +12,7 @@ use Timecard\Model\TimecardSignatureModel;
 class TimecardEntity
 {
     use AdapterAwareTrait;
+    use AnnotationAwareTrait;
     
     public $TIMECARD_UUID;
     public $WORK_WEEK;
@@ -22,6 +24,7 @@ class TimecardEntity
     public $HOURS = [];
     
     public $DAYS = ['MON','TUES','WED','THURS','FRI','SAT','SUN'];
+    public $STATUS;
     
     public function __construct()
     {
@@ -42,6 +45,7 @@ class TimecardEntity
             $this->createTimecard();
         } else {
             $this->TIMECARD_UUID = $timecard->UUID;
+            $this->STATUS = $timecard->STATUS;
         }
         
         /****************************************
@@ -51,6 +55,12 @@ class TimecardEntity
         $where = new Where();
         $where->equalTo('TIMECARD_UUID', $this->TIMECARD_UUID);
         $data = $timecardline->fetchAll($where);
+        
+        /****************************************
+         * ANNOTATIONS
+         ****************************************/
+        $notes = $this->getAnnotations($timecard->getTableName(), $timecard->UUID);
+        $this->NOTES = $notes['annotations'];
         
         /****************************************
          * IF NOT TIMECARD LINE, CREATE DEFAULT
@@ -74,9 +84,6 @@ class TimecardEntity
             }
         }
         
-        /****************************************
-         * GET TIMECARD SIGNATURES
-         ****************************************/
         $timecard_signature = new TimecardSignatureModel($this->adapter);
         $where = new Where();
         $where->equalTo('TIMECARD_UUID', $timecard->UUID);
@@ -129,4 +136,5 @@ class TimecardEntity
     {
         
     }
+
 }

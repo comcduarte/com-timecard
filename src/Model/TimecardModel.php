@@ -13,6 +13,11 @@ class TimecardModel extends AbstractBaseModel
     const APPROVED_STATUS = 12;
     const COMPLETED_STATUS = 13;
     
+    const EVENT_SUBMITTED = 'submitted';
+    const EVENT_PREPARED = 'prepared';
+    const EVENT_APPROVED = 'approved';
+    const EVENT_COMPLETED = 'completed';
+    
     public function __construct($adapter = NULL)
     {
         parent::__construct($adapter);
@@ -117,5 +122,20 @@ class TimecardModel extends AbstractBaseModel
         $this->create();
         $timecard_line->create();
         return TRUE;
+    }
+
+    public static function retrieveStatus($status)
+    {
+        $statuses = [
+            NULL => 'Inactive',
+            self::INACTIVE_STATUS => 'Inactive',
+            self::ACTIVE_STATUS => 'Active',
+            self::SUBMITTED_STATUS => 'Submitted',
+            self::PREPARERD_STATUS => 'Prepared',
+            self::APPROVED_STATUS => 'Approved',
+            self::COMPLETED_STATUS => 'Completed',
+        ];
+        
+        return $statuses[$status];
     }
 }
