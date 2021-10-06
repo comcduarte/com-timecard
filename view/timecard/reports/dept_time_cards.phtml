@@ -1,0 +1,52 @@
+<?php
+global $report_data;
+
+$report_data = [];
+$pay_types = ['Regular','Overtime','Premium','Unproductive','Other/Unpaid'];
+$dow = ['MON','TUES','WED','THURS','FRI','SAT','SUN'];
+
+foreach ($this->data as $record) {
+    $index = sprintf('%s-%s', $record['EMP_NUM'], $record['CODE']);
+    $report_data[$index] = [
+        'RECORD' => $record,
+    ];
+}
+
+sort($report_data);
+
+
+
+
+
+
+
+echo $this->partial('timecard/reports/report_header.phtml', [
+    'user' => $this->currentUser(),
+]);
+?>
+<table class="table table-sm">
+	<thead>
+		<tr>
+			<td>Employee Number</td>
+    		<td>First Name</td>
+    		<td>Last Name</td>
+    		<td>Pay Code</td>
+		<?php foreach ($dow as $day) : ?>
+			<td><?=$day?></td>
+		<?php endforeach; ?>
+		</tr>
+	</thead>
+	<tbody>
+		<?php foreach ($report_data as $employee) : ?>
+		<tr>
+			<td><?=$employee['RECORD']['EMP_NUM']?></td>
+			<td><?=$employee['RECORD']['FNAME']?></td>
+			<td><?=$employee['RECORD']['LNAME']?></td>
+			<td><?=$employee['RECORD']['CODE']?></td>
+			<?php foreach ($dow as $day) : ?>
+			<td><?=$employee['RECORD'][$day]?></td>
+			<?php endforeach; ?>
+		</tr>
+		<?php endforeach; ?>
+	</tbody>
+</table>

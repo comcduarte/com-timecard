@@ -1,0 +1,66 @@
+<div class="card mb-4">
+	<div class="card-header d-flex justify-content-between">
+		<div>
+			<b><?=$this->title?></b>
+		</div>
+		<div>
+			<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','submit')) : ?>
+				<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'submit', 'uuid' => $this->timecard_uuid]); ?>" class="btn btn-primary btn-rounder">Submit</a>
+			<?php endif; ?>
+			<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','prepare')) : ?>
+				<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'prepare', 'uuid' => $this->timecard_uuid]); ?>" class="btn btn-primary btn-rounder">Prepare</a>
+			<?php endif; ?>
+			<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','approve')) : ?>
+				<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'approve', 'uuid' => $this->timecard_uuid]); ?>" class="btn btn-primary btn-rounder">Approve</a>
+			<?php endif; ?>
+			<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','complete')) : ?>
+				<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'complete', 'uuid' => $this->timecard_uuid]); ?>" class="btn btn-primary btn-rounder">Complete</a>
+			<?php endif; ?>
+		</div>
+	</div>
+	<div class="card-body">
+		<?php if (sizeof($data) === 0) { echo "No Records Retrieved."; } else { ?>
+    	<table class="table table-striped">
+        	<thead>
+        		<tr>
+        	<?php 
+        	   $header = array_keys($this->data[0]); 
+        	   foreach ($header as $key) {
+        	       if (strpos($key, $this->primary_key) === 0 ) { continue; }
+        	       echo "<th>$key</th>";
+        	   }
+           ?>
+           			<th></th>
+        		</tr>
+        	</thead>
+        	<tbody>
+        		<?php foreach ($this->data as $record) : ?>
+        		<tr>
+        			<?php foreach ($record as $key => $value) : ?>
+        				<?php if (strpos($key, $this->primary_key) === 0 ) { continue; } ?>
+        				<td><?php echo $value; ?></td>
+        			<?php endforeach; ?>
+        			<td class="float-right">
+        			<?php if (sizeof($this->params)) : ?>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            	<i class="fas fa-bars"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <?php 
+                            foreach ($this->params as $item) {
+                                $href = $this->url($item['route'], ['action' => $item['action'], strtolower($this->primary_key) => $record[$item['key']]]);
+                                echo "<a class='dropdown-item' href='$href'>" . $item['label'] . "</a>";
+                            }
+                            ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+        			</td>
+        		</tr>
+        		<?php endforeach; ?>
+        	</tbody>
+    	</table>
+    	<?php } ?>
+	</div>
+</div>

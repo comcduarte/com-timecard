@@ -1,0 +1,117 @@
+<div class="row">
+	<div class="col-9">
+		<h1><?php echo sprintf('%s %s - Timesheet', $this->user_entity->employee->FNAME, $this->user_entity->employee->LNAME)?></h1>
+	</div>
+	<div class="col-3">
+		<?php $week_form->setAttribute('action', $this->url('timecard/default', ['action' => 'filter'])); ?>
+		<?php $week_form->prepare(); ?>
+		<?php echo $this->form()->openTag($week_form); ?>
+		<div class="form-group">
+			<?php echo $this->formRow($this->week_form->get('EMP_UUID')); ?>
+			<?php echo $this->formRow($this->week_form->get('WORK_WEEK')); ?>
+			<?php echo $this->formRow($this->week_form->get('SECURITY')); ?>
+			<?php echo $this->formRow($this->week_form->get('SUBMIT')); ?>
+		</div>
+		<?php echo $this->form()->closeTag($week_form); ?>
+	</div>
+</div>		
+
+<div class="row">
+	<div class="col">
+		<table class="table">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">Pay&nbsp;Code</th>
+					<th scope="col">Mon</th>
+					<th scope="col">Tues</th>
+					<th scope="col">Wed</th>
+					<th scope="col">Thurs</th>
+					<th scope="col">Fri</th>
+					<th scope="col">Sat</th>
+					<th scope="col">Sun</th>
+					<th scope="col">Days</th>
+					<th scope="col">Total<th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php foreach ($this->timesheet_forms as $form) : ?>
+				<?php $var = $form->get('STATUS')->getValue(); ?>
+				<?php echo $this->partial('timecard/partials/weeklytimesheet.phtml',['form' => $form, 'user' => $this->user, 'acl_service' => $this->acl_service]); ?>
+			<?php endforeach; ?>
+			<tr>
+				<td>Daily Totals</td>
+				<?php foreach (['MON','TUES','WED','THURS','FRI','SAT','SUN'] as $DAY) : ?>
+				<td>
+					<?php 
+					switch (TRUE) {
+					    case (floatval($this->HOURS[$DAY]) == 0):
+					        $total_class = 'badge-success';
+					        break;
+					    case (floatval($this->HOURS[$DAY]) > 8):
+					    case (floatval($this->HOURS[$DAY]) < 8):
+					        $total_class = 'badge-warning';
+					        break;
+					    default:
+					        $total_class = 'badge-success';
+					        break;
+					}
+					   echo "<span class='badge $total_class'>" . $this->HOURS[$DAY] . "</span>"; 
+					?>
+				</td>
+				<?php endforeach; ?>
+				<td />
+				<td>
+					<?php 
+					if ($this->HOURS['TOTAL'] > 40 || $this->HOURS['TOTAL'] < 40 ) {
+					    echo "<span class='badge badge-warning'>" . $this->HOURS['TOTAL'] . "</span>";
+					} else {
+// 					    echo "<span class='badge badge-success'>" . $this->HOURS['TOTAL'] . "</span>";
+					}
+					?>
+				</td>
+			</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<?php $this->timecard_add_form->setAttribute('action', $this->url('timecard/default', ['action' => 'addPayCode']));?>
+					<?php $this->timecard_add_form->prepare(); ?>
+					<?php echo $this->form()->openTag($this->timecard_add_form); ?>
+						<?php echo $this->formRow($this->timecard_add_form->get('TIMECARD_UUID')); ?>
+						<?php echo $this->formRow($this->timecard_add_form->get('SECURITY')); ?>
+					<td colspan="2">
+						Add New Pay Code:
+					</td>
+					<td colspan="6">
+						<?php echo $this->formSelect($this->timecard_add_form->get('PAY_UUID')); ?>
+					</td>
+					<td>
+						<?php echo $this->formRow($this->timecard_add_form->get('SUBMIT')); ?>
+					</td>
+					<?php echo $this->form()->closeTag($this->timecard_add_form); ?>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+</div>
+<div class="row">
+	<div class="col">
+		<?php
+		$roles = [];
+		foreach ($this->user->memberOf() as $role) {
+		    array_push($roles, $role['ROLENAME']);
+		}
+		
+		echo $this->partial('timecard/partials/sign.phtml', [
+		    'title' => 'Signatures',
+		    'data' => $this->timecard_signatures,
+		    'primary_key' => 'UUID',
+		    'route' => 'timecards/signatures',
+		    'timecard_uuid' => $this->timecard_uuid,
+		    'role' => $roles,
+		    'acl_service' => $acl_service,
+		    'params' => [],
+		]); 
+		?>
+	</div>
+</div>
+<?php echo $this->annotations()->setAnnotations($this->annotations)->render(); ?>
