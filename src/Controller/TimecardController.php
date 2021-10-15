@@ -49,6 +49,14 @@ class TimecardController extends AbstractBaseController
                 $request->getFiles()->toArray()
                 );
             $post_uuid = $data['UUID'];
+            
+            $route = $this->getEvent()->getRouteMatch()->getMatchedRouteName();
+            $params = array_merge(
+                $this->getEvent()->getRouteMatch()->getParams(),
+                ['uuid' => $post_uuid]
+                );
+            
+            return $this->redirect()->toRoute($route, $params);
         }
         
         $uuid = $this->params()->fromRoute('uuid', $post_uuid);
