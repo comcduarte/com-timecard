@@ -46,8 +46,11 @@
                                 if (!array_key_exists($item['key'], $record)) {
                                     continue;
                                 }
-                                $href = $this->url($item['route'], ['action' => $item['action'], strtolower($this->primary_key) => $record[$item['key']]], null, true);
-                                echo "<a class='dropdown-item' href='$href'>" . $item['label'] . "</a>";
+                                
+                                if ($acl_service->isAllowed($role, $item['route'], $item['action'])) {
+                                    $href = $this->url($item['route'], ['action' => $item['action'], strtolower($this->primary_key) => $record[$item['key']]], null, true);
+                                    echo "<a class='dropdown-item' href='$href'>" . $item['label'] . "</a>";
+                                }
                             }
                             ?>
                             </div>

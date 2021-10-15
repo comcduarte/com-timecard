@@ -39,6 +39,8 @@
 		    'data' => $this->employees,
 		    'primary_key' => 'UUID',
 		    'route' => 'timecard/timesheet',
+		    'role' => $roles,
+		    'acl_service' => $acl_service,
 		    'params' => [
 		        [
     		        'action' => 'timesheet',

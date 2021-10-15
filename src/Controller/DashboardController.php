@@ -389,6 +389,20 @@ class DashboardController extends AbstractBaseController
         
         $view->setVariable('reports', $reports);
         
+        /****************************************
+         * ACL
+         ****************************************/
+        $view->setVariable('acl_service', $this->acl_service);
+        
+        /****************************************
+         * Roles
+         ****************************************/
+        $roles = [];
+        foreach ($user_entity->user->memberOf() as $role) {
+            array_push($roles, $role['ROLENAME']);
+        }
+        $view->setVariable('roles', $roles);
+        
         return $view;
     }
 
