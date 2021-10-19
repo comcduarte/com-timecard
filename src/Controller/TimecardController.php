@@ -5,6 +5,7 @@ use Annotation\Traits\AnnotationAwareTrait;
 use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
 use Components\Traits\AclAwareTrait;
+use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
 use Laminas\View\Model\ViewModel;
 use Timecard\Form\TimecardLineForm;
 use Timecard\Form\TimesheetFilterForm;
@@ -59,9 +60,16 @@ class TimecardController extends AbstractBaseController
             return $this->redirect()->toRoute($route, $params);
         }
         
+        /**
+         * @var FlashMessenger $flashMessenger
+         */
         $uuid = $this->params()->fromRoute('uuid', $post_uuid);
         if (! $uuid) {
-            $user_entity->getUser($user->UUID);
+            $retval = $user_entity->getUser($user->UUID);
+            if (! $retval) {
+                $this->flashMessenger()->addErrorMessage('Unable to find employee.');
+                return $this->redirect()->toRoute('home');
+            }
             $uuid = $user_entity->employee->UUID;
         } else {
             $user_entity->getEmployee($uuid);
