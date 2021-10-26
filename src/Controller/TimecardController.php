@@ -93,7 +93,10 @@ class TimecardController extends AbstractBaseController
         
         $timecard->WORK_WEEK = $work_week;
         $timecard->EMP_UUID = $user_entity->employee->UUID;
-        $timecard->getTimecard();
+        if (!$timecard->getTimecard()) {
+            $timecard->createTimecard();
+            $timecard->getTimecard();
+        }
         $view->setVariable('timecard_uuid', $timecard->TIMECARD_UUID);
         $view->setVariable('HOURS', $timecard->HOURS);
         

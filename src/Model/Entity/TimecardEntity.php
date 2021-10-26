@@ -42,7 +42,7 @@ class TimecardEntity
         $timecard = new TimecardModel($this->adapter);
         $result = $timecard->read(['EMP_UUID' => $this->EMP_UUID, 'WORK_WEEK' => $this->WORK_WEEK]);
         if (! $result) {
-            $this->createTimecard();
+            return false;
         } else {
             $this->TIMECARD_UUID = $timecard->UUID;
             $this->STATUS = $timecard->STATUS;
@@ -96,7 +96,7 @@ class TimecardEntity
                 $this->TIMECARD_SIGNATURES[] = $signature;
             }
         }
-        
+        return true;
     }
 
     public function createTimecard()
