@@ -3,7 +3,7 @@ namespace Timecard\Controller;
 
 use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
-use Components\Form\Element\AclDatabaseSelect;
+use Components\Form\Element\DatabaseSelect;
 use Components\Form\Element\HiddenSubmit;
 use Components\Traits\AclAwareTrait;
 use Employee\Model\DepartmentModel;
@@ -260,9 +260,21 @@ class DashboardController extends AbstractBaseController
                 'label' => 'Add',
             ],
         ]);
+        
+        $select = new Select();
+        $select->from($employee->getTableName());
+        $select->columns(['UUID','EMP_NUM','LNAME','FNAME']);
+        $select->order(['LNAME']);
+        
+        $where = new Where();
+        $where->equalTo('DEPT', $dept);
+        
+        $select->where($where);
+        
+        
         $find_employee_form->add([
             'name' => 'UUID',
-            'type' => AclDatabaseSelect::class,
+            'type' => DatabaseSelect::class,
             'attributes' => [
                 'id' => 'UUID',
                 'class' => 'form-control',
@@ -277,8 +289,9 @@ class DashboardController extends AbstractBaseController
                     'EMP_NUM',
                 ],
                 'database_adapter' => $this->employee_adapter,
-                'acl_service' => $this->getAclService(),
-                'acl_resource_column' => 'TIME_GROUP',
+                'database_object' => $select,
+//                 'acl_service' => $this->getAclService(),
+//                 'acl_resource_column' => 'TIME_GROUP',
             ],
         ]);
         $find_employee_form->get('UUID')->roles = $user_entity->user->memberOf();
