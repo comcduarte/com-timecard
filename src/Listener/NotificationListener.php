@@ -1,6 +1,7 @@
 <?php
 namespace Timecard\Listener;
 
+use Employee\Model\EmployeeModel;
 use Laminas\EventManager\Event;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\EventManager\ListenerAggregateInterface;
@@ -10,9 +11,8 @@ use Laminas\Mail\Transport\Smtp as SmtpTransport;
 use Laminas\Mime\Mime;
 use Laminas\View\Model\ViewModel;
 use Laminas\View\Renderer\PhpRenderer;
-use Timecard\Model\TimecardModel;
 use Laminas\View\Resolver\AggregateResolver;
-use Employee\Model\EmployeeModel;
+use Timecard\Model\TimecardModel;
 use Timecard\Model\Entity\TimecardEntity;
 
 class NotificationListener implements ListenerAggregateInterface
@@ -93,7 +93,18 @@ class NotificationListener implements ListenerAggregateInterface
         $transport = new SmtpTransport();
         $transport->setConnection($protocol);
         $protocol->rset();
-        $transport->send($message);
+        
+        try {
+            $transport->send($message);
+        } catch (\Exception $e) {
+            /**
+             * @var \Laminas\Log\Logger $logger
+             */
+            $logger = $this->logger;
+            $logger->err($e->getMessage());
+            $logger->info("Error sending email:" . $employee->EMAIL);
+        }
+        
         
         
         $protocol->disconnect();
