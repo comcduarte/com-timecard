@@ -37,6 +37,8 @@
 		<?php echo $this->partial('dept/dashboard', [
 		    'title' => $title,
 		    'data' => $this->employees,
+		    'dept_uuid' => $this->dept->UUID,
+		    'work_week' => $this->work_week,
 		    'primary_key' => 'UUID',
 		    'route' => 'timecard/timesheet',
 		    'role' => $roles,
