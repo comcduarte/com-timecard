@@ -76,9 +76,13 @@ return [
                         'type' => Segment::class,
                         'priority' => 100,
                         'options' => [
-                            'route' => '/secure_sign[/:action[/:uuid]]',
+                            'route' => '/secure_sign[/:action[/:uuid[/:week]]]',
                             'defaults' => [
                                 'controller' => TimecardSignatureController::class,
+                            ],
+                            'constraints' => [
+                                'uuid' => '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}',
+                                'week' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
                             ],
                         ],
                     ],
