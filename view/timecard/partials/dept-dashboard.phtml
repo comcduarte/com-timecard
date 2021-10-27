@@ -8,6 +8,17 @@
 			<a href="" class="btn btn-primary btn-rounded" data-toggle="modal" data-target="#modal-<?=$this->form['name']?>"><?=$this->form['title']?></a>
 		</div>
 		<?php endif; ?>
+		<div>
+		<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','prepareall')) : ?>
+			<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'prepareall', 'uuid' => $this->dept_uuid, 'week' => $this->work_week]); ?>" class="btn btn-info btn-rounder">Prepare All</a>
+		<?php endif; ?>
+		<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','approveall')) : ?>
+			<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'approveall', 'uuid' => $this->dept_uuid, 'week' => $this->work_week]); ?>" class="btn btn-primary btn-rounder">Approve All</a>
+		<?php endif; ?>
+		<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','completeall')) : ?>
+			<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'completeall', 'uuid' => $this->dept_uuid, 'week' => $this->work_week]); ?>" class="btn btn-secondary btn-rounder">Complete All</a>
+		<?php endif; ?>
+		</div>
 	</div>
 
 	<div class="card-body">
@@ -46,8 +57,11 @@
                                 if (!array_key_exists($item['key'], $record)) {
                                     continue;
                                 }
-                                $href = $this->url($item['route'], ['action' => $item['action'], strtolower($this->primary_key) => $record[$item['key']]], null, true);
-                                echo "<a class='dropdown-item' href='$href'>" . $item['label'] . "</a>";
+                                
+                                if ($acl_service->isAllowed($role, $item['route'], $item['action'])) {
+                                    $href = $this->url($item['route'], ['action' => $item['action'], strtolower($this->primary_key) => $record[$item['key']]], null, true);
+                                    echo "<a class='dropdown-item' href='$href'>" . $item['label'] . "</a>";
+                                }
                             }
                             ?>
                             </div>

@@ -3,7 +3,7 @@ global $report_data;
 
 $report_data = [];
 $pay_types = ['Regular','Overtime','Premium','Unproductive','Other/Unpaid'];
-$dow = ['MON','TUES','WED','THURS','FRI','SAT','SUN'];
+$dow = ['MON','TUES','WED','THURS','FRI','SAT','SUN', 'DAYS'];
 
 foreach ($this->data as $record) {
     $index = sprintf('%s-%s', $record['EMP_NUM'], $record['CODE']);
@@ -13,12 +13,6 @@ foreach ($this->data as $record) {
 }
 
 sort($report_data);
-
-
-
-
-
-
 
 echo $this->partial('timecard/reports/report_header.phtml', [
     'user' => $this->currentUser(),
@@ -34,10 +28,12 @@ echo $this->partial('timecard/reports/report_header.phtml', [
 		<?php foreach ($dow as $day) : ?>
 			<td><?=$day?></td>
 		<?php endforeach; ?>
+			<td>Total</td>
 		</tr>
 	</thead>
 	<tbody>
 		<?php foreach ($report_data as $employee) : ?>
+		<?php $total = 0; ?>
 		<tr>
 			<td><?=$employee['RECORD']['EMP_NUM']?></td>
 			<td><?=$employee['RECORD']['FNAME']?></td>
@@ -45,7 +41,9 @@ echo $this->partial('timecard/reports/report_header.phtml', [
 			<td><?=$employee['RECORD']['CODE']?></td>
 			<?php foreach ($dow as $day) : ?>
 			<td><?=$employee['RECORD'][$day]?></td>
+			<?php $total += $employee['RECORD'][$day]; ?>
 			<?php endforeach; ?>
+			<td><?=$total;?></td>
 		</tr>
 		<?php endforeach; ?>
 	</tbody>
