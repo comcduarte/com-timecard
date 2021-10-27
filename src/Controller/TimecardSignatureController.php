@@ -3,6 +3,7 @@ namespace Timecard\Controller;
 
 use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
+use Employee\Model\DepartmentModel;
 use Timecard\Model\TimecardModel;
 use Timecard\Model\TimecardSignatureModel;
 use Timecard\Model\TimecardStageModel;
@@ -66,6 +67,47 @@ class TimecardSignatureController extends AbstractBaseController
         return $this->redirect()->toUrl($url);
     }
     
+    public function prepareallAction()
+    {
+        $uuid = $this->params()->fromRoute('uuid', 0);
+        $url = $this->getRequest()->getHeader('Referer')->getUri();
+        
+        if (! $uuid) {
+            $this->logger->info(sprintf('No Timecard Identifier Specified'));
+            $this->flashmessenger()->addErrorMessage('No Timecard Identifier Specified');
+            return $this->redirect()->toUrl($url);
+        }
+        
+        /****************************************
+         * GET WORK WEEK
+         ****************************************/
+        $work_week = $this->params()->fromRoute('week', 0);
+        
+        if (! $work_week)  {
+            $this->logger->info(sprintf('No Work Week Identifier Specified'));
+            $this->flashmessenger()->addErrorMessage('No Work Week Identifier Specified');
+            return $this->redirect()->toUrl($url);
+        }
+        
+        $department = new DepartmentModel($this->employee_adapter);
+        $department->read(['UUID' => $uuid]);
+        $employees = $department->getEmployees();
+        
+        foreach ($employees as $employee) {
+            $timecard_entity = new TimecardEntity();
+            $timecard_entity->setDbAdapter($this->adapter);
+            $timecard_entity->EMP_UUID = $employee['UUID'];
+            $timecard_entity->WORK_WEEK = $work_week;
+            if ($timecard_entity->getTimecard()) {
+                $this->sign($timecard_entity->TIMECARD_UUID, TimecardModel::PREPARERD_STATUS);
+            }
+        }
+        
+        
+        
+        return $this->redirect()->toUrl($url);
+    }
+    
     public function approveAction()
     {
         $uuid = $this->params()->fromRoute('uuid', 0);
@@ -82,6 +124,47 @@ class TimecardSignatureController extends AbstractBaseController
         return $this->redirect()->toUrl($url);
     }
     
+    public function approveallAction()
+    {
+        $uuid = $this->params()->fromRoute('uuid', 0);
+        $url = $this->getRequest()->getHeader('Referer')->getUri();
+        
+        if (! $uuid) {
+            $this->logger->info(sprintf('No Timecard Identifier Specified'));
+            $this->flashmessenger()->addErrorMessage('No Timecard Identifier Specified');
+            return $this->redirect()->toUrl($url);
+        }
+        
+        /****************************************
+         * GET WORK WEEK
+         ****************************************/
+        $work_week = $this->params()->fromRoute('week', 0);
+        
+        if (! $work_week)  {
+            $this->logger->info(sprintf('No Work Week Identifier Specified'));
+            $this->flashmessenger()->addErrorMessage('No Work Week Identifier Specified');
+            return $this->redirect()->toUrl($url);
+        }
+        
+        $department = new DepartmentModel($this->employee_adapter);
+        $department->read(['UUID' => $uuid]);
+        $employees = $department->getEmployees();
+        
+        foreach ($employees as $employee) {
+            $timecard_entity = new TimecardEntity();
+            $timecard_entity->setDbAdapter($this->adapter);
+            $timecard_entity->EMP_UUID = $employee['UUID'];
+            $timecard_entity->WORK_WEEK = $work_week;
+            if ($timecard_entity->getTimecard()) {
+                $this->sign($timecard_entity->TIMECARD_UUID, TimecardModel::APPROVED_STATUS);
+            }
+        }
+        
+        
+        
+        return $this->redirect()->toUrl($url);
+    }
+    
     public function completeAction()
     {
         $uuid = $this->params()->fromRoute('uuid', 0);
@@ -94,6 +177,47 @@ class TimecardSignatureController extends AbstractBaseController
         }
         
         $this->sign($uuid, TimecardModel::COMPLETED_STATUS);
+        
+        return $this->redirect()->toUrl($url);
+    }
+    
+    public function completeallAction()
+    {
+        $uuid = $this->params()->fromRoute('uuid', 0);
+        $url = $this->getRequest()->getHeader('Referer')->getUri();
+        
+        if (! $uuid) {
+            $this->logger->info(sprintf('No Timecard Identifier Specified'));
+            $this->flashmessenger()->addErrorMessage('No Timecard Identifier Specified');
+            return $this->redirect()->toUrl($url);
+        }
+        
+        /****************************************
+         * GET WORK WEEK
+         ****************************************/
+        $work_week = $this->params()->fromRoute('week', 0);
+        
+        if (! $work_week)  {
+            $this->logger->info(sprintf('No Work Week Identifier Specified'));
+            $this->flashmessenger()->addErrorMessage('No Work Week Identifier Specified');
+            return $this->redirect()->toUrl($url);
+        }
+        
+        $department = new DepartmentModel($this->employee_adapter);
+        $department->read(['UUID' => $uuid]);
+        $employees = $department->getEmployees();
+        
+        foreach ($employees as $employee) {
+            $timecard_entity = new TimecardEntity();
+            $timecard_entity->setDbAdapter($this->adapter);
+            $timecard_entity->EMP_UUID = $employee['UUID'];
+            $timecard_entity->WORK_WEEK = $work_week;
+            if ($timecard_entity->getTimecard()) {
+                $this->sign($timecard_entity->TIMECARD_UUID, TimecardModel::COMPLETED_STATUS);
+            }
+        }
+        
+        
         
         return $this->redirect()->toUrl($url);
     }

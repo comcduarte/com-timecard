@@ -97,7 +97,7 @@ class TimecardAddForm extends Form
             'name' => 'SUBMIT',
             'type' => Submit::class,
             'attributes' => [
-                'value' => 'Submit',
+                'value' => 'Add Paycode',
                 'class' => 'btn btn-primary form-control',
                 'id' => 'SUBMIT',
             ],
