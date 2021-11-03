@@ -308,8 +308,6 @@ class TimecardConfigController extends AbstractConfigController
         $view = new ViewModel();
         $view->setTemplate('timecard/cron');
         
-        $this->populateWeeklyTimecards();
-        
         return $view;
     }
     
