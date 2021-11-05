@@ -258,6 +258,17 @@ class TimecardSignatureController extends AbstractBaseController
         /****************************************
          * SET TIMECARD STATUS
          ****************************************/
+        switch (true) {
+            case ($status == $timecard::ACTIVE_STATUS):
+                break;
+            case ($status <= $timecard_entity->STATUS):
+                $message = sprintf('Error: Timecard %s at status %s. Unable to set status of %s', $uuid, TimecardModel::retrieveStatus($timecard_entity->STATUS), TimecardModel::retrieveStatus($status));
+                $this->logger->info($message);
+                $this->flashmessenger()->addErrorMessage($message);
+                return;
+            default:
+                break;
+        }
         $timecard_entity->STATUS = $status;
         $timecard->STATUS = $status;
         $timecard->update();
