@@ -34,6 +34,8 @@ use Timecard\Listener\Factory\NotificationListenerFactory;
 use Timecard\Model\TimecardModel;
 use Timecard\Navigation\Factory\SignatureNavigationFactory;
 use Timecard\Service\Factory\TimecardModelAdapterFactory;
+use Timecard\Controller\CronController;
+use Timecard\Controller\Factory\CronControllerFactory;
 
 return [
     'router' => [
@@ -58,6 +60,17 @@ return [
                             'defaults' => [
                                 'action' => 'index',
                                 'controller' => TimecardConfigController::class,
+                            ],
+                        ],
+                    ],
+                    'cron' => [
+                        'type' => Segment::class,
+                        'priority' => 100,
+                        'options' => [
+                            'route' => '/cron[/:action]',
+                            'defaults' => [
+                                'action' => 'default',
+                                'controller' => CronController::class,
                             ],
                         ],
                     ],
@@ -235,6 +248,7 @@ return [
     ],
     'controllers' => [
         'factories' => [
+            CronController::class => CronControllerFactory::class,
             DashboardController::class => DashboardControllerFactory::class,
             PaycodeController::class => PaycodeControllerFactory::class,
             TimecardConfigController::class => TimecardConfigControllerFactory::class,

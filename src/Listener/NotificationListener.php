@@ -36,7 +36,6 @@ class NotificationListener implements ListenerAggregateInterface
     public function onSign(Event $event)
     {
         /**
-         * 
          * @var \Laminas\Log\Logger $logger
          */
         $this->logger->info('Notification Listener >> onSign >> Executed');
@@ -46,12 +45,16 @@ class NotificationListener implements ListenerAggregateInterface
         $employee = new EmployeeModel($event->getTarget()->employee_adapter);
         
         /**
-         * 
          * @var TimecardEntity $timecard_entity
          */
         $timecard_entity = $params['timecard_entity'];
         $employee->read(['UUID' => $timecard_entity->EMP_UUID]);
         $status = $timecard_entity->STATUS;
+        
+        if (is_null($employee->EMAIL)) {
+            $logger = $this->logger;
+            $logger->info(sprintf('Error: %s does not have email address assigned.  Unable to send notification.', $employee->EMP_NUM));
+        }
         
         /****************************************
          * Notifications
