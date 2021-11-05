@@ -356,7 +356,20 @@ class TimecardConfigController extends AbstractConfigController
                             $pc->CODE = $record[$CODE];
                             $pc->DESC = $record[$DESC];
                             $pc->CAT = $record[$CAT];
-                            $pc->PAY_TYPE = $record[$PAY_TYPE];
+                            
+                            switch ($record[$PAY_TYPE]) {
+                                case 'Regular':
+                                case 'Overtime':
+                                case 'Premium':
+                                case 'Unproductive':
+                                    $pc->PAY_TYPE = $record[$PAY_TYPE];
+                                    break;
+                                case 'Other':
+                                case 'Unknown':
+                                default:    
+                                    $pc->PAY_TYPE = 'Other/Unpaid';
+                                    break;
+                            }
                             
                             switch ($record[$STATUS]) {
                                 case "Active":
@@ -373,7 +386,20 @@ class TimecardConfigController extends AbstractConfigController
                         } else {
                             $pc->DESC = $record[$DESC];
                             $pc->CAT = $record[$CAT];
-                            $pc->PAY_TYPE = $record[$PAY_TYPE];
+                            
+                            switch ($record[$PAY_TYPE]) {
+                                case 'Regular':
+                                case 'Overtime':
+                                case 'Premium':
+                                case 'Unproductive':
+                                    $pc->PAY_TYPE = $record[$PAY_TYPE];
+                                    break;
+                                case 'Other':
+                                case 'Unknown':
+                                default:
+                                    $pc->PAY_TYPE = 'Other/Unpaid';
+                                    break;
+                            }
                             
                             switch ($record[$STATUS]) {
                                 case "Active":
