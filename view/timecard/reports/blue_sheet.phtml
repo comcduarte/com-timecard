@@ -120,5 +120,10 @@ echo $this->partial('timecard/reports/report_header.phtml', [
 			<td><?php if (array_key_exists('Other/Unpaid', $totals)) { echo $totals['Other/Unpaid']['HOURS']; } ?></td>
 			<td><?php if (array_key_exists('Other/Unpaid', $totals)) { echo $totals['Other/Unpaid']['DAYS']; } ?></td>
 		</tr>
+		<tr>
+			<td colspan="3"/>
+			<td><?=floatval($totals['Regular']['HOURS'] + $totals['Unproductive']['HOURS']); ?></td>
+			<td colspan="9" />
+		</tr>
 	</tbody>
 </table>
