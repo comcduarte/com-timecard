@@ -1,11 +1,16 @@
 <?php
 global $report_data;
+global $work_week;
 
 $report_data = [];
 $pay_types = ['Regular','Overtime','Premium','Unproductive','Other/Unpaid'];
 $dow = ['MON','TUES','WED','THURS','FRI','SAT','SUN', 'DAYS'];
 
 foreach ($this->data as $record) {
+    if (!isset($work_week)) {
+        $work_week = $record['WORK_WEEK'];
+    }
+    
     $index = sprintf('%s-%s', $record['EMP_NUM'], $record['CODE']);
     $report_data[$index] = [
         'RECORD' => $record,
@@ -16,6 +21,7 @@ sort($report_data);
 
 echo $this->partial('timecard/reports/report_header.phtml', [
     'user' => $this->currentUser(),
+    'work_week' => $work_week,
 ]);
 ?>
 <table class="table table-sm">
