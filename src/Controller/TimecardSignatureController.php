@@ -259,6 +259,11 @@ class TimecardSignatureController extends AbstractBaseController
          * SET TIMECARD STATUS
          ****************************************/
         switch (true) {
+            case ($timecard_entity->STATUS == $timecard::COMPLETED_STATUS):
+                $message = sprintf('Error: Timecard %s has already been processed.  Contact Payroll.', $uuid);
+                $this->logger->info($message);
+                $this->flashmessenger()->addErrorMessage($message);
+                return;
             case ($status == $timecard::ACTIVE_STATUS):
                 break;
             case ($status <= $timecard_entity->STATUS):

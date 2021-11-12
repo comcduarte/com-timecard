@@ -267,7 +267,7 @@ class DashboardController extends AbstractBaseController
         $select->order(['LNAME']);
         
         $where = new Where();
-        $where->equalTo('DEPT', $dept);
+        $where->equalTo('DEPT', $dept)->and->equalTo('STATUS', EmployeeModel::ACTIVE_STATUS);
         
         $select->where($where);
         
