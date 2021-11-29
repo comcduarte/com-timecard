@@ -45,6 +45,14 @@ if (!isset($work_week)) {
     $work_week = $data[0]['WORK_WEEK'];
 }
 
+/****************************************
+ * INITIALIZE TOTALS
+ ****************************************/
+foreach ($pay_types as $type) {
+    $report_data['Totals'][$type]['HOURS'] = 0;
+    $report_data['Totals'][$type]['DAYS'] = 0;
+}
+
 foreach ($this->data as $paycode) {
     $index = sprintf('%s-%s-%s', $paycode['CODE'], $paycode['TIME_GROUP'], $paycode['TIME_SUBGROUP']);
     $report_data[$index] = [
