@@ -83,14 +83,14 @@ class TimecardConfigController extends AbstractConfigController
         $ddl->addColumn(new Datetime('WORK_WEEK', TRUE));
         $ddl->addColumn(new Varchar('TIMECARD_UUID', 36, TRUE));
         $ddl->addColumn(new Varchar('PAY_UUID', 36, TRUE));
-        $ddl->addColumn(new Decimal('SUN', 4, 2, TRUE));
-        $ddl->addColumn(new Decimal('MON', 4, 2, TRUE));
-        $ddl->addColumn(new Decimal('TUES', 4, 2, TRUE));
-        $ddl->addColumn(new Decimal('WED', 4, 2, TRUE));
-        $ddl->addColumn(new Decimal('THURS', 4, 2, TRUE));
-        $ddl->addColumn(new Decimal('FRI', 4, 2, TRUE));
-        $ddl->addColumn(new Decimal('SAT', 4, 2, TRUE));
-        $ddl->addColumn(new Decimal('DAYS', 4, 2, TRUE)); 
+        $ddl->addColumn(new Decimal('SUN', 8, 2, TRUE));
+        $ddl->addColumn(new Decimal('MON', 8, 2, TRUE));
+        $ddl->addColumn(new Decimal('TUES', 8, 2, TRUE));
+        $ddl->addColumn(new Decimal('WED', 8, 2, TRUE));
+        $ddl->addColumn(new Decimal('THURS', 8, 2, TRUE));
+        $ddl->addColumn(new Decimal('FRI', 8, 2, TRUE));
+        $ddl->addColumn(new Decimal('SAT', 8, 2, TRUE));
+        $ddl->addColumn(new Decimal('DAYS', 8, 2, TRUE)); 
         $ddl->addColumn(new Integer('ORD', TRUE));
         
         $ddl->addConstraint(new PrimaryKey('UUID'));
