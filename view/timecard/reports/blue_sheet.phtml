@@ -38,7 +38,7 @@ function add_days($record) {
     }
     $report_data['Totals'][$record['PAY_TYPE']]['DAYS'] = $tempval;
     
-    return $tempval;
+    return floatval($record['DAYS']);
 }
 
 if (!isset($work_week)) {
