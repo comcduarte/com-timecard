@@ -75,23 +75,23 @@ class TimecardModel extends AbstractBaseModel
         switch ($SHIFT_CODE) {
             case '40':
                 $timecard_line->MON = 8;
-                $timecard_line->TUES = 8;
+                $timecard_line->TUE = 8;
                 $timecard_line->WED = 8;
-                $timecard_line->THURS = 8;
+                $timecard_line->THU = 8;
                 $timecard_line->FRI = 8;
                 break;
             case '35':
                 $timecard_line->MON = 7;
                 $timecard_line->TUES = 7;
                 $timecard_line->WED = 7;
-                $timecard_line->THURS = 7;
+                $timecard_line->THU = 7;
                 $timecard_line->FRI = 7;
                 break;
             case '20':
                 $timecard_line->MON = 4;
-                $timecard_line->TUES = 4;
+                $timecard_line->TUE = 4;
                 $timecard_line->WED = 4;
-                $timecard_line->THURS = 4;
+                $timecard_line->THU = 4;
                 $timecard_line->FRI = 4;
                 break;
             case '42':

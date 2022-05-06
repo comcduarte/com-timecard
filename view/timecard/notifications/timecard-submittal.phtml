@@ -19,12 +19,12 @@ $timecard_entity = $this->timecard_entity;
         <table class="table">
         	<thead class="thead-dark">
         		<tr>
-        			<td>PAYCODE</td><td>SUN</td><td>MON</td><td>TUES</td><td>WED</td><td>THURS</td><td>FRI</td><td>SAT</td><td>DAYS</td>
+        			<td>PAYCODE</td><td>SUN</td><td>MON</td><td>TUE</td><td>WED</td><td>THU</td><td>FRI</td><td>SAT</td><td>DAYS</td>
         		</tr>
         	</thead>
         	<tbody>
         		<?php foreach ($timecard_entity->TIMECARD_LINES as $line) : ?>
-        			<tr><td><?=$line->getPaycodeModel()->CODE; ?> - <?=$line->getPaycodeModel()->DESC; ?></td><td><?=$line->SUN ?></td><td><?=$line->MON ?></td><td><?=$line->TUES ?></td><td><?=$line->WED ?></td><td><?=$line->THURS ?></td><td><?=$line->FRI ?></td><td><?=$line->SAT ?></td><td><?=$line->DAYS ?></td></tr> 
+        			<tr><td><?=$line->getPaycodeModel()->CODE; ?> - <?=$line->getPaycodeModel()->DESC; ?></td><td><?=$line->SUN ?></td><td><?=$line->MON ?></td><td><?=$line->TUE ?></td><td><?=$line->WED ?></td><td><?=$line->THU ?></td><td><?=$line->FRI ?></td><td><?=$line->SAT ?></td><td><?=$line->DAYS ?></td></tr> 
         		<?php endforeach; ?>
         	</tbody>
         </table>

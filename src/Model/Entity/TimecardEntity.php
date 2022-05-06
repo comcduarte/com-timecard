@@ -23,7 +23,7 @@ class TimecardEntity
     public $NOTES = [];
     public $HOURS = [];
     
-    public $DAYS = ['MON','TUES','WED','THURS','FRI','SAT','SUN'];
+    public $DAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
     public $STATUS;
     
     public function __construct()

@@ -62,7 +62,7 @@ class TimecardLineForm extends AbstractBaseForm
             ],
         ],['priority' => 100]);
         
-        $days = ['SUN','MON','TUES','WED','THURS','FRI','SAT', 'DAYS'];
+        $days = ['SUN','MON','TUE','WED','THU','FRI','SAT', 'DAYS'];
         foreach ($days as $day) {
             $this->add([
                 'name' => $day,

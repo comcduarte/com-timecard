@@ -85,9 +85,9 @@ class TimecardConfigController extends AbstractConfigController
         $ddl->addColumn(new Varchar('PAY_UUID', 36, TRUE));
         $ddl->addColumn(new Decimal('SUN', 8, 2, TRUE));
         $ddl->addColumn(new Decimal('MON', 8, 2, TRUE));
-        $ddl->addColumn(new Decimal('TUES', 8, 2, TRUE));
+        $ddl->addColumn(new Decimal('TUE', 8, 2, TRUE));
         $ddl->addColumn(new Decimal('WED', 8, 2, TRUE));
-        $ddl->addColumn(new Decimal('THURS', 8, 2, TRUE));
+        $ddl->addColumn(new Decimal('THU', 8, 2, TRUE));
         $ddl->addColumn(new Decimal('FRI', 8, 2, TRUE));
         $ddl->addColumn(new Decimal('SAT', 8, 2, TRUE));
         $ddl->addColumn(new Decimal('DAYS', 8, 2, TRUE)); 
@@ -167,7 +167,11 @@ class TimecardConfigController extends AbstractConfigController
         $ddl->addColumn(new Varchar('CODE', 10, TRUE));
         $ddl->addColumn(new Varchar('DESC', 100, TRUE));
         $ddl->addColumn(new Varchar('CAT', 10, TRUE));
-        $ddl->addColumn(new VarChar('PAY_TYPE', 50, TRUE));
+        $ddl->addColumn(new Varchar('PAY_TYPE', 50, TRUE));
+        $ddl->addColumn(new Varchar('UNITS', 10, TRUE));
+        $ddl->addColumn(new Decimal('PHOURLYRATE', 8, 2, TRUE));
+        $ddl->addColumn(new Decimal('PDAILYRATE', 8, 2, TRUE));
+        $ddl->addColumn(new Decimal('FLATAMT', 8, 2, TRUE));
         $ddl->addColumn(new Varchar('PARENT', 36));
         
         $ddl->addColumn(new Varchar('RESOURCE', 25, TRUE));
@@ -258,23 +262,23 @@ class TimecardConfigController extends AbstractConfigController
             switch ($employee['SHIFT_CODE']) {
                 case '40':
                     $timecard_line->MON = 8;
-                    $timecard_line->TUES = 8;
+                    $timecard_line->TUE = 8;
                     $timecard_line->WED = 8;
-                    $timecard_line->THURS = 8;
+                    $timecard_line->THU = 8;
                     $timecard_line->FRI = 8;
                     break;
                 case '35':
                     $timecard_line->MON = 7;
-                    $timecard_line->TUES = 7;
+                    $timecard_line->TUE = 7;
                     $timecard_line->WED = 7;
-                    $timecard_line->THURS = 7;
+                    $timecard_line->THU = 7;
                     $timecard_line->FRI = 7;
                     break;
                 case '20':
                     $timecard_line->MON = 4;
-                    $timecard_line->TUES = 4;
+                    $timecard_line->TUE = 4;
                     $timecard_line->WED = 4;
-                    $timecard_line->THURS = 4;
+                    $timecard_line->THU = 4;
                     $timecard_line->FRI = 4;
                     break;
                 case '42':
@@ -319,11 +323,11 @@ class TimecardConfigController extends AbstractConfigController
         $CODE = 0;
         $DESC = 1;
         $CAT = 2;
-        $CAT_TYPE = 3;
-        $PAY_TYPE = 4;
-        $SEPCK = 5;
-        $ACCT = 6;
-        $STATUS = 7;
+        $PAY_TYPE = 7;
+        $PHOURLYRATE = 8;
+        $PDAILYRATE = 9;
+        $FLATAMT = 10;
+        $UNITS = 11;
         
         /****************************************
          * Generate Form
@@ -353,68 +357,32 @@ class TimecardConfigController extends AbstractConfigController
                         $result = $pc->read(['CODE' => sprintf('%s', $record[$CODE])]);
                         if ($result === FALSE) {
                             $pc->UUID = $pc->generate_uuid();
-                            $pc->CODE = $record[$CODE];
-                            $pc->DESC = $record[$DESC];
-                            $pc->CAT = $record[$CAT];
-                            
-                            switch ($record[$PAY_TYPE]) {
-                                case 'Regular':
-                                case 'Overtime':
-                                case 'Premium':
-                                case 'Unproductive':
-                                    $pc->PAY_TYPE = $record[$PAY_TYPE];
-                                    break;
-                                case 'Other':
-                                case 'Unknown':
-                                default:    
-                                    $pc->PAY_TYPE = 'Other/Unpaid';
-                                    break;
-                            }
-                            
-                            switch ($record[$STATUS]) {
-                                case "Active":
-                                    $pc->STATUS = $pc::ACTIVE_STATUS;
-                                    break;
-                                case "Inactive":
-                                    $pc->STATUS = $pc::INACTIVE_STATUS;
-                                    break;
-                                default:
-                                    $pc->STATUS = $pc::INACTIVE_STATUS;
-                                    break;
-                            }
+                            $pc->STATUS = $pc::ACTIVE_STATUS;
                             $pc->create();
-                        } else {
-                            $pc->DESC = $record[$DESC];
-                            $pc->CAT = $record[$CAT];
-                            
-                            switch ($record[$PAY_TYPE]) {
-                                case 'Regular':
-                                case 'Overtime':
-                                case 'Premium':
-                                case 'Unproductive':
-                                    $pc->PAY_TYPE = $record[$PAY_TYPE];
-                                    break;
-                                case 'Other':
-                                case 'Unknown':
-                                default:
-                                    $pc->PAY_TYPE = 'Other/Unpaid';
-                                    break;
-                            }
-                            
-                            switch ($record[$STATUS]) {
-                                case "Active":
-                                    $pc->STATUS = $pc::ACTIVE_STATUS;
-                                    break;
-                                case "Inactive":
-                                    $pc->STATUS = $pc::INACTIVE_STATUS;
-                                    break;
-                                default:
-                                    $pc->STATUS = $pc::INACTIVE_STATUS;
-                                    break;
-                            }
-                            $pc->update();
                         }
                         
+                        $pc->CODE = $record[$CODE];
+                        $pc->DESC = $record[$DESC];
+                        $pc->CAT = $record[$CAT];
+                        $pc->FLATAMT = $record[$FLATAMT];
+                        $pc->PHOURLYRATE = $record[$PHOURLYRATE];
+                        $pc->PDAILYRATE = $record[$PDAILYRATE];
+                        $pc->UNITS = $record[$UNITS];
+                        
+                        switch ($record[$PAY_TYPE]) {
+                            case 'Regular':
+                            case 'Overtime':
+                            case 'Premium':
+                            case 'Unproductive':
+                                $pc->PAY_TYPE = $record[$PAY_TYPE];
+                                break;
+                            case 'Other':
+                            case 'Unknown':
+                            default:    
+                                $pc->PAY_TYPE = 'Other/Unpaid';
+                                break;
+                        }
+                        $pc->update();
                     }
                     fclose($handle);
                     unlink($data['FILE']['tmp_name']);

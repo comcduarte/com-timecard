@@ -11,9 +11,9 @@ class TimecardLineModel extends AbstractBaseModel
     public $PAY_UUID;
     public $SUN;
     public $MON;
-    public $TUES;
+    public $TUE;
     public $WED;
-    public $THURS;
+    public $THU;
     public $FRI;
     public $SAT;
     public $DAYS;

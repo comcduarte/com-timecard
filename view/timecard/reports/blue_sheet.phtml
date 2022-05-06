@@ -4,12 +4,12 @@ global $work_week;
 
 $report_data = [];
 $pay_types = ['Regular','Overtime','Premium','Unproductive','Other/Unpaid'];
-$dow = ['SUN','MON','TUES','WED','THURS','FRI','SAT'];
+$dow = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
 
 function add_hours($record) {
     global $report_data;
     $total = 0;
-    $dow = ['SUN','MON','TUES','WED','THURS','FRI','SAT'];
+    $dow = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
     
     foreach ($dow as $day) {
         $total += floatval($record[$day]);
