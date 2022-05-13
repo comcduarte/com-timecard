@@ -10,6 +10,10 @@ class PaycodeModel extends AbstractBaseModel
     public $RESOURCE;
     public $CAT;
     public $PAY_TYPE;
+    public $UNITS;
+    public $PHOURLYRATE;
+    public $PDAILYRATE;
+    public $FLATAMT;
     public $PARENT;
     
     public function __construct($adapter = NULL)
