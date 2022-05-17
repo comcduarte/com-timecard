@@ -53,6 +53,7 @@ class TimecardConfigController extends AbstractConfigController
         $ddl = [];
         
         $ddl[] = new DropTable('time_pay_codes');
+        $ddl[] = new DropTable('time_shift_codes');
         $ddl[] = new DropTable('time_cards');
         $ddl[] = new DropTable('time_cards_lines');
         $ddl[] = new DropTable('time_cards_signatures');
@@ -175,6 +176,25 @@ class TimecardConfigController extends AbstractConfigController
         $ddl->addColumn(new Varchar('PARENT', 36));
         
         $ddl->addColumn(new Varchar('RESOURCE', 25, TRUE));
+        
+        $ddl->addConstraint(new PrimaryKey('UUID'));
+        
+        $this->timecard_adapter->query($sql->buildSqlString($ddl), $this->timecard_adapter::QUERY_MODE_EXECUTE);
+        unset($ddl);
+        
+        /******************************
+         * SHIFT CODES
+         ******************************/
+        $ddl = new CreateTable('time_shift_codes');
+        
+        $ddl->addColumn(new Varchar('UUID', 36));
+        $ddl->addColumn(new Integer('STATUS', TRUE));
+        $ddl->addColumn(new Datetime('DATE_CREATED', TRUE));
+        $ddl->addColumn(new Datetime('DATE_MODIFIED', TRUE));
+        
+        $ddl->addColumn(new Varchar('CODE', 10, TRUE));
+        $ddl->addColumn(new Varchar('DESC', 100, TRUE));
+        $ddl->addColumn(new Decimal('HOUR', TRUE));
         
         $ddl->addConstraint(new PrimaryKey('UUID'));
         

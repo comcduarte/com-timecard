@@ -3,15 +3,19 @@ namespace Timecard;
 
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Segment;
+use Timecard\Controller\CronController;
 use Timecard\Controller\DashboardController;
 use Timecard\Controller\PaycodeController;
+use Timecard\Controller\ShiftCodeController;
 use Timecard\Controller\TimecardConfigController;
 use Timecard\Controller\TimecardController;
 use Timecard\Controller\TimecardLineController;
 use Timecard\Controller\TimecardSignatureController;
 use Timecard\Controller\TimecardStageController;
+use Timecard\Controller\Factory\CronControllerFactory;
 use Timecard\Controller\Factory\DashboardControllerFactory;
 use Timecard\Controller\Factory\PaycodeControllerFactory;
+use Timecard\Controller\Factory\ShiftCodeControllerFactory;
 use Timecard\Controller\Factory\TimecardConfigControllerFactory;
 use Timecard\Controller\Factory\TimecardControllerFactory;
 use Timecard\Controller\Factory\TimecardLineControllerFactory;
@@ -34,8 +38,6 @@ use Timecard\Listener\Factory\NotificationListenerFactory;
 use Timecard\Model\TimecardModel;
 use Timecard\Navigation\Factory\SignatureNavigationFactory;
 use Timecard\Service\Factory\TimecardModelAdapterFactory;
-use Timecard\Controller\CronController;
-use Timecard\Controller\Factory\CronControllerFactory;
 
 return [
     'router' => [
@@ -237,6 +239,31 @@ return [
                     ],
                 ],
             ],
+            'shiftcode' => [
+                'type' => Literal::class,
+                'priority' => 1,
+                'options' => [
+                    'route' => '/shiftcode',
+                    'defaults' => [
+                        'action' => 'index',
+                        'controller' => ShiftCodeController::class,
+                    ],
+                ],
+                'may_terminate' => TRUE,
+                'child_routes' => [
+                    'default' => [
+                        'type' => Segment::class,
+                        'priority' => -100,
+                        'options' => [
+                            'route' => '/[:action[/:uuid]]',
+                            'defaults' => [
+                                'action' => 'index',
+                                'controller' => ShiftCodeController::class,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
     ],
     'acl' => [
@@ -244,6 +271,7 @@ return [
             'timecard/config' => [],
             'timecard/default' => [],
             'paycode/default' => [],
+            'shiftcode/default' => [],
         ],
     ],
     'controllers' => [
@@ -251,6 +279,7 @@ return [
             CronController::class => CronControllerFactory::class,
             DashboardController::class => DashboardControllerFactory::class,
             PaycodeController::class => PaycodeControllerFactory::class,
+            ShiftCodeController::class => ShiftCodeControllerFactory::class,
             TimecardConfigController::class => TimecardConfigControllerFactory::class,
             TimecardController::class => TimecardControllerFactory::class,
             TimecardLineController::class => TimecardLineControllerFactory::class,
@@ -313,6 +342,29 @@ return [
                                 'route' => 'paycode/default',
                                 'action' => 'index',
                                 'resource' => 'paycode/default',
+                                'privilege' => 'index',
+                            ],
+                        ],
+                    ],
+                    [
+                        'label' => 'Shift Codes',
+                        'route' => 'shiftcode/default',
+                        'class' => 'dropdown-submenu',
+                        'resource' => 'shiftcode/default',
+                        'privilege' => 'menu',
+                        'pages' => [
+                            [
+                                'label' => 'Add New Shift Code',
+                                'route' => 'shiftcode/default',
+                                'action' => 'create',
+                                'resource' => 'shiftcode/default',
+                                'privilege' => 'create',
+                            ],
+                            [
+                                'label' => 'List Shift Codes',
+                                'route' => 'shiftcode/default',
+                                'action' => 'index',
+                                'resource' => 'shiftcode/default',
                                 'privilege' => 'index',
                             ],
                         ],
