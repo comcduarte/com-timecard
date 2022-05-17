@@ -331,13 +331,6 @@ return [
                                 'resource' => 'timecard/signatures',
                                 'privilege' => 'create',
                             ],
-                            [
-                                'label' => 'List Signatures',
-                                'route' => 'timecard/signatures',
-                                'action' => 'index',
-                                'resource' => 'timecard/signatures',
-                                'privilege' => 'index',
-                            ],
                         ],
                     ],
                     [
@@ -377,13 +370,6 @@ return [
                                 'resource' => 'timecard/lines',
                                 'privilege' => 'admin',
                             ],
-                            [
-                                'label' => 'List Lines',
-                                'route' => 'timecard/lines',
-                                'action' => 'index',
-                                'resource' => 'timecard/lines',
-                                'privilege' => 'admin',
-                            ],
                         ],
                     ],
                     [
@@ -399,13 +385,6 @@ return [
                                 'action' => 'create',
                                 'resource' => 'timecard/timecards',
                                 'privilege' => 'create',
-                            ],
-                            [
-                                'label' => 'List Timecards',
-                                'route' => 'timecard/timecards',
-                                'action' => 'index',
-                                'resource' => 'timecard/timecards',
-                                'privilege' => 'index',
                             ],
                         ],
                     ],
