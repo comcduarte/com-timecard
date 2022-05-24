@@ -165,6 +165,7 @@ class TimecardConfigController extends AbstractConfigController
         $ddl->addColumn(new Datetime('DATE_CREATED', TRUE));
         $ddl->addColumn(new Datetime('DATE_MODIFIED', TRUE));
         
+        $ddl->addColumn(new Varchar('ACCRUAL', 10, TRUE));
         $ddl->addColumn(new Varchar('CODE', 10, TRUE));
         $ddl->addColumn(new Varchar('DESC', 100, TRUE));
         $ddl->addColumn(new Varchar('CAT', 10, TRUE));

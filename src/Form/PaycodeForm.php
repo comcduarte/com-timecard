@@ -18,6 +18,20 @@ class PaycodeForm extends AbstractBaseForm
         $paycode_model = new PaycodeModel($this->adapter);
         
         $this->add([
+            'name' => 'ACCRUAL',
+            'type' => Text::class,
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'ACCRUAL',
+                'required' => 'true',
+                'placeholder' => '',
+            ],
+            'options' => [
+                'label' => 'Accrual Code',
+            ],
+        ],['priority' => 100]);
+        
+        $this->add([
             'name' => 'CODE',
             'type' => Text::class,
             'attributes' => [
