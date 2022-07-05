@@ -391,7 +391,8 @@ class DashboardController extends AbstractBaseController
         $select = new Select();
         $select->columns(['UUID', 'NAME'])
         ->from('reports')
-        ->where([new Like('NAME', 'DEPT - %')]);
+        ->where([new Like('NAME', 'DEPT - %')])
+        ->where([new Like('NAME', "$department->CODE - %")],Where::OP_OR);
         
         $statement = $sql->prepareStatementForSqlObject($select);
         
