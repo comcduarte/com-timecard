@@ -23,7 +23,6 @@ class PaycodeForm extends AbstractBaseForm
             'attributes' => [
                 'class' => 'form-control',
                 'id' => 'ACCRUAL',
-                'required' => 'true',
                 'placeholder' => '',
             ],
             'options' => [
