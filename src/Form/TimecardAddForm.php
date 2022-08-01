@@ -64,6 +64,7 @@ class TimecardAddForm extends Form
             'attributes' => [
                 'id' => 'PAY_UUID',
                 'class' => 'form-control',
+                'onchange' => 'document.getElementById("TIMECARD_ADD_SUBMIT").disabled=false;',
             ],
             'options' => [
                 'label' => 'Pay Code',
@@ -99,7 +100,8 @@ class TimecardAddForm extends Form
             'attributes' => [
                 'value' => 'Add Paycode',
                 'class' => 'btn btn-primary form-control',
-                'id' => 'SUBMIT',
+                'id' => 'TIMECARD_ADD_SUBMIT',
+                'disabled' => 'true',
             ],
         ],['priority' => 0]);
     }
