@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Fixed
 - Add paycode form submit is disabled until select box is changed.
 
+### Added
+- Deletion of all timecards for a work week in a department.
+
 ## 1.0.4
 ### Added
 - Add: Support Detailed Paycode Import

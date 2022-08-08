@@ -132,6 +132,37 @@ class TimecardEntity
         return TRUE;
     }
     
+    public function deleteTimecard()
+    {
+        $params = [];
+        
+        foreach (array_keys(get_object_vars($this)) as $var) {
+            switch ($var) {
+                case 'EMP_UUID':
+                case 'WORK_WEEK':
+                    $params[$var] = $this->$var;
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+        /****************************************
+         * GET TIMECARD
+         ****************************************/
+        $timecard = new TimecardModel($this->adapter);
+        $result = $timecard->read($params);
+        if (! $result) {
+            return false;
+        } else {
+            $this->TIMECARD_UUID = $timecard->UUID;
+            $this->STATUS = $timecard->STATUS;
+        }
+        
+        $bResult = $timecard->delete();
+        return $bResult;
+    }
+    
     public function addPayCode(TimecardLineModel $line)
     {
         

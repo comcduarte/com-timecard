@@ -18,6 +18,9 @@
 		<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','completeall')) : ?>
 			<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'completeall', 'uuid' => $this->dept_uuid, 'week' => $this->work_week]); ?>" class="btn btn-secondary btn-rounder">Complete All</a>
 		<?php endif; ?>
+		<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','deleteall')) : ?>
+			<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'deleteall', 'uuid' => $this->dept_uuid, 'week' => $this->work_week]); ?>" class="btn btn-danger btn-rounder">Delete All</a>
+		<?php endif; ?>
 		</div>
 	</div>
 

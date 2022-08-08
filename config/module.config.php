@@ -270,6 +270,7 @@ return [
         'admin' => [
             'timecard/config' => [],
             'timecard/default' => [],
+            'timecard/secure_signatures' => [],
             'paycode/default' => [],
             'shiftcode/default' => [],
         ],
