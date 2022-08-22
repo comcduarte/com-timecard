@@ -137,9 +137,12 @@ class TimecardEntity
         $params = [];
         
         foreach (array_keys(get_object_vars($this)) as $var) {
-            switch ($var) {
-                case 'EMP_UUID':
-                case 'WORK_WEEK':
+            switch (true) {
+                case isset($this->TIMECARD_UUID):
+                    $params['UUID'] = $this->TIMECARD_UUID;
+                    break;
+                case isset($this->EMP_UUID):
+                case isset($this->WORK_WEEK):
                     $params[$var] = $this->$var;
                     break;
                 default:
