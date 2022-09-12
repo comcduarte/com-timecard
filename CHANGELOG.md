@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.0.6
+### Added
+- Sortable and Searchable Tables.  Components v1.0.4.
+
 ## 1.0.5 - TBD
 ### Fixed
 - Add paycode form submit is disabled until select box is changed.

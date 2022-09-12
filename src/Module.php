@@ -8,7 +8,7 @@ use Timecard\Listener\NotificationListener;
 class Module
 {
     const TITLE = "Timecard Module";
-    const VERSION = "v1.0.4";
+    const VERSION = "v1.0.6";
     
     public function getConfig()
     {
