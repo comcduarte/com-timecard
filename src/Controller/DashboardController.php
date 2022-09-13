@@ -280,7 +280,7 @@ class DashboardController extends AbstractBaseController
                 'class' => 'form-control',
             ],
             'options' => [
-                'label' => 'Open Timesheet',
+                'label' => 'Add Timesheet',
                 'database_table' => $employee->getTableName(),
                 'database_id_column' => $employee->getPrimaryKey(),
                 'database_value_columns' => [
