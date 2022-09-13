@@ -14,7 +14,7 @@ class PaycodeController extends AbstractBaseController
     public function indexAction()
     {
         $view = new ViewModel();
-        $view->setTemplate('base/index');
+        $view->setTemplate('base/subtable');
         
         /**
          * Override fetchall 
@@ -43,10 +43,28 @@ class PaycodeController extends AbstractBaseController
             $header = array_keys($records[0]);
         }
         
+        $params = [
+            [
+                'route' => 'paycode/default',
+                'action' => 'update',
+                'key' => 'UUID',
+                'label' => 'Update',
+            ],
+            [
+                'route' => 'paycode/default',
+                'action' => 'delete',
+                'key' => 'UUID',
+                'label' => 'Delete',
+            ],
+        ];
+        
         $view->setvariables ([
             'data' => $records,
             'header' => $header,
             'primary_key' => $this->model->getPrimaryKey(),
+            'params' => $params,
+            'search' => true,
+            'title' => 'Paycodes',
         ]);
         return $view;
     }
