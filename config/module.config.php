@@ -409,38 +409,6 @@ return [
                             ],
                         ],
                     ],
-                    [
-                        'label' => 'Time Card Lines',
-                        'route' => 'timecard/lines',
-                        'class' => 'dropdown-submenu',
-                        'resource' => 'timecard/lines',
-                        'privilege' => 'menu',
-                        'pages' => [
-                            [
-                                'label' => 'Add New Line',
-                                'route' => 'timecard/lines',
-                                'action' => 'create',
-                                'resource' => 'timecard/lines',
-                                'privilege' => 'admin',
-                            ],
-                        ],
-                    ],
-                    [
-                        'label' => 'Time Cards',
-                        'route' => 'timecard/timecards',
-                        'class' => 'dropdown-submenu',
-                        'resource' => 'timecard/timecards',
-                        'privilege' => 'menu',
-                        'pages' => [
-                            [
-                                'label' => 'Add New Timecard',
-                                'route' => 'timecard/timecards',
-                                'action' => 'create',
-                                'resource' => 'timecard/timecards',
-                                'privilege' => 'create',
-                            ],
-                        ],
-                    ],
                 ],
             ],
             'settings' => [
