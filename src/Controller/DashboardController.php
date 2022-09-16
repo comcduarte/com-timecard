@@ -348,19 +348,19 @@ class DashboardController extends AbstractBaseController
             if (sizeof($timecards)) {
                 switch ($timecards[0]['STATUS']) {
                     case $timecard::APPROVED_STATUS:
-                        $data[$index]['STATUS'] = "<span class='badge badge-primary'>Approved</span>";
+                        $data[$index]['STATUS'] = "<span class='badge text-bg-primary'>Approved</span>";
                         break;
                     case $timecard::SUBMITTED_STATUS:
-                        $data[$index]['STATUS'] = "<span class='badge badge-success'>Submitted</span>";
+                        $data[$index]['STATUS'] = "<span class='badge text-bg-success'>Submitted</span>";
                         break;
                     case $timecard::PREPARERD_STATUS:
-                        $data[$index]['STATUS'] = "<span class='badge badge-info'>Prepared</span>";
+                        $data[$index]['STATUS'] = "<span class='badge text-bg-info'>Prepared</span>";
                         break;
                     case $timecard::COMPLETED_STATUS:
-                        $data[$index]['STATUS'] = "<span class='badge badge-secondary'>Completed</span>";
+                        $data[$index]['STATUS'] = "<span class='badge text-bg-secondary'>Completed</span>";
                         break;
                     default:
-                        $data[$index]['STATUS'] = "<span class='badge badge-warning'>Pending</span>";
+                        $data[$index]['STATUS'] = "<span class='badge text-bg-warning'>Pending</span>";
                         break;
                 }
                 $data[$index]['Timecard'] = $timecards[0]['UUID'];
