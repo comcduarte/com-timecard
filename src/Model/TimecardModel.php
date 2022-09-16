@@ -31,19 +31,19 @@ class TimecardModel extends AbstractBaseModel
         switch ($status) {
             
             case $this::SUBMITTED_STATUS:
-                $retval = "<span class='badge badge-success'>Submitted</span>";
+                $retval = "<span class='badge text-bg-success'>Submitted</span>";
                 break;
             case $this::PREPARERD_STATUS:
-                $retval = "<span class='badge badge-info'>Prepared</span>";
+                $retval = "<span class='badge text-bg-info'>Prepared</span>";
                 break;
             case $this::APPROVED_STATUS:
-                $retval = "<span class='badge badge-primary'>Approved</span>";
+                $retval = "<span class='badge text-bg-primary'>Approved</span>";
                 break;
             case $this::COMPLETED_STATUS:
-                $retval = "<span class='badge badge-secondary'>Completed</span>";
+                $retval = "<span class='badge text-bg-secondary'>Completed</span>";
                 break;
             default:
-                $retval = "<span class='badge badge-warning'>Pending</span>";
+                $retval = "<span class='badge text-bg-warning'>Pending</span>";
                 break;
         }
         
