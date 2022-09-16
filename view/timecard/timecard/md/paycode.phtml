@@ -24,15 +24,18 @@ $cols = ['MON','TUE','WED','THU','FRI','SAT','SUN','DAYS'];
 $total_paycode = 0;
 ?>
 <tr>
-	<td><span style="white-space:nowrap"><?php echo $paycode_value_options[$paycode_value];?></span></td>
+	<td colspan="12"><span style="white-space:nowrap"><?php echo $paycode_value_options[$paycode_value];?></span></td></tr>
+	
+<tr>
+	<td></td>
 
 	<?php foreach ($cols as $col) : ?>
 		<?php $total_paycode += $form->get($col)->getValue(); ?>
 			
     	<?php if ($this->acl_service->isAllowed($this->user->memberOf(TRUE), 'TIMECARD_LINE', $this->form->get('STATUS')->getValue())) : ?>
-    		<td><?php echo $this->formInput($form->get($col));?></td>
+    		<td style="width: 72px;"><?php echo $this->formInput($form->get($col));?></td>
 		<?php else : ?>
-    		<td><?php echo $form->get($col)->getValue(); ?></td>
+    		<td style="width: 72px;"><?php echo $form->get($col)->getValue(); ?></td>
     	<?php endif; ?>
 
 	<?php endforeach; ?>

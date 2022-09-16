@@ -1,0 +1,64 @@
+<?php 
+/**
+ * Passed Variables
+ * form, user_entity, acl_service
+ */
+use Components\Form\Element\DatabaseSelect;
+use Timecard\Model\TimecardLineModel;
+
+$uuid= $form->get('UUID')->getValue();
+$form->setAttribute('action', $this->url('timecard/lines', ['action' => 'update', 'uuid' => $uuid]));
+$form->prepare();
+
+echo $this->form()->openTag($form);
+
+$paycode = $form->get('PAY_UUID');
+$paycode_value_options = $paycode->getValueOptions();
+$paycode_value = $paycode->getValue();
+
+echo $this->formInput($form->get('UUID'));
+echo $this->formInput($form->get('SECURITY'));
+echo $this->formInput($form->get('TIMECARD_UUID'));
+
+$cols = ['MON','TUE','WED','THU','FRI','SAT','SUN','DAYS'];
+$total_paycode = 0;
+?>
+<div class="accordion" id="accordion<?php echo $uuid; ?>">
+	<div class="accordion-item">
+		<h2 class="accordion-header" id="heading<?php echo $uuid; ?>">
+			<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?php echo $uuid; ?>" aria-expanded="true" aria-controls="collapse<?php echo $uuid; ?>">
+				<span style="white-space: nowrap"><?php echo $paycode_value_options[$paycode_value];?></span>
+			</button>
+		</h2>
+		<div id="collapse<?php echo $uuid; ?>" class="accordion-collapse collapse" aria-labelledby="heading<?php echo $uuid; ?>" data-bs-parent="#accordion<?php echo $uuid; ?>">
+			<div class="accordion-body">
+				<?php foreach ($cols as $col) : ?>
+					<?php $total_paycode += $form->get($col)->getValue(); ?>
+					
+					<?php if ($this->acl_service->isAllowed($this->user->memberOf(TRUE), 'TIMECARD_LINE', $this->form->get('STATUS')->getValue())) : ?>
+                		<div class="row"><?php echo sprintf('%s: %s', $col, $this->formInput($form->get($col))); ?></div>
+            		<?php else : ?>
+                		<div class="row"><?php echo sprintf('%s: %s', $col, $form->get($col)->getValue());?></div>
+                	<?php endif; ?>
+				<?php endforeach; ?>
+				<!-- TOTAL PAYCODE -->
+				<div class="row">
+				<?php 
+            		if ($total_paycode > 40) {
+            		    echo "<span class='badge badge-warning'>" . $total_paycode . "</span>";
+            		} else {
+            		    echo "<span class='badge badge-success'>" . $total_paycode . "</span>";
+            		}
+                ?>
+				</div>
+				
+				<!-- UTILITY -->
+				<?php if ($this->acl_service->isAllowed($this->user->memberOf(TRUE), 'TIMECARD_LINE', $this->form->get('STATUS')->getValue())) : ?>
+        		<a href="<?php echo $this->url('timecard/lines', ['action' => 'delete', 'uuid' => $form->get('UUID')->getValue()]); ?>"><i class="fas fa-trash-alt"></i></a>
+        		<?php endif; ?>
+			</div>
+		</div>
+	</div>
+</div>
+<?php echo $this->formInput($form->get('SUBMIT'));?>
+<?php echo $this->form()->closeTag($form); ?>
