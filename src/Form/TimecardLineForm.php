@@ -48,7 +48,7 @@ class TimecardLineForm extends AbstractBaseForm
             'type' => DatabaseSelect::class,
             'attributes' => [
                 'id' => 'PAY_UUID',
-                'class' => 'form-control',
+                'class' => 'form-select',
             ],
             'options' => [
                 'label' => 'Pay Code',

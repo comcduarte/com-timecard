@@ -277,7 +277,7 @@ class DashboardController extends AbstractBaseController
             'type' => DatabaseSelect::class,
             'attributes' => [
                 'id' => 'UUID',
-                'class' => 'form-control',
+                'class' => 'form-select',
             ],
             'options' => [
                 'label' => 'Add Timesheet',

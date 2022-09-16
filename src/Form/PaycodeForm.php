@@ -153,7 +153,7 @@ class PaycodeForm extends AbstractBaseForm
             'name' => 'PARENT',
             'type' => DatabaseSelect::class,
             'attributes' => [
-                'class' => 'form-control',
+                'class' => 'form-select',
                 'id' => 'PAY_TYPE',
                 'placeholder' => '',
             ],
