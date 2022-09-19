@@ -141,7 +141,10 @@ class DashboardController extends AbstractBaseController
         
         unset($department_model);
         
-        $view->setVariable('data', $data);
+        $view->setVariables([
+            'data' => $data,
+            'search' => true,
+        ]);
         
         /****************************************
          * TIMESHEET FILTER SUBFORM
