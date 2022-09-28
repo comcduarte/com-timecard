@@ -7,6 +7,7 @@ use Components\Controller\AbstractBaseController;
 use Components\Traits\AclAwareTrait;
 use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
 use Laminas\View\Model\ViewModel;
+use Timecard\Form\TimecardAddForm;
 use Timecard\Form\TimecardLineForm;
 use Timecard\Form\TimesheetFilterForm;
 use Timecard\Model\TimecardLineModel;
@@ -24,6 +25,10 @@ class TimecardController extends AbstractBaseController
     
     public $user_adapter;
     public $employee_adapter;
+    
+    /**
+     * @var TimecardAddForm
+     */
     public $timecard_add_form;
     
     public function timesheetAction()
@@ -209,6 +214,7 @@ class TimecardController extends AbstractBaseController
                 $request->getFiles()->toArray()
                 );
             
+            $form->setInputFilter($model->getInputFilter());
             $form->setData($post);
             
             if ($form->isValid()) {
@@ -216,7 +222,7 @@ class TimecardController extends AbstractBaseController
                 
                 $this->flashmessenger()->addSuccessMessage('Add New Record Successful');
             } else {
-                foreach ($this->form->getMessages() as $message) {
+                foreach ($form->getMessages() as $message) {
                     if (is_array($message)) {
                         $message = array_pop($message);
                     }

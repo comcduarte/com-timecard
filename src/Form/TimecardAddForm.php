@@ -3,13 +3,13 @@ namespace Timecard\Form;
 
 use Components\Form\Element\AclDatabaseSelect;
 use Components\Form\Element\Uuid;
+use Components\Traits\AclAwareTrait;
 use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Form\Form;
 use Laminas\Form\Element\Csrf;
 use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Submit;
 use Laminas\Form\Element\Text;
-use Components\Traits\AclAwareTrait;
 
 class TimecardAddForm extends Form
 {
@@ -67,6 +67,7 @@ class TimecardAddForm extends Form
             ],
             'options' => [
                 'label' => 'Pay Code',
+                'empty_option' => 'Select a Paycode',
                 'acl_service' => $this->getAclService(),
                 'acl_resource_column' => 'RESOURCE',
                 'database_adapter' => $this->adapter,

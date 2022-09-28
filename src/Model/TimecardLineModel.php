@@ -3,6 +3,7 @@ namespace Timecard\Model;
 
 use Components\Model\AbstractBaseModel;
 use Laminas\Db\Sql\Where;
+use Laminas\Validator\NotEmpty;
 
 class TimecardLineModel extends AbstractBaseModel
 {
@@ -56,5 +57,33 @@ class TimecardLineModel extends AbstractBaseModel
         } else {
             return false;
         }
+    }
+
+    public function getInputFilter()
+    {
+        /**
+         * Parent function set all fields to default required state
+         * @var \Laminas\InputFilter\InputFilter $inputFilter
+         */
+        $inputFilter = parent::getInputFilter();
+        
+        $inputFilter->add([
+            'name' => 'PAY_UUID',
+            'validators' => [
+                [
+                    'name' => NotEmpty::class,
+                    'options' => [
+                        'token' => NotEmpty::ALL,
+                        'messages' => [
+                            NotEmpty::IS_EMPTY => 'Please select a paycode.'
+                        ],
+                    ],
+                    
+                ],
+            ],
+        ]);
+        
+        $this->inputFilter = $inputFilter;
+        return $this->inputFilter;
     }
 }
