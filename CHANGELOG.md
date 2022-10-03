@@ -6,11 +6,10 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Added
 - Sortable and Searchable Tables.  Components v1.0.4.
 
-### Fixed
-- Upgraded Bootstrap to 5.2.1. Made changes to support compatibility.
-
 ### Changed
 - Change 'Open' Timesheet to 'Add'
+- Upgraded Bootstrap to 5.2.1. Made changes to support compatibility.
+- Added validator to AddPaycode Form in Timesheet
 
 ## 1.0.5 
 ### Fixed
