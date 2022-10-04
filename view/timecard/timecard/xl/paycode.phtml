@@ -19,6 +19,7 @@ $paycode_value = $paycode->getValue();
 echo $this->formInput($form->get('UUID'));
 echo $this->formInput($form->get('SECURITY'));
 echo $this->formInput($form->get('TIMECARD_UUID'));
+echo $this->formHidden($form->get('PAY_UUID'));
 
 $cols = ['MON','TUE','WED','THU','FRI','SAT','SUN','DAYS'];
 $total_paycode = 0;
