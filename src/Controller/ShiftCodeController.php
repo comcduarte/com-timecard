@@ -48,13 +48,13 @@ class ShiftCodeController extends AbstractBaseController
         
         $params = [
             [
-                'route' => 'paycode/default',
+                'route' => 'shiftcode/default',
                 'action' => 'update',
                 'key' => 'UUID',
                 'label' => 'Update',
             ],
             [
-                'route' => 'paycode/default',
+                'route' => 'shiftcode/default',
                 'action' => 'delete',
                 'key' => 'UUID',
                 'label' => 'Delete',
