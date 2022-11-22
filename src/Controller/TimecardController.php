@@ -4,7 +4,7 @@ namespace Timecard\Controller;
 use Annotation\Traits\AnnotationAwareTrait;
 use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
-use Components\Traits\AclAwareTrait;
+use Acl\Traits\AclAwareTrait;
 use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
 use Laminas\View\Model\ViewModel;
 use Timecard\Form\TimecardAddForm;

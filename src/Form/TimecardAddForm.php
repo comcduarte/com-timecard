@@ -3,7 +3,7 @@ namespace Timecard\Form;
 
 use Components\Form\Element\AclDatabaseSelect;
 use Components\Form\Element\Uuid;
-use Components\Traits\AclAwareTrait;
+use Acl\Traits\AclAwareTrait;
 use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Form\Form;
 use Laminas\Form\Element\Csrf;

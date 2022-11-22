@@ -5,7 +5,7 @@ use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
 use Components\Form\Element\DatabaseSelect;
 use Components\Form\Element\HiddenSubmit;
-use Components\Traits\AclAwareTrait;
+use Acl\Traits\AclAwareTrait;
 use Employee\Model\DepartmentModel;
 use Employee\Model\EmployeeModel;
 use Laminas\Db\Adapter\AdapterAwareTrait;
