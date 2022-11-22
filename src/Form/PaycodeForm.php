@@ -18,6 +18,19 @@ class PaycodeForm extends AbstractBaseForm
         $paycode_model = new PaycodeModel($this->adapter);
         
         $this->add([
+            'name' => 'ACCRUAL',
+            'type' => Text::class,
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'ACCRUAL',
+                'placeholder' => '',
+            ],
+            'options' => [
+                'label' => 'Accrual Code',
+            ],
+        ],['priority' => 100]);
+        
+        $this->add([
             'name' => 'CODE',
             'type' => Text::class,
             'attributes' => [
@@ -85,10 +98,62 @@ class PaycodeForm extends AbstractBaseForm
         ],['priority' => 100]);
         
         $this->add([
+            'name' => 'UNITS',
+            'type' => Text::class,
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'UNITS',
+                'placeholder' => '',
+            ],
+            'options' => [
+                'label' => 'Units',
+            ],
+        ],['priority' => 100]);
+        
+        $this->add([
+            'name' => 'PHOURLYRATE',
+            'type' => Text::class,
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'PHOURLYRATE',
+                'placeholder' => '',
+            ],
+            'options' => [
+                'label' => 'Hourly Rate',
+            ],
+        ],['priority' => 100]);
+        
+        $this->add([
+            'name' => 'PDAILYRATE',
+            'type' => Text::class,
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'PDAILYRATE',
+                'placeholder' => '',
+            ],
+            'options' => [
+                'label' => 'Daily Rate',
+            ],
+        ],['priority' => 100]);
+        
+        $this->add([
+            'name' => 'FLATAMT',
+            'type' => Text::class,
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'FLATAMT',
+                'placeholder' => '',
+            ],
+            'options' => [
+                'label' => 'Flat Amount',
+            ],
+        ],['priority' => 100]);
+        
+        $this->add([
             'name' => 'PARENT',
             'type' => DatabaseSelect::class,
             'attributes' => [
-                'class' => 'form-control',
+                'class' => 'form-select',
                 'id' => 'PAY_TYPE',
                 'placeholder' => '',
             ],

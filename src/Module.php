@@ -7,6 +7,9 @@ use Timecard\Listener\NotificationListener;
 
 class Module
 {
+    const TITLE = "Timecard Module";
+    const VERSION = "v1.0.6";
+    
     public function getConfig()
     {
         return include __DIR__ . '/../config/module.config.php';

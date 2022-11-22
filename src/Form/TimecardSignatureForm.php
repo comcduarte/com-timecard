@@ -18,7 +18,7 @@ class TimecardSignatureForm extends AbstractBaseForm
             'type' => DatabaseSelect::class,
             'attributes' => [
                 'id' => 'TIMECARD_UUID',
-                'class' => 'form-control',
+                'class' => 'form-select',
             ],
             'options' => [
                 'label' => 'Time Card',
@@ -37,7 +37,7 @@ class TimecardSignatureForm extends AbstractBaseForm
             'type' => DatabaseSelect::class,
             'attributes' => [
                 'id' => 'USER_UUID',
-                'class' => 'form-control',
+                'class' => 'form-select',
             ],
             'options' => [
                 'label' => 'User',
@@ -55,7 +55,7 @@ class TimecardSignatureForm extends AbstractBaseForm
             'name' => 'STAGE_UUID',
             'type' => DatabaseSelect::class,
             'attributes' => [
-                'class' => 'form-control',
+                'class' => 'form-select',
                 'id' => 'STAGE_UUID',
                 'required' => 'true',
                 'placeholder' => '',

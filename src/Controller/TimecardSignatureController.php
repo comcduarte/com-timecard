@@ -222,6 +222,70 @@ class TimecardSignatureController extends AbstractBaseController
         return $this->redirect()->toUrl($url);
     }
     
+    public function deleteAction()
+    {
+        $uuid = $this->params()->fromRoute('uuid', 0);
+        $url = $this->getRequest()->getHeader('Referer')->getUri();
+        
+        if (! $uuid) {
+            $this->logger->info(sprintf('No Timecard Identifier Specified'));
+            $this->flashmessenger()->addErrorMessage('No Timecard Identifier Specified');
+            return $this->redirect()->toUrl($url);
+        }
+        
+        $timecard_entity = new TimecardEntity();
+        $timecard_entity->setDbAdapter($this->adapter);
+        $timecard_entity->TIMECARD_UUID = $uuid;
+        $bResult = $timecard_entity->deleteTimecard();
+        
+        if (! $bResult) {
+            $this->logger->info(sprintf('Error Deleting Timecard %s', $uuid));
+            $this->flashmessenger()->addErrorMessage(sprintf('Error Deleting Timecard %s', $uuid));
+            return $this->redirect()->toUrl($url);
+        }
+        
+        return $this->redirect()->toUrl($url);
+    }
+    
+    public function deleteallAction()
+    {
+        $uuid = $this->params()->fromRoute('uuid', 0);
+        $url = $this->getRequest()->getHeader('Referer')->getUri();
+        
+        if (! $uuid) {
+            $this->logger->info(sprintf('No Timecard Identifier Specified'));
+            $this->flashmessenger()->addErrorMessage('No Timecard Identifier Specified');
+            return $this->redirect()->toUrl($url);
+        }
+        
+        /****************************************
+         * GET WORK WEEK
+         ****************************************/
+        $work_week = $this->params()->fromRoute('week', 0);
+        
+        if (! $work_week)  {
+            $this->logger->info(sprintf('No Work Week Identifier Specified'));
+            $this->flashmessenger()->addErrorMessage('No Work Week Identifier Specified');
+            return $this->redirect()->toUrl($url);
+        }
+        
+        $department = new DepartmentModel($this->employee_adapter);
+        $department->read(['UUID' => $uuid]);
+        $employees = $department->getEmployees();
+        
+        foreach ($employees as $employee) {
+            $timecard_entity = new TimecardEntity();
+            $timecard_entity->setDbAdapter($this->adapter);
+            $timecard_entity->EMP_UUID = $employee['UUID'];
+            $timecard_entity->WORK_WEEK = $work_week;
+            if ($timecard_entity->getTimecard()) {
+                $timecard_entity->deleteTimecard();
+            }
+        }
+        
+        return $this->redirect()->toUrl($url);
+    }
+    
     public function sign($uuid, $status)
     {
         $timecard_entity = new TimecardEntity();
