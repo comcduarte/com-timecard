@@ -9,23 +9,25 @@ use Laminas\Db\Sql\Where;
 use Laminas\View\Model\ViewModel;
 use Exception;
 
-class PaycodeController extends AbstractBaseController
+class ShiftCodeController extends AbstractBaseController
 {
     public function indexAction()
     {
         $view = new ViewModel();
+        $view = parent::indexAction();
         $view->setTemplate('base/subtable');
         
         /**
-         * Override fetchall 
+         * Override FetchAll
          */
+        
         $sql = new Sql($this->adapter);
         
         $select = new Select();
         $select->from($this->model->getTableName());
-        $select->columns(['UUID','CODE','DESC','RESOURCE']);
+        $select->columns(['UUID','CODE','DESC','HOUR']);
         $select->where(new Where());
-        $select->order('RESOURCE DESC','CODE');
+        $select->order('HOUR DESC','CODE');
         
         $statement = $sql->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet();
@@ -43,28 +45,28 @@ class PaycodeController extends AbstractBaseController
             $header = array_keys($records[0]);
         }
         
+        
         $params = [
             [
-                'route' => 'paycode/default',
+                'route' => 'shiftcode/default',
                 'action' => 'update',
                 'key' => 'UUID',
                 'label' => 'Update',
             ],
             [
-                'route' => 'paycode/default',
+                'route' => 'shiftcode/default',
                 'action' => 'delete',
                 'key' => 'UUID',
                 'label' => 'Delete',
             ],
         ];
         
-        $view->setvariables ([
+        $view->setVariables([
             'data' => $records,
             'header' => $header,
-            'primary_key' => $this->model->getPrimaryKey(),
+            'title' => 'Shift Codes',
             'params' => $params,
             'search' => true,
-            'title' => 'Paycodes',
         ]);
         return $view;
     }
