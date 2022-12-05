@@ -2,6 +2,7 @@
 namespace Timecard\Listener;
 
 use Employee\Model\EmployeeModel;
+use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\EventManager\Event;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\EventManager\ListenerAggregateInterface;
@@ -12,12 +13,14 @@ use Laminas\Mime\Mime;
 use Laminas\View\Model\ViewModel;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver\AggregateResolver;
+use Settings\Model\SettingsModel;
 use Timecard\Model\TimecardModel;
 use Timecard\Model\Entity\TimecardEntity;
 
 class NotificationListener implements ListenerAggregateInterface
 {
     use ListenerAggregateTrait;
+    use AdapterAwareTrait;
     
     public $logger;
     
@@ -62,6 +65,9 @@ class NotificationListener implements ListenerAggregateInterface
          ****************************************/
         $view = new PhpRenderer();
         
+        $settings = new SettingsModel($this->adapter);
+        
+        
         $resolver = new AggregateResolver();
         $view->setResolver($resolver);
         
@@ -82,7 +88,8 @@ class NotificationListener implements ListenerAggregateInterface
         $part = new \Laminas\Mime\Part($html);
         $part->type = Mime::TYPE_HTML;
         
-        $message->setFrom('chronos-notifications@middletownct.gov');
+        $settings->read(['MODULE' => 'TIMECARD', 'SETTING' => 'FROM']);
+        $message->setFrom($settings->VALUE);
         $message->setTo($employee->EMAIL);
         $message->setSubject(sprintf('CHRONOS: Timecard %s', TimecardModel::retrieveStatus($status)));
         
@@ -90,15 +97,16 @@ class NotificationListener implements ListenerAggregateInterface
         
         $message->setBody($body);
         
-        $protocol = new SmtpProtocol('smtprelay.middletownct.gov');
-        $protocol->connect();
-        $protocol->helo('chronos.middletownct.gov');
-        
-        $transport = new SmtpTransport();
-        $transport->setConnection($protocol);
-        $protocol->rset();
-        
         try {
+            $settings->read(['MODULE' => 'TIMECARD', 'SETTING' => 'SERVER']);
+            $protocol = new SmtpProtocol($settings->VALUE);
+            $protocol->connect();
+            $settings->read(['MODULE' => 'TIMECARD', 'SETTING' => 'HELO']);
+            $protocol->helo($settings->VALUE);
+            
+            $transport = new SmtpTransport();
+            $transport->setConnection($protocol);
+            $protocol->rset();
             $transport->send($message);
         } catch (\Exception $e) {
             /**
