@@ -5,7 +5,7 @@ use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
 use Components\Form\Element\DatabaseSelect;
 use Components\Form\Element\HiddenSubmit;
-use Acl\Traits\AclAwareTrait;
+use Components\Traits\AclAwareTrait;
 use Employee\Model\DepartmentModel;
 use Employee\Model\EmployeeModel;
 use Laminas\Db\Adapter\AdapterAwareTrait;
@@ -15,12 +15,12 @@ use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Where;
 use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Form\Form;
+use Laminas\Form\Element\Button;
 use Laminas\Form\Element\Csrf;
 use Laminas\View\Model\ViewModel;
 use Timecard\Form\TimesheetFilterForm;
 use Timecard\Model\TimecardModel;
 use Timecard\Traits\DateAwareTrait;
-use Laminas\Form\Element\Button;
 
 class DashboardController extends AbstractBaseController
 {
@@ -456,7 +456,7 @@ class DashboardController extends AbstractBaseController
         /****************************************
          * GET DEPARTMENT UUID
          * @var String $dept
-         * @var Boolean $redirect
+         * @var Bool $redirect
          ****************************************/
         $dept = '';
         if ($this->params()->fromRoute('uuid', 0)) {
