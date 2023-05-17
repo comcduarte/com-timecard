@@ -2,10 +2,10 @@
 namespace Timecard\Form;
 
 use Components\Form\AbstractBaseForm;
-use Laminas\Form\Element\Text;
 use Components\Form\Element\DatabaseSelect;
-use Timecard\Model\PaycodeModel;
 use Laminas\Db\Adapter\AdapterAwareTrait;
+use Laminas\Form\Element\Text;
+use Timecard\Model\PaycodeModel;
 
 class PaycodeForm extends AbstractBaseForm
 {
@@ -146,6 +146,19 @@ class PaycodeForm extends AbstractBaseForm
             ],
             'options' => [
                 'label' => 'Flat Amount',
+            ],
+        ],['priority' => 100]);
+        
+        $this->add([
+            'name' => 'LEAVE_CODE',
+            'type' => Text::class,
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'LEAVE_CODE',
+                'placeholder' => '',
+            ],
+            'options' => [
+                'label' => 'Leave Code',
             ],
         ],['priority' => 100]);
         

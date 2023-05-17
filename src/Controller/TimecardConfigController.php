@@ -174,6 +174,7 @@ class TimecardConfigController extends AbstractConfigController
         $ddl->addColumn(new Decimal('PHOURLYRATE', 8, 2, TRUE));
         $ddl->addColumn(new Decimal('PDAILYRATE', 8, 2, TRUE));
         $ddl->addColumn(new Decimal('FLATAMT', 8, 2, TRUE));
+        $ddl->addColumn(new Varchar('LEAVE_CODE', 10, TRUE));
         $ddl->addColumn(new Varchar('PARENT', 36));
         
         $ddl->addColumn(new Varchar('RESOURCE', 25, TRUE));
@@ -349,6 +350,7 @@ class TimecardConfigController extends AbstractConfigController
         $PDAILYRATE = 9;
         $FLATAMT = 10;
         $UNITS = 11;
+        $LEAVE_CODE = 12;
         
         /****************************************
          * Generate Form
@@ -389,6 +391,7 @@ class TimecardConfigController extends AbstractConfigController
                         $pc->PHOURLYRATE = $record[$PHOURLYRATE];
                         $pc->PDAILYRATE = $record[$PDAILYRATE];
                         $pc->UNITS = $record[$UNITS];
+                        $pc->LEAVE_CODE = $record[$LEAVE_CODE];
                         
                         switch ($record[$PAY_TYPE]) {
                             case 'Regular':

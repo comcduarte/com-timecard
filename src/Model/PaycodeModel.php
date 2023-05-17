@@ -5,8 +5,8 @@ use Components\Model\AbstractBaseModel;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Where;
-use Exception;
 use Laminas\Stdlib\ArrayUtils;
+use Exception;
 
 class PaycodeModel extends AbstractBaseModel
 {
@@ -20,6 +20,7 @@ class PaycodeModel extends AbstractBaseModel
     public $PHOURLYRATE;
     public $PDAILYRATE;
     public $FLATAMT;
+    public $LEAVE_CODE;
     public $PARENT;
     
     public function __construct($adapter = NULL)
