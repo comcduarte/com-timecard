@@ -48,7 +48,7 @@ class TimecardLineForm extends AbstractBaseForm
             'type' => DatabaseSelect::class,
             'attributes' => [
                 'id' => 'PAY_UUID',
-                'class' => 'form-control',
+                'class' => 'form-select',
             ],
             'options' => [
                 'label' => 'Pay Code',
@@ -62,7 +62,7 @@ class TimecardLineForm extends AbstractBaseForm
             ],
         ],['priority' => 100]);
         
-        $days = ['SUN','MON','TUES','WED','THURS','FRI','SAT', 'DAYS'];
+        $days = ['SUN','MON','TUE','WED','THU','FRI','SAT', 'DAYS'];
         foreach ($days as $day) {
             $this->add([
                 'name' => $day,

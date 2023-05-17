@@ -20,6 +20,7 @@
 echo $this->partial('base/subtable',[
     'title' => 'Departments',
     'data' => $this->data,
+    'search' => $this->search,
     'primary_key' => 'UUID',
     'route' => 'dashboard/dept',
     'params' => [
@@ -27,6 +28,12 @@ echo $this->partial('base/subtable',[
             'action' => 'dept',
             'label' => 'Open Department',
             'route' => 'dashboard/dept',
+            'key' => 'UUID',
+        ],
+        [
+            'action' => 'completeall',
+            'label' => 'Complete Department',
+            'route' => 'timecard/secure_signatures',
             'key' => 'UUID',
         ],
     ],

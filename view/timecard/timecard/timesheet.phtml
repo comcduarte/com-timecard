@@ -18,14 +18,46 @@
 
 <div class="row">
 	<div class="col">
-		<table class="table">
-			<thead class="thead-dark">
+	
+	<!-- SM Viewport -->
+	<div class="d-block d-lg-none">
+			<?php foreach ($this->timesheet_forms as $form) : ?>
+				<?php $var = $form->get('STATUS')->getValue(); ?>
+				<?php echo $this->partial('timecard/timecard/xs/paycode.phtml',['form' => $form, 'user' => $this->user, 'acl_service' => $this->acl_service]); ?>
+			<?php endforeach; ?>
+			
+		<!-- Add Pay Code Form -->
+		<div class="container">
+		<div class="row">
+    		<?php $this->timecard_add_form->setAttribute('action', $this->url('timecard/default', ['action' => 'addPayCode']));?>
+    		<?php $this->timecard_add_form->prepare(); ?>
+    		<?php echo $this->form()->openTag($this->timecard_add_form); ?>
+    			<?php echo $this->formRow($this->timecard_add_form->get('TIMECARD_UUID')); ?>
+    			<?php echo $this->formRow($this->timecard_add_form->get('SECURITY')); ?>
+    		<div class="col-xxs-4">
+    			Add New Pay Code:
+    		</div>
+    		<div class="col-xxs-6">
+    			<?php echo $this->formSelect($this->timecard_add_form->get('PAY_UUID')); ?>
+    		</div>
+    		<div class="col-xxs-2">
+    			<?php echo $this->formRow($this->timecard_add_form->get('SUBMIT')); ?>
+    		</div>
+    		<?php echo $this->form()->closeTag($this->timecard_add_form); ?>
+		</div>
+		</div>
+	</div>
+	
+	<!-- MD Viewport -->
+	<div class="table-responsive-lg d-none d-lg-block d-xl-none">
+		<table class="table table-sm">
+			<thead class="table-dark">
 				<tr>
 					<th scope="col">Pay&nbsp;Code</th>
 					<th scope="col">Mon</th>
-					<th scope="col">Tues</th>
+					<th scope="col">Tue</th>
 					<th scope="col">Wed</th>
-					<th scope="col">Thurs</th>
+					<th scope="col">Thu</th>
 					<th scope="col">Fri</th>
 					<th scope="col">Sat</th>
 					<th scope="col">Sun</th>
@@ -36,23 +68,23 @@
 			<tbody>
 			<?php foreach ($this->timesheet_forms as $form) : ?>
 				<?php $var = $form->get('STATUS')->getValue(); ?>
-				<?php echo $this->partial('timecard/partials/weeklytimesheet.phtml',['form' => $form, 'user' => $this->user, 'acl_service' => $this->acl_service]); ?>
+				<?php echo $this->partial('timecard/timecard/md/paycode.phtml',['form' => $form, 'user' => $this->user, 'acl_service' => $this->acl_service]); ?>
 			<?php endforeach; ?>
 			<tr>
 				<td>Daily Totals</td>
-				<?php foreach (['MON','TUES','WED','THURS','FRI','SAT','SUN'] as $DAY) : ?>
+				<?php foreach (['MON','TUE','WED','THU','FRI','SAT','SUN'] as $DAY) : ?>
 				<td>
 					<?php 
 					switch (TRUE) {
 					    case (floatval($this->HOURS[$DAY]) == 0):
-					        $total_class = 'badge-success';
+					        $total_class = 'text-bg-success';
 					        break;
 					    case (floatval($this->HOURS[$DAY]) > 8):
 					    case (floatval($this->HOURS[$DAY]) < 8):
-					        $total_class = 'badge-warning';
+					        $total_class = 'text-bg-warning';
 					        break;
 					    default:
-					        $total_class = 'badge-success';
+					        $total_class = 'text-bg-success';
 					        break;
 					}
 					   echo "<span class='badge $total_class'>" . $this->HOURS[$DAY] . "</span>"; 
@@ -63,9 +95,9 @@
 				<td>
 					<?php 
 					if ($this->HOURS['TOTAL'] > 40 || $this->HOURS['TOTAL'] < 40 ) {
-					    echo "<span class='badge badge-warning'>" . $this->HOURS['TOTAL'] . "</span>";
+					    echo "<span class='badge text-bg-warning'>" . $this->HOURS['TOTAL'] . "</span>";
 					} else {
-// 					    echo "<span class='badge badge-success'>" . $this->HOURS['TOTAL'] . "</span>";
+// 					    echo "<span class='badge text-bg-success'>" . $this->HOURS['TOTAL'] . "</span>";
 					}
 					?>
 				</td>
@@ -92,7 +124,86 @@
 			</tfoot>
 		</table>
 	</div>
+	
+	<!-- XL Viewport -->
+	<div class="table-responsive-lg d-none d-xl-block">
+		<table class="table table-sm">
+			<thead class="table-dark">
+				<tr>
+					<th scope="col">Pay&nbsp;Code</th>
+					<th scope="col">Mon</th>
+					<th scope="col">Tue</th>
+					<th scope="col">Wed</th>
+					<th scope="col">Thu</th>
+					<th scope="col">Fri</th>
+					<th scope="col">Sat</th>
+					<th scope="col">Sun</th>
+					<th scope="col">Days</th>
+					<th scope="col">Total<th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php foreach ($this->timesheet_forms as $form) : ?>
+				<?php $var = $form->get('STATUS')->getValue(); ?>
+				<?php echo $this->partial('timecard/timecard/xl/paycode.phtml',['form' => $form, 'user' => $this->user, 'acl_service' => $this->acl_service]); ?>
+			<?php endforeach; ?>
+			<tr>
+				<td>Daily Totals</td>
+				<?php foreach (['MON','TUE','WED','THU','FRI','SAT','SUN'] as $DAY) : ?>
+				<td>
+					<?php 
+					switch (TRUE) {
+					    case (floatval($this->HOURS[$DAY]) == 0):
+					        $total_class = 'text-bg-success';
+					        break;
+					    case (floatval($this->HOURS[$DAY]) > 8):
+					    case (floatval($this->HOURS[$DAY]) < 8):
+					        $total_class = 'text-bg-warning';
+					        break;
+					    default:
+					        $total_class = 'text-bg-success';
+					        break;
+					}
+					   echo "<span class='badge $total_class'>" . $this->HOURS[$DAY] . "</span>"; 
+					?>
+				</td>
+				<?php endforeach; ?>
+				<td />
+				<td>
+					<?php 
+					if ($this->HOURS['TOTAL'] > 40 || $this->HOURS['TOTAL'] < 40 ) {
+					    echo "<span class='badge text-bg-warning'>" . $this->HOURS['TOTAL'] . "</span>";
+					} else {
+// 					    echo "<span class='badge text-bg-success'>" . $this->HOURS['TOTAL'] . "</span>";
+					}
+					?>
+				</td>
+			</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<?php $this->timecard_add_form->setAttribute('action', $this->url('timecard/default', ['action' => 'addPayCode']));?>
+					<?php $this->timecard_add_form->prepare(); ?>
+					<?php echo $this->form()->openTag($this->timecard_add_form); ?>
+						<?php echo $this->formRow($this->timecard_add_form->get('TIMECARD_UUID')); ?>
+						<?php echo $this->formRow($this->timecard_add_form->get('SECURITY')); ?>
+					<td colspan="2">
+						Add New Pay Code:
+					</td>
+					<td colspan="6">
+						<?php echo $this->formSelect($this->timecard_add_form->get('PAY_UUID')); ?>
+					</td>
+					<td>
+						<?php echo $this->formRow($this->timecard_add_form->get('SUBMIT')); ?>
+					</td>
+					<?php echo $this->form()->closeTag($this->timecard_add_form); ?>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	</div>
 </div>
+
 <div class="row">
 	<div class="col">
 		<?php

@@ -31,19 +31,19 @@ class TimecardModel extends AbstractBaseModel
         switch ($status) {
             
             case $this::SUBMITTED_STATUS:
-                $retval = "<span class='badge badge-success'>Submitted</span>";
+                $retval = "<span class='badge text-bg-success'>Submitted</span>";
                 break;
             case $this::PREPARERD_STATUS:
-                $retval = "<span class='badge badge-info'>Prepared</span>";
+                $retval = "<span class='badge text-bg-info'>Prepared</span>";
                 break;
             case $this::APPROVED_STATUS:
-                $retval = "<span class='badge badge-primary'>Approved</span>";
+                $retval = "<span class='badge text-bg-primary'>Approved</span>";
                 break;
             case $this::COMPLETED_STATUS:
-                $retval = "<span class='badge badge-secondary'>Completed</span>";
+                $retval = "<span class='badge text-bg-secondary'>Completed</span>";
                 break;
             default:
-                $retval = "<span class='badge badge-warning'>Pending</span>";
+                $retval = "<span class='badge text-bg-warning'>Pending</span>";
                 break;
         }
         
@@ -75,23 +75,23 @@ class TimecardModel extends AbstractBaseModel
         switch ($SHIFT_CODE) {
             case '40':
                 $timecard_line->MON = 8;
-                $timecard_line->TUES = 8;
+                $timecard_line->TUE = 8;
                 $timecard_line->WED = 8;
-                $timecard_line->THURS = 8;
+                $timecard_line->THU = 8;
                 $timecard_line->FRI = 8;
                 break;
             case '35':
                 $timecard_line->MON = 7;
                 $timecard_line->TUES = 7;
                 $timecard_line->WED = 7;
-                $timecard_line->THURS = 7;
+                $timecard_line->THU = 7;
                 $timecard_line->FRI = 7;
                 break;
             case '20':
                 $timecard_line->MON = 4;
-                $timecard_line->TUES = 4;
+                $timecard_line->TUE = 4;
                 $timecard_line->WED = 4;
-                $timecard_line->THURS = 4;
+                $timecard_line->THU = 4;
                 $timecard_line->FRI = 4;
                 break;
             case '42':

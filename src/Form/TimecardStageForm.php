@@ -43,7 +43,7 @@ class TimecardStageForm extends AbstractBaseForm
             'type' => DatabaseSelect::class,
             'attributes' => [
                 'id' => 'PARENT',
-                'class' => 'form-control',
+                'class' => 'form-select',
             ],
             'options' => [
                 'label' => 'Parent Stage',

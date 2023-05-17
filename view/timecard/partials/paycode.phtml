@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Passed Variables
  * form, user_entity, acl_service
@@ -23,20 +23,26 @@ echo $this->formInput($form->get('TIMECARD_UUID'));
 $cols = ['MON','TUE','WED','THU','FRI','SAT','SUN','DAYS'];
 $total_paycode = 0;
 ?>
-<tr>
-	<td><span style="white-space:nowrap"><?php echo $paycode_value_options[$paycode_value];?></span></td>
+<div class="row">
+	<!-- Paycode -->
+	<div class="col" id="paycode">
+		<?php echo $paycode_value_options[$paycode_value];?>
+	</div>
 
+    <!-- Days of the Week -->
 	<?php foreach ($cols as $col) : ?>
 		<?php $total_paycode += $form->get($col)->getValue(); ?>
 			
     	<?php if ($this->acl_service->isAllowed($this->user->memberOf(TRUE), 'TIMECARD_LINE', $this->form->get('STATUS')->getValue())) : ?>
-    		<td><?php echo $this->formInput($form->get($col));?></td>
+    		<div class="col" id="<?=$col?>"><?php echo $this->formInput($form->get($col));?></div>
 		<?php else : ?>
-    		<td><?php echo $form->get($col)->getValue(); ?></td>
+    		<div class="col" id="<?=$col?>"><?php echo $form->get($col)->getValue(); ?></div>
     	<?php endif; ?>
 
 	<?php endforeach; ?>
-	<td>
+	
+	<!-- Badge -->
+	<div class="col">
 		<?php 
 		if ($total_paycode > 40) {
 		    echo "<span class='badge text-bg-warning'>" . $total_paycode . "</span>";
@@ -44,12 +50,14 @@ $total_paycode = 0;
 		    echo "<span class='badge text-bg-success'>" . $total_paycode . "</span>";
 		}
         ?>
-	</td>
-	<td>
+	</div>
+	
+	<!-- Functions -->
+	<div class="col">
 		<?php if ($this->acl_service->isAllowed($this->user->memberOf(TRUE), 'TIMECARD_LINE', $this->form->get('STATUS')->getValue())) : ?>
 		<a href="<?php echo $this->url('timecard/lines', ['action' => 'delete', 'uuid' => $form->get('UUID')->getValue()]); ?>"><i class="fas fa-trash-alt"></i></a>
 		<?php endif; ?>
-	</td>
-</tr>
+	</div>
+</div>
 <?php echo $this->formInput($form->get('SUBMIT'));?>
 <?php echo $this->form()->closeTag($form); ?>

@@ -15,12 +15,12 @@ use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Where;
 use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Form\Form;
+use Laminas\Form\Element\Button;
 use Laminas\Form\Element\Csrf;
 use Laminas\View\Model\ViewModel;
 use Timecard\Form\TimesheetFilterForm;
 use Timecard\Model\TimecardModel;
 use Timecard\Traits\DateAwareTrait;
-use Laminas\Form\Element\Button;
 
 class DashboardController extends AbstractBaseController
 {
@@ -141,7 +141,10 @@ class DashboardController extends AbstractBaseController
         
         unset($department_model);
         
-        $view->setVariable('data', $data);
+        $view->setVariables([
+            'data' => $data,
+            'search' => true,
+        ]);
         
         /****************************************
          * TIMESHEET FILTER SUBFORM
@@ -277,10 +280,10 @@ class DashboardController extends AbstractBaseController
             'type' => DatabaseSelect::class,
             'attributes' => [
                 'id' => 'UUID',
-                'class' => 'form-control',
+                'class' => 'form-select',
             ],
             'options' => [
-                'label' => 'Open Timesheet',
+                'label' => 'Add Timesheet',
                 'database_table' => $employee->getTableName(),
                 'database_id_column' => $employee->getPrimaryKey(),
                 'database_value_columns' => [
@@ -348,19 +351,19 @@ class DashboardController extends AbstractBaseController
             if (sizeof($timecards)) {
                 switch ($timecards[0]['STATUS']) {
                     case $timecard::APPROVED_STATUS:
-                        $data[$index]['STATUS'] = "<span class='badge badge-primary'>Approved</span>";
+                        $data[$index]['STATUS'] = "<span class='badge text-bg-primary'>Approved</span>";
                         break;
                     case $timecard::SUBMITTED_STATUS:
-                        $data[$index]['STATUS'] = "<span class='badge badge-success'>Submitted</span>";
+                        $data[$index]['STATUS'] = "<span class='badge text-bg-success'>Submitted</span>";
                         break;
                     case $timecard::PREPARERD_STATUS:
-                        $data[$index]['STATUS'] = "<span class='badge badge-info'>Prepared</span>";
+                        $data[$index]['STATUS'] = "<span class='badge text-bg-info'>Prepared</span>";
                         break;
                     case $timecard::COMPLETED_STATUS:
-                        $data[$index]['STATUS'] = "<span class='badge badge-secondary'>Completed</span>";
+                        $data[$index]['STATUS'] = "<span class='badge text-bg-secondary'>Completed</span>";
                         break;
                     default:
-                        $data[$index]['STATUS'] = "<span class='badge badge-warning'>Pending</span>";
+                        $data[$index]['STATUS'] = "<span class='badge text-bg-warning'>Pending</span>";
                         break;
                 }
                 $data[$index]['Timecard'] = $timecards[0]['UUID'];
@@ -391,7 +394,8 @@ class DashboardController extends AbstractBaseController
         $select = new Select();
         $select->columns(['UUID', 'NAME'])
         ->from('reports')
-        ->where([new Like('NAME', 'DEPT - %')]);
+        ->where([new Like('NAME', 'DEPT - %')])
+        ->where([new Like('NAME', "$department->CODE - %")],Where::OP_OR);
         
         $statement = $sql->prepareStatementForSqlObject($select);
         
@@ -452,7 +456,7 @@ class DashboardController extends AbstractBaseController
         /****************************************
          * GET DEPARTMENT UUID
          * @var String $dept
-         * @var Boolean $redirect
+         * @var Bool $redirect
          ****************************************/
         $dept = '';
         if ($this->params()->fromRoute('uuid', 0)) {

@@ -19,6 +19,7 @@ $paycode_value = $paycode->getValue();
 echo $this->formInput($form->get('UUID'));
 echo $this->formInput($form->get('SECURITY'));
 echo $this->formInput($form->get('TIMECARD_UUID'));
+echo $this->formHidden($form->get('PAY_UUID'));
 
 $cols = ['MON','TUE','WED','THU','FRI','SAT','SUN','DAYS'];
 $total_paycode = 0;
@@ -30,9 +31,9 @@ $total_paycode = 0;
 		<?php $total_paycode += $form->get($col)->getValue(); ?>
 			
     	<?php if ($this->acl_service->isAllowed($this->user->memberOf(TRUE), 'TIMECARD_LINE', $this->form->get('STATUS')->getValue())) : ?>
-    		<td><?php echo $this->formInput($form->get($col));?></td>
+    		<td style="width: 72px;"><?php echo $this->formInput($form->get($col));?></td>
 		<?php else : ?>
-    		<td><?php echo $form->get($col)->getValue(); ?></td>
+    		<td style="width: 72px;"><?php echo $form->get($col)->getValue(); ?></td>
     	<?php endif; ?>
 
 	<?php endforeach; ?>

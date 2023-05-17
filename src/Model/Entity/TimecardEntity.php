@@ -23,7 +23,7 @@ class TimecardEntity
     public $NOTES = [];
     public $HOURS = [];
     
-    public $DAYS = ['MON','TUES','WED','THURS','FRI','SAT','SUN'];
+    public $DAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
     public $STATUS;
     
     public function __construct()
@@ -130,6 +130,40 @@ class TimecardEntity
     public function updateTimecard()
     {
         return TRUE;
+    }
+    
+    public function deleteTimecard()
+    {
+        $params = [];
+        
+        foreach (array_keys(get_object_vars($this)) as $var) {
+            switch (true) {
+                case isset($this->TIMECARD_UUID):
+                    $params['UUID'] = $this->TIMECARD_UUID;
+                    break;
+                case isset($this->EMP_UUID):
+                case isset($this->WORK_WEEK):
+                    $params[$var] = $this->$var;
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+        /****************************************
+         * GET TIMECARD
+         ****************************************/
+        $timecard = new TimecardModel($this->adapter);
+        $result = $timecard->read($params);
+        if (! $result) {
+            return false;
+        } else {
+            $this->TIMECARD_UUID = $timecard->UUID;
+            $this->STATUS = $timecard->STATUS;
+        }
+        
+        $bResult = $timecard->delete();
+        return $bResult;
     }
     
     public function addPayCode(TimecardLineModel $line)
