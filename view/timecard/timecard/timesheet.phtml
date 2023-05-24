@@ -1,3 +1,6 @@
+<?php
+use Timecard\Model\TimecardModel;
+?>
 <div class="row">
 	<div class="col-9">
 		<h1><?php echo sprintf('%s %s - Timesheet', $this->user_entity->employee->FNAME, $this->user_entity->employee->LNAME)?></h1>
@@ -205,6 +208,18 @@
 </div>
 
 <div class="row">
+	<?php if ($var != TimecardModel::COMPLETED_STATUS) : ?>
+	<div class="col">
+		<?php 
+		echo $this->partial('base/subtable', [
+		    'title' => 'Leave Information',
+		    'data' => $leave_totals,
+		    'primary_key' => 'UUID',
+		    'params' => [],
+		]);
+		?>
+	</div>
+	<?php endif; ?>
 	<div class="col">
 		<?php
 		$roles = [];

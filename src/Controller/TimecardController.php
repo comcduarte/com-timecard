@@ -5,8 +5,11 @@ use Annotation\Traits\AnnotationAwareTrait;
 use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
 use Components\Traits\AclAwareTrait;
+use Laminas\Db\Sql\Select;
+use Laminas\Db\Sql\Where;
 use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
 use Laminas\View\Model\ViewModel;
+use Leave\Model\LeaveModel;
 use Timecard\Form\TimecardAddForm;
 use Timecard\Form\TimecardLineForm;
 use Timecard\Form\TimesheetFilterForm;
@@ -178,6 +181,20 @@ class TimecardController extends AbstractBaseController
         $view->setVariables([
             'week_form' => $form,
         ]);
+        
+        /****************************************
+         * LEAVE
+         ****************************************/
+        $leave = new LeaveModel($this->adapter);
+        $where = new Where();
+        $where->equalTo('EMP_NUM', $user_entity->employee->EMP_NUM);
+        $select = new Select();
+        $select->columns([
+            'CODE','BEGIN','ACCRUAL','TAKEN','FORFEIT','PAID','BALANCE',
+        ]);
+        $leave->setSelect($select);
+        $leave_totals = $leave->fetchAll($where);
+        $view->setVariable('leave_totals', $leave_totals);
         
         /****************************************
          * ANNOTATIONS
