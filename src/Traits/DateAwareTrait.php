@@ -5,6 +5,7 @@ trait DateAwareTrait
 {
     public $date;
     public $today;
+    public $DAYS = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
     
     public function getEndofWeek(String $date = NULL)
     {
