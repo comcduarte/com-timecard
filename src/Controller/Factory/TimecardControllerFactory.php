@@ -1,7 +1,7 @@
 <?php
 namespace Timecard\Controller\Factory;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Timecard\Controller\TimecardController;
 use Timecard\Form\TimecardAddForm;
