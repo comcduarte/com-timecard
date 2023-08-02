@@ -187,7 +187,7 @@ class TimecardController extends AbstractBaseController
          ****************************************/
         $leave = new LeaveModel($this->adapter);
         $where = new Where();
-        $where->equalTo('EMP_NUM', $user_entity->employee->EMP_NUM);
+        $where->equalTo('EMP_NUM', $user_entity->employee->EMP_NUM)->and->equalTo('STATUS', $leave::ACTIVE_STATUS);
         $select = new Select();
         $select->columns([
             'CODE','BEGIN','ACCRUAL','TAKEN','FORFEIT','PAID','BALANCE',
