@@ -5,6 +5,7 @@ use Annotation\Traits\AnnotationAwareTrait;
 use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
 use Components\Traits\AclAwareTrait;
+use Help\Model\HelpModel;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Where;
 use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
@@ -195,6 +196,14 @@ class TimecardController extends AbstractBaseController
         $leave->setSelect($select);
         $leave_totals = $leave->fetchAll($where);
         $view->setVariable('leave_totals', $leave_totals);
+        
+        /****************************************
+         * HELP
+         ****************************************/
+        $help = new HelpModel($this->adapter);
+        $help->read(['NUMBER' => '0x80000001']);
+        $help->ICON = '<i class="fas fa-info-circle"></i>';
+        $view->setVariable('help_leave', $help->getArrayCopy());
         
         /****************************************
          * ANNOTATIONS
