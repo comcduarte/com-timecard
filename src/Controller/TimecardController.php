@@ -202,7 +202,6 @@ class TimecardController extends AbstractBaseController
          ****************************************/
         $help = new HelpModel($this->adapter);
         $help->read(['NUMBER' => '0x80000001']);
-        $help->ICON = '<i class="fas fa-info-circle"></i>';
         $view->setVariable('help_leave', $help->getArrayCopy());
         
         /****************************************
