@@ -69,7 +69,7 @@ class TimecardEntity
             //-- Create default timecard line --//
         }
         
-        foreach ($data as $index => $record) {
+        foreach ($data as $record) {
             $line = new TimecardLineModel($this->adapter);
             $line->read(['UUID' => $record['UUID']]);
             $id = preg_replace('/^[a-z0-9]*/', str_pad($line->ORD, 8, '0', STR_PAD_LEFT), $line->UUID);
@@ -90,7 +90,7 @@ class TimecardEntity
         $data = $timecard_signature->fetchAll($where, ['DATE_CREATED DESC']);
         
         if (is_array($data)) {
-            foreach ($data as $index => $record) {
+            foreach ($data as $record) {
                 $signature = new TimecardSignatureModel($this->adapter);
                 $signature->read(['UUID' => $record['UUID']]);
                 $this->TIMECARD_SIGNATURES[] = $signature;

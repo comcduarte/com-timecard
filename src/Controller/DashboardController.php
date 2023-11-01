@@ -56,7 +56,6 @@ class DashboardController extends AbstractBaseController
         global $work_week;
         
         $view = new ViewModel();
-        $user = $this->currentUser();
         $data = [];
         $timecard = new TimecardModel($this->timecard_adapter);
         
@@ -426,7 +425,6 @@ class DashboardController extends AbstractBaseController
     public function departmentAction()
     {
         $view = new ViewModel();
-        $redirect = FALSE;
         $data = [];
         $timecard = new TimecardModel($this->timecard_adapter);
         
@@ -447,7 +445,6 @@ class DashboardController extends AbstractBaseController
          ****************************************/
         if (! $this->params()->fromRoute('week', 0)) {
             $work_week = $this->getEndofWeek('last week');
-            $redirect = TRUE;
         } else {
             $work_week = $this->getEndofWeek($this->params()->fromRoute('week', 0));
         }
