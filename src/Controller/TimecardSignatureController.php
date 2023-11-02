@@ -345,7 +345,7 @@ class TimecardSignatureController extends AbstractBaseController
         /****************************************
          * GET TIMECARD LINES
          ****************************************/
-        foreach ($timecard_entity->TIMECARD_LINES as $index => $line) {
+        foreach ($timecard_entity->TIMECARD_LINES as $line) {
             $line->STATUS = $status;
             $line->update();
         }
