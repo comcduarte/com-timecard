@@ -12,7 +12,12 @@ $form->prepare();
 
 echo $this->form()->openTag($form);
 
+/**
+ *
+ * @var DatabaseSelect $paycode
+ */
 $paycode = $form->get('PAY_UUID');
+$paycode->setAttribute('onChange', 'this.form.submit()');
 $paycode_value_options = $paycode->getValueOptions();
 $paycode_value = $paycode->getValue();
 
@@ -25,7 +30,11 @@ $cols = ['MON','TUE','WED','THU','FRI','SAT','SUN','DAYS'];
 $total_paycode = 0;
 ?>
 <tr>
-	<td colspan="12"><span style="white-space:nowrap"><?php echo $paycode_value_options[$paycode_value];?></span></td></tr>
+	<?php if ($this->acl_service->isAllowed($this->user->memberOf(TRUE), 'TIMECARD_LINE', $this->form->get('STATUS')->getValue())) : ?>
+	<td><span style="white-space:nowrap"><?php echo $this->formSelect($paycode)?></span></td>
+	<?php else : ?>
+	<td><span style="white-space:nowrap"><?php echo $paycode_value_options[$paycode_value];?></span></td>
+	<?php endif; ?>
 	
 <tr>
 	<td></td>
