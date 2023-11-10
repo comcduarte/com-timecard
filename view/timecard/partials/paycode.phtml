@@ -55,7 +55,7 @@ $total_paycode = 0;
 	<!-- Functions -->
 	<div class="col">
 		<?php if ($this->acl_service->isAllowed($this->user->memberOf(TRUE), 'TIMECARD_LINE', $this->form->get('STATUS')->getValue())) : ?>
-		<a href="<?php echo $this->url('timecard/lines', ['action' => 'delete', 'uuid' => $form->get('UUID')->getValue()]); ?>"><i class="fas fa-trash-alt"></i></a>
+		<a class="btn btn-primary" href="<?php echo $this->url('timecard/lines', ['action' => 'delete', 'uuid' => $form->get('UUID')->getValue()]); ?>"><i class="fas fa-trash-alt"></i></a>
 		<?php endif; ?>
 	</div>
 </div>
