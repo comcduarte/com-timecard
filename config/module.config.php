@@ -12,6 +12,7 @@ use Timecard\Controller\TimecardController;
 use Timecard\Controller\TimecardLineController;
 use Timecard\Controller\TimecardSignatureController;
 use Timecard\Controller\TimecardStageController;
+use Timecard\Controller\WarrantController;
 use Timecard\Controller\Factory\CronControllerFactory;
 use Timecard\Controller\Factory\DashboardControllerFactory;
 use Timecard\Controller\Factory\PaycodeControllerFactory;
@@ -21,6 +22,7 @@ use Timecard\Controller\Factory\TimecardControllerFactory;
 use Timecard\Controller\Factory\TimecardLineControllerFactory;
 use Timecard\Controller\Factory\TimecardSignatureControllerFactory;
 use Timecard\Controller\Factory\TimecardStageControllerFactory;
+use Timecard\Controller\Factory\WarrantControllerFactory;
 use Timecard\Form\PaycodeForm;
 use Timecard\Form\TimecardAddForm;
 use Timecard\Form\TimecardForm;
@@ -264,6 +266,31 @@ return [
                     ],
                 ],
             ],
+            'warrant' => [
+                'type' => Literal::class,
+                'priority' => 1,
+                'options' => [
+                    'route' => '/warrant',
+                    'defaults' => [
+                        'action' => 'index',
+                        'controller' => WarrantController::class,
+                    ],
+                ],
+                'may_terminate' => TRUE,
+                'child_routes' => [
+                    'default' => [
+                        'type' => Segment::class,
+                        'priority' => -100,
+                        'options' => [
+                            'route' => '/[:action[/:uuid]]',
+                            'defaults' => [
+                                'action' => 'index',
+                                'controller' => WarrantController::class,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
     ],
     'acl' => [
@@ -273,6 +300,7 @@ return [
             'timecard/secure_signatures' => [],
             'paycode/default' => [],
             'shiftcode/default' => [],
+            'warrant/default' => [],
         ],
     ],
     'controllers' => [
@@ -286,6 +314,7 @@ return [
             TimecardLineController::class => TimecardLineControllerFactory::class,
             TimecardSignatureController::class => TimecardSignatureControllerFactory::class,
             TimecardStageController::class => TimecardStageControllerFactory::class,
+            WarrantController::class => WarrantControllerFactory::class,
         ],
     ],
     'event_manager' => [
@@ -405,6 +434,29 @@ return [
                                 'route' => 'timecard/stages',
                                 'action' => 'index',
                                 'resource' => 'timecard/stages',
+                                'privilege' => 'index',
+                            ],
+                        ],
+                    ],
+                    [
+                        'label' => 'Warrants',
+                        'route' => 'warrant/default',
+                        'class' => 'dropdown-submenu',
+                        'resource' => 'warrant/default',
+                        'privilege' => 'menu',
+                        'pages' => [
+                            [
+                                'label' => 'Add New Warrant',
+                                'route' => 'warrant/default',
+                                'action' => 'create',
+                                'resource' => 'warrant/default',
+                                'privilege' => 'create',
+                            ],
+                            [
+                                'label' => 'List Warrants',
+                                'route' => 'warrant/default',
+                                'action' => 'index',
+                                'resource' => 'warrant/default',
                                 'privilege' => 'index',
                             ],
                         ],

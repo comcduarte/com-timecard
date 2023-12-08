@@ -58,6 +58,7 @@ class TimecardConfigController extends AbstractConfigController
         $ddl[] = new DropTable('time_cards_lines');
         $ddl[] = new DropTable('time_cards_signatures');
         $ddl[] = new DropTable('time_cards_stages');
+        $ddl[] = new DropTable('time_cards_warrants');
         $ddl[] = new DropTable('user_employee');
         
         foreach ($ddl as $obj) {
@@ -197,6 +198,24 @@ class TimecardConfigController extends AbstractConfigController
         $ddl->addColumn(new Varchar('CODE', 10, TRUE));
         $ddl->addColumn(new Varchar('DESC', 100, TRUE));
         $ddl->addColumn(new Decimal('HOUR', TRUE));
+        
+        $ddl->addConstraint(new PrimaryKey('UUID'));
+        
+        $this->timecard_adapter->query($sql->buildSqlString($ddl), $this->timecard_adapter::QUERY_MODE_EXECUTE);
+        unset($ddl);
+        
+        /******************************
+         * WARRANTS
+         ******************************/
+        $ddl = new CreateTable('time_cards_warrants');
+        
+        $ddl->addColumn(new Varchar('UUID', 36));
+        $ddl->addColumn(new Integer('STATUS', TRUE));
+        $ddl->addColumn(new Datetime('DATE_CREATED', TRUE));
+        $ddl->addColumn(new Datetime('DATE_MODIFIED', TRUE));
+        
+        $ddl->addColumn(new Varchar('WARRANT_NUM', 10, TRUE));
+        $ddl->addColumn(new Datetime('WORK_WEEK', TRUE));
         
         $ddl->addConstraint(new PrimaryKey('UUID'));
         
