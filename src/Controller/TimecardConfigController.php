@@ -18,6 +18,7 @@ use Timecard\Model\PaycodeModel;
 use Timecard\Model\TimecardModel;
 use Timecard\Traits\DateAwareTrait;
 use Exception;
+use Timecard\Model\Warrant;
 
 class TimecardConfigController extends AbstractConfigController
 {
@@ -39,8 +40,12 @@ class TimecardConfigController extends AbstractConfigController
         $importForm = new UploadFileForm('PAYCODES');
         $importForm->init();
         $importForm->addInputFilter();
-        
         $view->setVariable('importForm', $importForm);
+        
+        $warrant_form = new UploadFileForm('WARRANTS');
+        $warrant_form->init();
+        $warrant_form->addInputFilter();
+        $view->setVariable('warrant_form', $warrant_form);
         
         $view->setTemplate('timecard/config');
         
@@ -354,6 +359,61 @@ class TimecardConfigController extends AbstractConfigController
         $view->setTemplate('timecard/cron');
         
         return $view;
+    }
+    
+    public function importwarrantsAction()
+    {
+        /****************************************
+         * Column Descriptions
+         ****************************************/
+        $WARRANT_NUM = 0;
+        $WORK_WEEK = 1;
+        
+        /****************************************
+         * Generate Form
+         ****************************************/
+        $request = $this->getRequest();
+        
+        $form = new UploadFileForm();
+        $form->init();
+        $form->addInputFilter();
+        
+        if ($request->isPost()) {
+            $data = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+                );
+            
+            $form->setData($data);
+            
+            if ($form->isValid()) {
+                $data = $form->getData();
+                if (($handle = fopen($data['FILE']['tmp_name'],"r")) !== FALSE) {
+                    while (($record = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                        /****************************************
+                         * Warrants
+                         ****************************************/
+                        $warrant = new Warrant($this->adapter);
+                        $result = $warrant->read(['WARRANT_NUM' => $record[$WARRANT_NUM]]);
+                        if ($result === FALSE) {
+                            $warrant->UUID = $warrant->generate_uuid();
+                            $warrant->STATUS = $warrant::ACTIVE_STATUS;
+                            $warrant->WARRANT_NUM = $record[$WARRANT_NUM];
+                            $warrant->WORK_WEEK = $this->getEndofWeek($record[$WORK_WEEK]);
+                            $warrant->create();
+                        }
+                    }
+                    fclose($handle);
+                    unlink($data['FILE']['tmp_name']);
+                }
+                $this->flashMessenger()->addSuccessMessage("Successful import.");
+            } else {
+                $this->flashmessenger()->addErrorMessage("Form is Invalid.");
+            }
+        }
+        
+        $url = $this->getRequest()->getHeader('Referer')->getUri();
+        return $this->redirect()->toUrl($url);
     }
     
     public function importpaycodesAction()

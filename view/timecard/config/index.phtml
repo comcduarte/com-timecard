@@ -96,3 +96,24 @@ $checks = [
 		</div>
 	</div>
 </div>
+
+<div class="row">
+	<div class="col">
+		<div class="card mb-4">
+			<div class="card-header d-flex justify-content-between">
+        		<div>
+        			<b>Import Warrants</b>
+        		</div>
+        	</div>
+        	<div class="card-body">
+        		<?php 
+        		$this->warrant_form->prepare();
+        		$this->warrant_form->setAttribute('action', $this->url('timecard/config', ['action' => 'importwarrants']));
+        		echo $this->form()->openTag($this->warrant_form); 
+        		echo $this->formCollection($this->warrant_form);
+        		echo $this->form()->closeTag($this->warrant_form);
+        		?>
+        	</div>
+		</div>
+	</div>
+</div>
