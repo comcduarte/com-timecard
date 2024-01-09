@@ -211,6 +211,7 @@ use Timecard\Model\TimecardModel;
 	<?php if ($var != TimecardModel::COMPLETED_STATUS) : ?>
 	<div class="col"><?php echo $this->subtable(['title' => 'Leave Information','params' => [],'primary_key' => 'UUID', 'data' => $leave_totals, 'help' => $this->help_leave]); ?></div>
 	<?php endif; ?>
+	<div class="col mb-4"><?php $this->boxFiles()->setTitle($this->files_title)->setData($this->files)->setReference($this->files_reference)->setVariable('actionMenu', $actionMenu)->render(); ?></div>
 	<div class="col">
 		<?php
 		$roles = [];

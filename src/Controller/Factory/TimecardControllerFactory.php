@@ -7,6 +7,7 @@ use Timecard\Controller\TimecardController;
 use Timecard\Form\TimecardAddForm;
 use Timecard\Form\TimecardForm;
 use Timecard\Model\TimecardModel;
+use Laminas\Box\API\AccessToken;
 
 class TimecardControllerFactory implements FactoryInterface
 {
@@ -23,6 +24,9 @@ class TimecardControllerFactory implements FactoryInterface
         
         $adapter = $container->get('employee-model-adapter');
         $controller->employee_adapter = $adapter;
+        
+        $access_token = new AccessToken($container->get('access-token-config'));
+        $controller->setAccessToken($access_token);
         
         $controller->setModel($model);
         $controller->setForm($form);
