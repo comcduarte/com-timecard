@@ -184,6 +184,10 @@ class TimecardController extends AbstractBaseController
             $timecard_line_form->setDbAdapter($this->adapter);
             $timecard_line_form->init();
             $timecard_line_form->bind($timecard_line);
+            
+            $timecard_line_form->get('PAY_UUID')->roles = $user->memberOf();
+            $timecard_line_form->get('PAY_UUID')->setAclService($this->acl_service)->populateElement();
+            
             $forms[$index] = $timecard_line_form;
         }
         

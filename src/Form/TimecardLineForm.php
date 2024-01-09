@@ -2,15 +2,17 @@
 namespace Timecard\Form;
 
 use Components\Form\AbstractBaseForm;
-use Components\Form\Element\DatabaseSelect;
+use Components\Form\Element\AclDatabaseSelect;
+use Components\Form\Element\HiddenSubmit;
+use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Text;
-use Laminas\Db\Adapter\AdapterAwareTrait;
-use Components\Form\Element\HiddenSubmit;
+use Components\Traits\AclAwareTrait;
 
 class TimecardLineForm extends AbstractBaseForm
 {
     use AdapterAwareTrait;
+    use AclAwareTrait;
     
     public function init()
     {
@@ -45,13 +47,16 @@ class TimecardLineForm extends AbstractBaseForm
         
         $this->add([
             'name' => 'PAY_UUID',
-            'type' => DatabaseSelect::class,
+            'type' => AclDatabaseSelect::class,
             'attributes' => [
                 'id' => 'PAY_UUID',
                 'class' => 'form-select',
             ],
             'options' => [
                 'label' => 'Pay Code',
+                'empty_option' => 'Select a Paycode',
+                'acl_service' => $this->getAclService(),
+                'acl_resource_column' => 'RESOURCE',
                 'database_adapter' => $this->adapter,
                 'database_table' => 'time_pay_codes',
                 'database_id_column' => 'UUID',
