@@ -470,7 +470,18 @@ class TimecardConfigController extends AbstractConfigController
                         $pc->PHOURLYRATE = $record[$PHOURLYRATE];
                         $pc->PDAILYRATE = $record[$PDAILYRATE];
                         $pc->UNITS = $record[$UNITS];
-                        $pc->LEAVE_CODE = $record[$LEAVE_CODE];
+                        
+                        switch ($record[$LEAVE_CODE]) {
+                            case "PERSONAL":
+                            case "VACATION":
+                            case "SICK":
+                                $pc->LEAVE_CODE = $record[$LEAVE_CODE];
+                                break;
+                            default:
+                                $pc->LEAVE_CODE = NULL;
+                                break;
+                        }
+                        
                         
                         switch ($record[$PAY_TYPE]) {
                             case 'Regular':
