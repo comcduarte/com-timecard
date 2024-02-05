@@ -308,7 +308,6 @@ class TimecardController extends AbstractBaseController
                 $request->getFiles()->toArray()
                 );
             
-            $form->setInputFilter($model->getInputFilter());
             $form->setData($post);
             
             if ($form->isValid()) {
