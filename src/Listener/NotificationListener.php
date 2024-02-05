@@ -41,8 +41,6 @@ class NotificationListener implements ListenerAggregateInterface
         /**
          * @var \Laminas\Log\Logger $logger
          */
-        $this->logger->info('Notification Listener >> onSign >> Executed');
-        
         $params = $event->getParams();
         
         $employee = new EmployeeModel($event->getTarget()->employee_adapter);
@@ -56,7 +54,7 @@ class NotificationListener implements ListenerAggregateInterface
         
         if (is_null($employee->EMAIL)) {
             $logger = $this->logger;
-            $logger->info(sprintf('Error: %s does not have email address assigned.  Unable to send notification.', $employee->EMP_NUM));
+            $logger->err(sprintf('Error: %s does not have email address assigned.  Unable to send notification.', $employee->EMP_NUM));
             return;
         }
         
