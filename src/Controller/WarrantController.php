@@ -11,12 +11,14 @@ class WarrantController extends AbstractBaseController
     {
         $view = new ViewModel();
         
+        
         $select = new Select();
         $select->columns([
             'UUID' => 'UUID',
             'Warrant' => 'WARRANT_NUM',
             'Week Ending' => 'WORK_WEEK',
         ]);
+        $select->limit(20)->order('WORK_WEEK ' . $select::ORDER_DESCENDING);
         $this->model->setSelect($select);
         
         $view = parent::indexAction();
