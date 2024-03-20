@@ -4,6 +4,9 @@
 			<b><?=$this->title?></b>
 		</div>
 		<div>
+			<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','active')) : ?>
+				<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'active', 'uuid' => $this->timecard_uuid]); ?>" class="btn btn-primary btn-rounder">Unsubmit</a>
+			<?php endif; ?>
 			<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','submit')) : ?>
 				<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'submit', 'uuid' => $this->timecard_uuid]); ?>" class="btn btn-primary btn-rounder">Submit</a>
 			<?php endif; ?>
