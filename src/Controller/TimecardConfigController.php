@@ -13,16 +13,19 @@ use Laminas\Db\Sql\Ddl\Column\Decimal;
 use Laminas\Db\Sql\Ddl\Column\Integer;
 use Laminas\Db\Sql\Ddl\Column\Varchar;
 use Laminas\Db\Sql\Ddl\Constraint\PrimaryKey;
+use Laminas\Log\LoggerAwareTrait;
+use Laminas\Validator\Identical;
 use Laminas\View\Model\ViewModel;
 use Timecard\Model\PaycodeModel;
 use Timecard\Model\TimecardModel;
+use Timecard\Model\Warrant;
 use Timecard\Traits\DateAwareTrait;
 use Exception;
-use Timecard\Model\Warrant;
 
 class TimecardConfigController extends AbstractConfigController
 {
     use DateAwareTrait;
+    use LoggerAwareTrait;
     
     public $timecard_adapter;
     public $employee_adapter;
@@ -421,14 +424,19 @@ class TimecardConfigController extends AbstractConfigController
         /****************************************
          * Column Descriptions
          ****************************************/
-        $CODE = 0;
-        $DESC = 1;
-        $CAT = 2;
+        $attributes = [
+            'CODE' => 0,
+            'DESC' => 1,
+            'CAT' => 2,
+//             'PAY_TYPE' => 7,
+            'PHOURLYRATE' => 8,
+            'PDAILYRATE' => 9,
+            'FLATAMT' => 10,
+            'UNITS' => 11,
+//             'LEAVE_CODE' => 12,
+        ];
+        
         $PAY_TYPE = 7;
-        $PHOURLYRATE = 8;
-        $PDAILYRATE = 9;
-        $FLATAMT = 10;
-        $UNITS = 11;
         $LEAVE_CODE = 12;
         
         /****************************************
@@ -451,25 +459,42 @@ class TimecardConfigController extends AbstractConfigController
             if ($form->isValid()) {
                 $data = $form->getData();
                 if (($handle = fopen($data['FILE']['tmp_name'],"r")) !== FALSE) {
+                    $flag = true;
                     while (($record = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                        /****************************************
+                         * Skip First Line
+                         ****************************************/
+                        if ($flag) { $flag = false; continue; }
+                        
                         /****************************************
                          * Paycodes
                          ****************************************/
                         $pc = new PaycodeModel($this->timecard_adapter);
-                        $result = $pc->read(['CODE' => sprintf('%s', $record[$CODE])]);
+                        $result = $pc->read(['CODE' => sprintf('%s', $record[$attributes['CODE']])]);
                         if ($result === FALSE) {
                             $pc->UUID = $pc->generate_uuid();
                             $pc->STATUS = $pc::ACTIVE_STATUS;
                             $pc->create();
+                            $this->logger->info(sprintf('Created paycode %s [%s].', $pc->UUID, $record[$attributes['CODE']]));
                         }
                         
-                        $pc->CODE = $record[$CODE];
-                        $pc->DESC = $record[$DESC];
-                        $pc->CAT = $record[$CAT];
-                        $pc->FLATAMT = $record[$FLATAMT];
-                        $pc->PHOURLYRATE = $record[$PHOURLYRATE];
-                        $pc->PDAILYRATE = $record[$PDAILYRATE];
-                        $pc->UNITS = $record[$UNITS];
+                        $validator = new Identical();
+                        $hasChanged = false;
+                        
+                        foreach ($attributes as $attribute => $value) {
+                            /**
+                             * If import contains field not in object, skip.
+                             */
+                            if (!isset($record[$value])) {
+                                continue;
+                            }
+                            
+                            $validator->setToken($pc->$attribute);
+                            if (!$validator->isValid($record[$value])) {
+                                $hasChanged = true;
+                                $pc->$attribute = $record[$value];
+                            }
+                        }
                         
                         switch ($record[$LEAVE_CODE]) {
                             case "PERSONAL":
@@ -481,7 +506,6 @@ class TimecardConfigController extends AbstractConfigController
                                 $pc->LEAVE_CODE = NULL;
                                 break;
                         }
-                        
                         
                         switch ($record[$PAY_TYPE]) {
                             case 'Regular':
@@ -496,14 +520,19 @@ class TimecardConfigController extends AbstractConfigController
                                 $pc->PAY_TYPE = 'Other/Unpaid';
                                 break;
                         }
-                        $pc->update();
+                        
+                        if ($hasChanged) {
+                            $pc->update();
+                            $this->logger->info(sprintf('Updated paycode %s [%s].', $pc->UUID, $pc->CODE));
+                        }
                     }
                     fclose($handle);
                     unlink($data['FILE']['tmp_name']);
                 }
                 $this->flashMessenger()->addSuccessMessage("Successfully imported paycodes.");
             } else {
-                $this->flashmessenger()->addErrorMessage("Form is Invalid.");
+                $this->flashmessenger()->addErrorMessage($form->getMessages());
+                $this->logger->err($form->getMessages());
             }
         }
         
