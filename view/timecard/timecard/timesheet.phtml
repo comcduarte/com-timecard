@@ -1,5 +1,10 @@
 <?php
 use Timecard\Model\TimecardModel;
+
+$roles = [];
+foreach ($this->user->memberOf() as $role) {
+    array_push($roles, $role['ROLENAME']);
+}
 ?>
 <div class="row">
 	<div class="col-9">
@@ -211,14 +216,13 @@ use Timecard\Model\TimecardModel;
 	<?php if ($var != TimecardModel::COMPLETED_STATUS) : ?>
 	<div class="col"><?php echo $this->subtable(['title' => 'Leave Information','params' => [],'primary_key' => 'UUID', 'data' => $leave_totals, 'help' => $this->help_leave]); ?></div>
 	<?php endif; ?>
-	<div class="col mb-4"><?php $this->boxFiles()->setTitle($this->files_title)->setData($this->files)->setReference($this->files_reference)->setVariable('actionMenu', $actionMenu)->render(); ?></div>
+	<?php if ($acl_service->isAllowed($roles, 'files/default', 'view')) : ?>
+	<div class="col mb-4">
+		<?php $this->boxFiles()->setTitle($this->files_title)->setData($this->files)->setReference($this->files_reference)->setVariable('actionMenu', $actionMenu)->render(); ?>
+	</div>
+	<?php endif; ?>
 	<div class="col">
 		<?php
-		$roles = [];
-		foreach ($this->user->memberOf() as $role) {
-		    array_push($roles, $role['ROLENAME']);
-		}
-		
 		echo $this->partial('timecard/partials/sign.phtml', [
 		    'title' => 'Signatures',
 		    'data' => $this->timecard_signatures,
