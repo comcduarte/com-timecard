@@ -1,10 +1,10 @@
 <div class="row">
-	<div class="col-6">
+	<div class="col-sm-6">
 		<h1>Department Dashboard</h1>
 	</div>
 	
 	<!-- Add Employee Form -->
-	<div class="col-3">
+	<div class="col-sm-3">
 		<?php $this->find_employee_form->setAttribute('action', $this->url('timecard/timesheet', ['uuid' => NULL, 'week' => $this->work_week], NULL, TRUE)); ?>
 		<?php $this->find_employee_form->prepare(); ?>
 		<?php echo $this->form()->openTag($this->find_employee_form); ?>
@@ -16,7 +16,7 @@
 		<?php echo $this->form()->closeTag($this->find_employee_form); ?>
 	</div>
 	
-	<div class="col-3">
+	<div class="col-sm-3">
 		<?php $week_form->setAttribute('action', $this->url('dashboard/dept', [], NULL, TRUE)); ?>
 		<?php $week_form->prepare(); ?>
 		<?php echo $this->form()->openTag($week_form); ?>
@@ -39,6 +39,7 @@
 		    'data' => $this->employees,
 		    'dept_uuid' => $this->dept->UUID,
 		    'work_week' => $this->work_week,
+		    'deptActionMenu' => $deptActionMenu,
 		    'primary_key' => 'UUID',
 		    'route' => 'timecard/timesheet',
 		    'role' => $roles,

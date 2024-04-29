@@ -27,7 +27,8 @@ $total_paycode = 0;
 	<div class="accordion-item">
 		<h2 class="accordion-header" id="heading<?php echo $uuid; ?>">
 			<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?php echo $uuid; ?>" aria-expanded="true" aria-controls="collapse<?php echo $uuid; ?>">
-				<span style="white-space: nowrap"><?php echo $paycode_value_options[$paycode_value];?></span>
+			<?php echo $this->formHidden($paycode); ?>
+				<!--  Issue is Here. --><span style="white-space: nowrap"><?php echo $paycode_value_options[$paycode_value];?></span>
 			</button>
 		</h2>
 		<div id="collapse<?php echo $uuid; ?>" class="accordion-collapse collapse" aria-labelledby="heading<?php echo $uuid; ?>" data-bs-parent="#accordion<?php echo $uuid; ?>">
@@ -41,20 +42,10 @@ $total_paycode = 0;
                 		<div class="row"><?php echo sprintf('%s: %s', $col, $form->get($col)->getValue());?></div>
                 	<?php endif; ?>
 				<?php endforeach; ?>
-				<!-- TOTAL PAYCODE -->
-				<div class="row">
-				<?php 
-            		if ($total_paycode > 40) {
-            		    echo "<span class='badge text-bg-warning'>" . $total_paycode . "</span>";
-            		} else {
-            		    echo "<span class='badge text-bg-success'>" . $total_paycode . "</span>";
-            		}
-                ?>
-				</div>
 				
 				<!-- UTILITY -->
 				<?php if ($this->acl_service->isAllowed($this->user->memberOf(TRUE), 'TIMECARD_LINE', $this->form->get('STATUS')->getValue())) : ?>
-        		<a class="btn btn-primary btn-sm" href="<?php echo $this->url('timecard/lines', ['action' => 'delete', 'uuid' => $form->get('UUID')->getValue()]); ?>"><i class="fas fa-trash-alt"></i></a>
+        		<div class="row"><a class="btn btn-primary d-grid mt-3" href="<?php echo $this->url('timecard/lines', ['action' => 'delete', 'uuid' => $form->get('UUID')->getValue()]); ?>"><i class="fas fa-trash-alt"></i></a></div>
         		<?php endif; ?>
 			</div>
 		</div>

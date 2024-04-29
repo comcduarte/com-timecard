@@ -3,7 +3,10 @@
 		<div>
 			<b><?=$this->title?></b>
 		</div>
-		<div>
+		<div class="d-block d-lg-none">
+			<?php echo $this->actionmenu()->setData(['uuid' => $timecard_uuid])->render($signActionMenu); ?>
+		</div>
+		<div class="d-none d-lg-block">
 			<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','active')) : ?>
 				<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'active', 'uuid' => $this->timecard_uuid]); ?>" class="btn btn-primary btn-rounder">Unsubmit</a>
 			<?php endif; ?>

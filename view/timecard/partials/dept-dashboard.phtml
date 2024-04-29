@@ -8,7 +8,10 @@
 			<a href="" class="btn btn-primary btn-rounded" data-bs-toggle="modal" data-bs-target="#modal-<?=$this->form['name']?>"><?=$this->form['title']?></a>
 		</div>
 		<?php endif; ?>
-		<div>
+		<div class="d-block d-lg-none">
+			<?php echo $this->actionmenu()->setData(['uuid' => $dept_uuid])->render($deptActionMenu); ?>
+		</div>
+		<div class="d-none d-lg-block">
 		<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','prepareall')) : ?>
 			<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'prepareall', 'uuid' => $this->dept_uuid, 'week' => $this->work_week]); ?>" class="btn btn-info btn-rounder">Prepare All</a>
 		<?php endif; ?>
@@ -22,9 +25,11 @@
 			<a href="<?php echo $this->url('timecard/secure_signatures', ['action' => 'deleteall', 'uuid' => $this->dept_uuid, 'week' => $this->work_week]); ?>" class="btn btn-danger btn-rounder">Delete All</a>
 		<?php endif; ?>
 		</div>
+		
+		
 	</div>
 
-	<div class="card-body">
+	<div class="card-body table-responsive-md">
 		<?php if (sizeof($data) === 0) { echo "No Records Retrieved."; } else { ?>
     	<table class="table table-striped">
         	<thead>

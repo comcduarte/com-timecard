@@ -1,6 +1,7 @@
 <?php
 namespace Timecard\Controller;
 
+use Application\ActionMenu\ActionMenu;
 use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
 use Components\Form\Element\DatabaseSelect;
@@ -17,6 +18,7 @@ use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Form\Form;
 use Laminas\Form\Element\Button;
 use Laminas\Form\Element\Csrf;
+use Laminas\Html\Hyperlink;
 use Laminas\View\Model\ViewModel;
 use Timecard\Form\TimesheetFilterForm;
 use Timecard\Model\TimecardModel;
@@ -383,6 +385,50 @@ class DashboardController extends AbstractBaseController
         $department = new DepartmentModel($this->employee_adapter);
         $department->read(['UUID' => $dept]);
         $view->setVariable('dept', $department);
+        
+        /****************************************
+         * Action Menu
+         ****************************************/
+        $actionMenu = new ActionMenu();
+        
+        $prepare = new Hyperlink();
+        $prepare->class = 'dropdown-item';
+        $prepare->data_url_route = 'timecard/secure_signatures';
+        $prepare->data_url_params = ['action' => 'prepareall'];
+        $prepare->data_href_param = 'uuid';
+        $prepare->target = "_blank";
+        $prepare->setLabel('Prepare All');
+        
+        $approve = new Hyperlink();
+        $approve->class = 'dropdown-item';
+        $approve->data_url_route = 'timecard/secure_signatures';
+        $approve->data_url_params = ['action' => 'approveall'];
+        $approve->data_href_param = 'uuid';
+        $approve->target = "_blank";
+        $approve->setLabel('Approve All');
+        
+        $complete = new Hyperlink();
+        $complete->class = 'dropdown-item';
+        $complete->data_url_route = 'timecard/secure_signatures';
+        $complete->data_url_params = ['action' => 'completeall'];
+        $complete->data_href_param = 'uuid';
+        $complete->target = "_blank";
+        $complete->setLabel('Complete All');
+        
+        $delete = new Hyperlink();
+        $delete->class = 'dropdown-item text-bg-danger';
+        $delete->data_url_route = 'timecard/secure_signatures';
+        $delete->data_url_params = ['action' => 'deleteall'];
+        $delete->data_href_param = 'uuid';
+        $delete->target = "_blank";
+        $delete->setLabel('Delete All');
+        
+        $actionMenu->add_menu_item($prepare);
+        $actionMenu->add_menu_item($approve);
+        $actionMenu->add_menu_item($complete);
+        $actionMenu->add_menu_item($delete);
+        
+        $view->setVariable('deptActionMenu', $actionMenu);
         
         /****************************************
          * REPORTS SUBTABLE

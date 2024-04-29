@@ -5,7 +5,7 @@ use Annotation\Traits\AnnotationAwareTrait;
 use Application\ActionMenu\ActionMenu;
 use Application\Model\Entity\UserEntity;
 use Components\Controller\AbstractBaseController;
-use Components\Traits\AclAwareTrait;
+use Acl\Traits\AclAwareTrait;
 use Help\Model\HelpModel;
 use Laminas\Box\API\AccessTokenAwareTrait;
 use Laminas\Box\API\MetadataQuery;
@@ -54,7 +54,15 @@ class TimecardController extends AbstractBaseController
         $user_entity->employee->setDbAdapter($this->employee_adapter);
         $user_entity->department->setDbAdapter($this->employee_adapter);
         
+        /****************************************
+         * GET ROLES
+         * @var UserModel $user
+         ****************************************/
         $user = $this->currentUser();
+        $roles = [];
+        foreach ($user->memberOf() as $role) {
+            array_push($roles, $role['ROLENAME']);
+        }
         
         /****************************************
          * GET UUID
@@ -265,6 +273,42 @@ class TimecardController extends AbstractBaseController
         $leave->setSelect($select);
         $leave_totals = $leave->fetchAll($where);
         $view->setVariable('leave_totals', $leave_totals);
+        
+        $select = new Select();
+        $select->columns([
+            'CODE','BALANCE',
+        ]);
+        $leave->setSelect($select);
+        $sm_leave_totals = $leave->fetchAll($where);
+        $view->setVariable('sm_leave_totals', $sm_leave_totals);
+        
+        /****************************************
+         * Action Menu
+         ****************************************/
+        $actionMenu = new ActionMenu();
+        $resource = 'timecard/secure_signatures';
+        $privileges = [
+            'active',
+            'submit',
+            'prepare',
+            'approve',
+            'complete',
+        ];
+        
+        foreach ($privileges as $privilege) {
+            if ($this->isAllowed($user->memberOf(), $resource, $privilege)) {
+                $action_menu_item = new Hyperlink();
+                $action_menu_item->class = 'dropdown-item';
+                $action_menu_item->data_url_route = $resource;
+                $action_menu_item->data_href_param = 'uuid';
+                $action_menu_item->target = "_blank";
+                $action_menu_item->data_url_params = ['action' => $privilege];
+                $action_menu_item->setLabel(ucwords($privilege));
+                $actionMenu->add_menu_item($action_menu_item);
+            }
+        }
+        
+        $view->setVariable('signActionMenu', $actionMenu);
         
         /****************************************
          * HELP
