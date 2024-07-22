@@ -9,7 +9,7 @@
 		</div>
 		<?php endif; ?>
 		<div class="d-block d-lg-none">
-			<?php echo $this->actionmenu()->setData(['uuid' => $dept_uuid])->render($deptActionMenu); ?>
+			<?php echo $this->actionmenu()->setData(['uuid' => $dept_uuid, 'week' => $this->work_week])->render($deptActionMenu); ?>
 		</div>
 		<div class="d-none d-lg-block">
 		<?php if ($acl_service->isAllowed($role,'timecard/secure_signatures','prepareall')) : ?>

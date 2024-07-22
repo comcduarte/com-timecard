@@ -395,32 +395,28 @@ class DashboardController extends AbstractBaseController
         $prepare->class = 'dropdown-item';
         $prepare->data_url_route = 'timecard/secure_signatures';
         $prepare->data_url_params = ['action' => 'prepareall'];
-        $prepare->data_href_param = 'uuid';
-        $prepare->target = "_blank";
+        $prepare->data_href_param = ['uuid','week'];
         $prepare->setLabel('Prepare All');
         
         $approve = new Hyperlink();
         $approve->class = 'dropdown-item';
         $approve->data_url_route = 'timecard/secure_signatures';
         $approve->data_url_params = ['action' => 'approveall'];
-        $approve->data_href_param = 'uuid';
-        $approve->target = "_blank";
+        $approve->data_href_param = ['uuid','week'];
         $approve->setLabel('Approve All');
         
         $complete = new Hyperlink();
         $complete->class = 'dropdown-item';
         $complete->data_url_route = 'timecard/secure_signatures';
         $complete->data_url_params = ['action' => 'completeall'];
-        $complete->data_href_param = 'uuid';
-        $complete->target = "_blank";
+        $complete->data_href_param = ['uuid','week'];
         $complete->setLabel('Complete All');
         
         $delete = new Hyperlink();
         $delete->class = 'dropdown-item text-bg-danger';
         $delete->data_url_route = 'timecard/secure_signatures';
         $delete->data_url_params = ['action' => 'deleteall'];
-        $delete->data_href_param = 'uuid';
-        $delete->target = "_blank";
+        $delete->data_href_param = ['uuid','week'];
         $delete->setLabel('Delete All');
         
         $actionMenu->add_menu_item($prepare);
