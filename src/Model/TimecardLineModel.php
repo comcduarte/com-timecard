@@ -33,7 +33,7 @@ class TimecardLineModel extends AbstractBaseModel
     
     public function create()
     {
-        $highest_ordinal = 0;
+        $highest_ordinal = 10;
         
         $where = new Where();
         $where->equalTo('TIMECARD_UUID', $this->TIMECARD_UUID);
